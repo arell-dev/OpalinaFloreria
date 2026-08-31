@@ -1,13 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" role="img" aria-labelledby="title">
-  <title id="title">Logo floral de Opalina</title>
-  <rect width="80" height="80" rx="24" fill="#fff8ef"/>
-  <path d="M40 59c2-12 1-22 0-32" fill="none" stroke="#536b4f" stroke-width="4" stroke-linecap="round"/>
-  <path d="M38 47c-13-6-17-16-9-22 8 4 12 12 9 22Z" fill="#dce8d5" stroke="#9caf96" stroke-width="2"/>
-  <path d="M42 45c13-7 16-18 7-23-8 5-10 13-7 23Z" fill="#dce8d5" stroke="#9caf96" stroke-width="2"/>
-  <circle cx="40" cy="28" r="9" fill="#c78f57"/>
-  <ellipse cx="40" cy="18" rx="8" ry="14" fill="#e9b7bf"/>
-  <ellipse cx="27" cy="28" rx="8" ry="14" fill="#f2cbd0" transform="rotate(-58 27 28)"/>
-  <ellipse cx="53" cy="28" rx="8" ry="14" fill="#f2cbd0" transform="rotate(58 53 28)"/>
-  <ellipse cx="32" cy="42" rx="7" ry="13" fill="#d8bfd9" transform="rotate(-140 32 42)"/>
-  <ellipse cx="48" cy="42" rx="7" ry="13" fill="#d8bfd9" transform="rotate(140 48 42)"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" aria-labelledby="title" role="img" viewBox="0 0 80 80"><title id="title">Logo floral de Opalina</title><rect width="80" height="80" fill="#fff8ef" rx="24"/><path fill="none" stroke="#536b4f" stroke-linecap="round" stroke-width="4" d="M40 59c2-12 1-22 0-32"/><path fill="#dce8d5" stroke="#9caf96" stroke-width="2" d="M38 47c-13-6-17-16-9-22 8 4 12 12 9 22Zm4-2c13-7 16-18 7-23-8 5-10 13-7 23Z"/><circle cx="40" cy="28" r="9" fill="#c78f57"/><ellipse cx="40" cy="18" fill="#e9b7bf" rx="8" ry="14"/><ellipse cx="27" cy="28" fill="#f2cbd0" rx="8" ry="14" transform="rotate(-58 27 28)"/><ellipse cx="53" cy="28" fill="#f2cbd0" rx="8" ry="14" transform="rotate(58 53 28)"/><ellipse cx="32" cy="42" fill="#d8bfd9" rx="7" ry="13" transform="rotate(-140 32 42)"/><ellipse cx="48" cy="42" fill="#d8bfd9" rx="7" ry="13" transform="rotate(140 48 42)"/></svg>
