@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Panel de administración - Opalina Florería Piura." />
+  <title>Reportes | Administración Opalina</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Nunito+Sans:wght@400;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="icon" type="image/png" href="../assets/imagenes/Opalina-Logo.png" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+  <link href="../css/colores.css" rel="stylesheet" />
+  <link href="../css/componentes.css" rel="stylesheet" />
+  <link href="../css/admin.css" rel="stylesheet" />
+</head>
+
+<body class="admin-app ">
+  <a class="admin-skip" href="#contenido-admin">Ir al contenido</a>
+  <header class="admin-topbar"><a class="admin-brand" href="admin.html"><img src="../assets/imagenes/Opalina-Logo.png"
+        width="36" height="36" alt="" /><span><strong>Opalina</strong><small>Administración</small></span></a>
+    <div class="d-flex align-items-center gap-3"><a class="admin-store-link" href="../index.html">Ver tienda ↗</a><span
+        class="admin-user"><span class="admin-user-avatar" aria-hidden="true">A</span> Administrador</span></div>
+  </header>
+  <div class="admin-workspace">
+    <aside class="offcanvas-lg offcanvas-start admin-sidebar" tabindex="-1" id="sidebarAdmin"
+      aria-labelledby="sidebarAdminLabel">
+      <div class="offcanvas-header d-lg-none">
+        <h2 class="offcanvas-title" id="sidebarAdminLabel">Administración</h2><button type="button" class="btn-close"
+          data-bs-dismiss="offcanvas" data-bs-target="#sidebarAdmin" aria-label="Cerrar menú"></button>
+      </div>
+      <div class="offcanvas-body p-0 d-flex flex-column">
+        <p class="admin-nav-label">GESTIÓN DE LA TIENDA</p>
+        <nav class="list-group list-group-flush p-2" aria-label="Navegación de administración">
+          <a class="list-group-item list-group-item-action" href="admin.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+            </svg>
+            Pedidos
+          </a>
+          <a class="list-group-item list-group-item-action" href="admin-productos.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+            Productos
+          </a>
+          <a class="list-group-item list-group-item-action" href="admin-clientes.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            Clientes
+          </a>
+          <a class="list-group-item list-group-item-action active" aria-current="page" href="admin-reportes.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            Reportes
+          </a>
+          <a class="list-group-item list-group-item-action" href="admin-configuracion.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path
+                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+            Configuración
+          </a>
+          <hr />
+          <a class="list-group-item list-group-item-action" href="../index.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Volver al sitio
+          </a>
+        </nav>
+        <p class="admin-sidebar-note">Opalina Florería<br><span>Piura, Perú</span></p>
+      </div>
+    </aside>
+    <main id="contenido-admin" class="admin-main">
+      <div class="admin-page-heading">
+        <div>
+          <p class="admin-overline">Administración / Reportes</p>
+          <h1>Reportes</h1>
+          <p class="admin-page-description">Consulta cifras calculadas a partir de los pedidos del panel.</p>
+        </div>
+        <div class="admin-heading-actions"><button class="btn btn-outline-primary d-lg-none" type="button"
+            data-bs-toggle="offcanvas" data-bs-target="#sidebarAdmin" aria-controls="sidebarAdmin">☰ Menú</button></div>
+      </div>
+      <div id="admin-feedback" class="admin-feedback" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+      <div class="admin-contenido">
+        <section class="card mb-4">
+          <div class="card-body d-flex flex-wrap gap-3 align-items-end justify-content-between">
+            <div><label class="form-label" for="estado-reporte">Estado de los pedidos</label><select class="form-select"
+                id="estado-reporte">
+                <option value="todos">Todos los estados</option>
+                <option value="pendiente">Pendientes</option>
+                <option value="proceso">En proceso</option>
+                <option value="enviado">Enviados</option>
+                <option value="entregado">Entregados</option>
+                <option value="cancelado">Cancelados</option>
+              </select></div>
+          </div>
+        </section>
+        <div class="admin-metrics">
+          <div class="card">
+            <div class="card-body">
+              <p class="admin-metric-label">Pedidos</p>
+              <div class="admin-metric-value" data-stat="0">—</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <p class="admin-metric-label">Valor de pedidos</p>
+              <div class="admin-metric-value" data-stat="1">—</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <p class="admin-metric-label">Promedio por pedido</p>
+              <div class="admin-metric-value" data-stat="2">—</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body">
+              <p class="admin-metric-label">Unidades solicitadas</p>
+              <div class="admin-metric-value" data-stat="3">—</div>
+            </div>
+          </div>
+        </div>
+        <section class="card admin-results">
+          <div class="admin-results-heading">
+            <h2>Productos solicitados</h2><span id="resultado-cantidad" role="status"></span>
+          </div>
+          <div class="admin-table-viewport" tabindex="0" role="region" aria-label="Tabla de productos solicitados">
+            <table class="table align-middle mb-0">
+              <thead>
+                <tr>
+                  <th scope="col">Producto</th>
+                  <th scope="col">Unidades</th>
+                  <th scope="col">Valor en pedidos</th>
+                </tr>
+              </thead>
+              <tbody id="filas-reporte"></tbody>
+            </table>
+          </div>
+        </section>
+        <p class="form-text mt-3">Resumen de los pedidos de demostración disponibles. El valor de los pedidos no
+          equivale a pagos confirmados. No se aplica un período porque faltan fechas de creación.</p>
+      </div>
+      <noscript>
+        <p class="alert alert-warning">Activa JavaScript para consultar y editar la información del panel.</p>
+      </noscript>
+    </main>
+  </div>
+  <footer class="admin-footer"><span>© 2026 Opalina Florería Piura</span><span>Modo demostración · Cambios guardados en
+      este navegador</span></footer>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+  <script src="../js/admin-datos.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+
+</html>

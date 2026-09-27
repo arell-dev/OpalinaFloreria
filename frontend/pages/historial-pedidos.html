@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Historial de pedidos de Opalina Florería Piura." />
+  <title>Mis Pedidos | Opalina Florería Piura</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Nunito+Sans:wght@400;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="icon" type="image/png" href="../assets/imagenes/Opalina-Logo.png" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+  <link href="../css/colores.css" rel="stylesheet" />
+  <link href="../css/componentes.css" rel="stylesheet" />
+</head>
+
+<body class="d-flex flex-column min-vh-100">
+  <a class="salto-contenido" href="#contenido-principal">Saltar al contenido</a>
+  <nav class="navbar navbar-expand-md sticky-top navbar-opalina">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="../index.html">
+        <img src="../assets/imagenes/Opalina-Logo.png" alt="" width="40" height="40" />
+        <span class="lh-1"><strong class="d-block">Opalina</strong><small class="text-uppercase">Florería
+            Piura</small></span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navPrincipal"
+        aria-controls="navPrincipal" aria-expanded="false" aria-label="Abrir menú">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navPrincipal">
+        <ul class="navbar-nav ms-auto mb-2 mb-md-0 align-items-md-center gap-md-3">
+          <li class="nav-item"><a class="nav-link" href="../index.html">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="catalogo.html">Catálogo</a></li>
+          <li class="nav-item"><a class="nav-link" href="nosotros.html">Nosotros</a></li>
+          <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+          <li class="nav-item">
+            <a class="nav-link position-relative" href="carrito.html">Carrito
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+                id="contador-carrito" aria-label="Artículos en el carrito">0<span
+                  class="visually-hidden">artículos</span></span>
+            </a>
+          </li>
+          <li class="nav-item"><a class="btn btn-primary btn-sm rounded-pill px-3" href="login.html">Iniciar sesión</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main id="contenido-principal" class="flex-grow-1">
+    <section class="py-5" aria-labelledby="titulo-mis-pedidos">
+      <div class="container py-lg-4">
+        <div class="mb-4">
+          <p class="ceja mb-2">Mi cuenta</p>
+          <h1 id="titulo-mis-pedidos" class="display-5 fw-bold mb-2">Mis Pedidos</h1>
+          <p class="text-body-secondary mb-0">Consulta el estado de tus pedidos y sigue el avance de cada entrega.</p>
+        </div>
+
+        <div class="row g-4 align-items-start">
+          <div class="col-12 col-lg-4">
+            <aside class="account-sidebar w-100">
+              <div class="card h-100">
+                <div class="card-body">
+                  <div class="text-center border-bottom pb-3 mb-3">
+                    <span class="avatar-initials" aria-hidden="true">ML</span>
+                    <h2 class="h5 mb-1 mt-2">María López</h2>
+                    <p class="text-body-secondary small mb-0">maria.lopez@opalina.test</p>
+                  </div>
+                  <div class="list-group list-group-flush">
+                    <a class="list-group-item list-group-item-action" href="perfil.html">Mi Perfil</a>
+                    <a class="list-group-item list-group-item-action active" aria-current="true"
+                      href="historial-pedidos.html">Mis Pedidos</a>
+                    <a class="list-group-item list-group-item-action account-logout" href="login.html">Cerrar Sesión</a>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+
+          <div class="col-12 col-lg-8">
+            <ul class="nav nav-pills flex-wrap gap-2 mb-4" id="filtro-estado-pedido">
+              <li class="nav-item"><button class="nav-link active" type="button" aria-current="true">Todos</button></li>
+              <li class="nav-item"><button class="nav-link" type="button">Pendientes</button></li>
+              <li class="nav-item"><button class="nav-link" type="button">En proceso</button></li>
+              <li class="nav-item"><button class="nav-link" type="button">Enviados</button></li>
+              <li class="nav-item"><button class="nav-link" type="button">Entregados</button></li>
+              <li class="nav-item"><button class="nav-link" type="button">Cancelados</button></li>
+            </ul>
+
+            <div class="d-grid gap-3" id="lista-pedidos">
+              <article class="card shadow-sm" data-pedido-id="52">
+                <div class="card-body p-4">
+                  <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+                    <div>
+                      <h2 class="h5 mb-1">OP-2026-0052</h2>
+                      <p class="text-body-secondary small mb-0">28 de agosto, 2026</p>
+                    </div>
+                    <span class="estado-estado">Pendiente</span>
+                  </div>
+                  <p class="small mb-1"><strong>Modalidad:</strong> Delivery a domicilio</p>
+                  <p class="small text-body-secondary mb-3"><strong>Dirección:</strong> Av. Grau 123, Urb. San Eduardo,
+                    Piura</p>
+                  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                    <strong class="fs-5">S/ 210.00</strong>
+                    <a href="detalle-pedido.html" class="btn btn-primary btn-sm cuenta-accion-pedido">Ver detalle</a>
+                  </div>
+                </div>
+              </article>
+
+              <article class="card shadow-sm" data-pedido-id="48">
+                <div class="card-body p-4">
+                  <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+                    <div>
+                      <h2 class="h5 mb-1">OP-2026-0048</h2>
+                      <p class="text-body-secondary small mb-0">15 de agosto, 2026</p>
+                    </div>
+                    <span class="estado-estado estado-proceso">En proceso</span>
+                  </div>
+                  <p class="small mb-1"><strong>Modalidad:</strong> Delivery a domicilio</p>
+                  <p class="small text-body-secondary mb-3"><strong>Dirección:</strong> Av. Grau 123, Urb. San Eduardo,
+                    Piura</p>
+                  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                    <strong class="fs-5">S/ 150.00</strong>
+                    <a href="detalle-pedido.html" class="btn btn-primary btn-sm cuenta-accion-pedido">Ver detalle</a>
+                  </div>
+                </div>
+              </article>
+
+              <article class="card shadow-sm" data-pedido-id="41">
+                <div class="card-body p-4">
+                  <div class="d-flex flex-wrap justify-content-between align-items-start gap-3 mb-3">
+                    <div>
+                      <h2 class="h5 mb-1">OP-2026-0041</h2>
+                      <p class="text-body-secondary small mb-0">2 de agosto, 2026</p>
+                    </div>
+                    <span class="estado-estado estado-entregado">Entregado</span>
+                  </div>
+                  <p class="small mb-1"><strong>Modalidad:</strong> Recojo en tienda</p>
+                  <p class="small text-body-secondary mb-3"><strong>Dirección:</strong> Piura, Perú</p>
+                  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                    <strong class="fs-5">S/ 78.00</strong>
+                    <a href="detalle-pedido.html" class="btn btn-primary btn-sm cuenta-accion-pedido">Ver detalle</a>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer-opalina">
+    <div class="container py-4">
+      <div class="row gy-4">
+        <div class="col-12 col-md-6 col-lg-4">
+          <a class="footer-brand d-inline-flex align-items-center gap-2 text-decoration-none" href="../index.html"><img
+              src="../assets/imagenes/Opalina-Logo.png" alt="" width="44" height="44" /><span class="lh-1"><strong
+                class="d-block">Opalina</strong><small class="text-uppercase">Florería Piura</small></span></a>
+          <p class="lema-pie mt-3 mb-0">Más que flores, emociones.</p>
+        </div>
+        <div class="col-12 col-md-6 col-lg-2">
+          <h6 class="text-uppercase fw-bold">Explorar</h6>
+          <ul class="list-unstyled mb-0 d-grid gap-2">
+            <li><a href="catalogo.html">Catálogo</a></li>
+            <li><a href="nosotros.html">Nosotros</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+          </ul>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <h6 class="text-uppercase fw-bold">Contacto</h6>
+          <ul class="list-unstyled mb-0 d-grid gap-2">
+            <li><a href="https://wa.me/51939355038" target="_blank" rel="noopener">+51 939 355 038</a></li>
+            <li><a href="mailto:contacto@opalinapiura.com">contacto@opalinapiura.com</a></li>
+            <li>Av. Vice con Jr. Tambogrande Urb. Santa Ana Mz: M Lote: 5, Piura 20001.</li>
+          </ul>
+        </div>
+        <div class="col-12 col-md-6 col-lg-3">
+          <h6 class="text-uppercase fw-bold">Síguenos</h6>
+          <div class="d-flex gap-2">
+            <a class="icono-red" href="https://instagram.com/opalina_piura" target="_blank" rel="noopener"
+              aria-label="Instagram de Opalina"><svg fill="none" stroke="currentColor" stroke-linecap="round"
+                stroke-linejoin="round" stroke-width="2" aria-hidden="true" viewBox="0 0 24 24">
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37m1.5-4.87h.01" />
+              </svg></a>
+            <a class="icono-red" href="https://wa.me/51939355038" target="_blank" rel="noopener"
+              aria-label="WhatsApp de Opalina"><svg fill="none" stroke="currentColor" stroke-linecap="round"
+                stroke-linejoin="round" stroke-width="2" aria-hidden="true" viewBox="0 0 24 24">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.8 12.8 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.8 12.8 0 0 0 2.81.7A2 2 0 0 1 22 16.92" />
+              </svg></a>
+          </div>
+        </div>
+      </div>
+      <hr class="my-4 border-white opacity-25" />
+      <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 small">
+        <p class="mb-0">&copy; 2026 Opalina Florería Piura. Todos los derechos reservados.</p>
+        <nav class="d-flex flex-wrap gap-4" aria-label="Enlaces legales"><a href="terminos.html">Términos y
+            Condiciones</a><a href="privacidad.html">Política de Privacidad</a></nav>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+  <script src="../js/tienda.js"></script>
+</body>
+
+</html>

@@ -18,12 +18,14 @@
   <link href="../css/componentes.css" rel="stylesheet" />
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
+  <a class="salto-contenido" href="#contenido-principal">Saltar al contenido</a>
   <nav class="navbar navbar-expand-md sticky-top navbar-opalina">
     <div class="container">
       <a class="navbar-brand d-flex align-items-center gap-2" href="../index.html">
         <img src="../assets/imagenes/Opalina-Logo.png" alt="" width="40" height="40" />
-        <span class="lh-1"><strong class="d-block">Opalina</strong><small class="text-uppercase">Florería Piura</small></span>
+        <span class="lh-1"><strong class="d-block">Opalina</strong><small class="text-uppercase">Florería
+            Piura</small></span>
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navPrincipal"
         aria-controls="navPrincipal" aria-expanded="false" aria-label="Abrir menú">
@@ -36,7 +38,8 @@
           <li class="nav-item"><a class="nav-link" href="nosotros.html">Nosotros</a></li>
           <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
           <li class="nav-item"><a class="nav-link position-relative" href="carrito.html">Carrito<span
-                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">2<span
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+                id="contador-carrito" aria-label="Artículos en el carrito">0<span
                   class="visually-hidden">artículos</span></span></a></li>
           <li class="nav-item"><a class="btn btn-primary btn-sm rounded-pill px-3" href="login.html">Iniciar sesión</a>
           </li>
@@ -45,7 +48,7 @@
     </div>
   </nav>
 
-  <main class="cuenta-pagina">
+  <main id="contenido-principal" class="flex-grow-1 cuenta-pagina">
     <section class="py-5 cuenta-seccion" aria-labelledby="titulo-registro">
       <div class="container py-lg-4">
         <div class="row justify-content-center">
@@ -54,7 +57,8 @@
               <div class="col-12 col-lg-7 order-2 order-lg-1">
                 <p class="ceja mb-2">Únete a Opalina</p>
                 <h1 id="titulo-registro" class="display-3 fw-bold mb-3">Crea tu cuenta</h1>
-                <p class="lead text-body-secondary mb-4">Regístrate para realizar pedidos, guardar tu historial y recibir recomendaciones personalizadas de arreglos florales.</p>
+                <p class="lead text-body-secondary mb-4">Regístrate para realizar pedidos, guardar tu historial y
+                  recibir recomendaciones personalizadas de arreglos florales.</p>
                 <ul class="list-unstyled d-grid gap-3 beneficios-cuenta mb-0">
                   <li class="d-flex gap-2 align-items-start"><span class="text-success fw-bold"
                       aria-hidden="true">✓</span><span>Historial completo de tus pedidos</span></li>
@@ -181,7 +185,8 @@
       <hr class="my-4 border-white opacity-25" />
       <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 small">
         <p class="mb-0">&copy; 2026 Opalina Florería Piura. Todos los derechos reservados.</p>
-        <nav class="d-flex flex-wrap gap-4" aria-label="Enlaces legales"><a href="../components/legal.html">Términos y Condiciones</a><a href="../components/legal.html">Política de Privacidad</a></nav>
+        <nav class="d-flex flex-wrap gap-4" aria-label="Enlaces legales"><a href="terminos.html">Términos y
+            Condiciones</a><a href="privacidad.html">Política de Privacidad</a></nav>
       </div>
     </div>
   </footer>
@@ -190,6 +195,7 @@
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
   <script src="../js/cuenta.js" defer></script>
+  <script src="../js/tienda.js"></script>
 </body>
 
 </html>

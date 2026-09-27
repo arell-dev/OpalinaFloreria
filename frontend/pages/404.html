@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Carrito de compras de Opalina Florería Piura." />
-  <title>Carrito | Opalina Florería Piura</title>
+  <meta name="description" content="Página no encontrada - Opalina Florería Piura." />
+  <title>404 - Página no encontrada | Opalina Florería Piura</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -33,66 +33,66 @@
       </button>
       <div class="collapse navbar-collapse" id="navPrincipal">
         <ul class="navbar-nav ms-auto mb-2 mb-md-0 align-items-md-center gap-md-3">
-          <li class="nav-item"><a class="nav-link" href="../index.html">Inicio</a></li>
-          <li class="nav-item"><a class="nav-link" href="catalogo.html">Catálogo</a></li>
-          <li class="nav-item"><a class="nav-link" href="nosotros.html">Nosotros</a></li>
-          <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
           <li class="nav-item">
-            <a class="nav-link active position-relative" aria-current="page" href="carrito.html">Carrito
-              <span id="contador-carrito"
-                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+            <a class="nav-link" href="../index.html">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="catalogo.html">Catálogo</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="nosotros.html">Nosotros</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="contacto.html">Contacto</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link position-relative" href="carrito.html">Carrito
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
                 id="contador-carrito" aria-label="Artículos en el carrito">0<span
                   class="visually-hidden">artículos</span></span>
             </a>
           </li>
-          <li class="nav-item"><a class="btn btn-primary btn-sm rounded-pill px-3" href="login.html">Iniciar sesión</a>
+          <li class="nav-item">
+            <a class="btn btn-primary btn-sm rounded-pill px-3" href="login.html">Iniciar sesión</a>
           </li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <main id="contenido-principal" class="flex-grow-1">
-    <section class="py-5" aria-labelledby="titulo-carrito">
-      <div class="container py-lg-4">
-        <div class="row justify-content-center">
-          <div class="col-12 col-xxl-10">
-            <p class="ceja mb-2">Tu selección</p>
-            <h1 id="titulo-carrito" class="display-5 fw-bold mb-4">Carrito de Compras</h1>
-            <div class="row g-4 align-items-start">
-              <div class="col-12 col-lg-8">
-                <div id="aviso-carrito" class="alert alert-success" role="status" aria-live="polite" hidden></div>
-                <div id="carrito-vacio" class="card text-center p-4 p-md-5" hidden>
-                  <div class="card-body">
-                    <p class="ceja">Tu selección</p>
-                    <h2 class="h3">Tu carrito está vacío</h2>
-                    <p class="text-body-secondary">Explora el catálogo y encuentra flores para regalar.</p><a
-                      class="btn btn-primary" href="catalogo.html">Ver catálogo</a>
-                  </div>
-                </div>
-                <div id="items-carrito" class="d-grid gap-3"></div>
-
-              </div>
-
-              <div class="col-12 col-lg-4">
-                <aside class="card shadow-sm resumen-carrito" aria-labelledby="titulo-resumen">
-                  <div class="card-body p-4">
-                    <h2 id="titulo-resumen" class="h4 mb-4">Resumen</h2>
-                    <div class="d-flex justify-content-between gap-3 mb-2"><span>Subtotal</span><span
-                        id="subtotal-carrito">S/ 195.00</span></div>
-                    <div class="d-flex justify-content-between gap-3 mb-3"><span>Delivery <small
-                          class="d-block text-body-secondary">Gratis desde S/ 200</small></span><span
-                        id="delivery-carrito">S/ 15.00</span>
-                    </div>
-                    <hr />
-                    <div class="d-flex justify-content-between gap-3 fs-5 fw-bold mb-4"><span>Total</span><span
-                        id="total-carrito">S/ 210.00</span></div>
-                    <a href="pedido.html" class="btn btn-primary w-100" data-ir-a-pedido>Proceder al pedido</a>
-                  </div>
-                </aside>
-              </div>
+  <main id="contenido-principal" class="flex-grow-1 pagina-error">
+    <section class="error-hero" aria-labelledby="titulo-404">
+      <div class="container py-5 py-lg-6">
+        <div class="error-hero__tarjeta">
+          <div class="error-hero__contenido">
+            <p class="ceja mb-3">Te perdiste entre las flores</p>
+            <p class="error-hero__codigo" aria-hidden="true">404</p>
+            <h1 id="titulo-404">Esta página no floreció</h1>
+            <p class="error-hero__texto">El enlace puede estar vencido o la página se movió. Volvamos a un lugar conocido.</p>
+            <div class="d-flex flex-column flex-sm-row gap-3 mt-4">
+              <a href="../index.html" class="btn btn-primary btn-lg">Ir al inicio <span aria-hidden="true">→</span></a>
+              <a href="catalogo.html" class="btn btn-outline-primary btn-lg">Explorar el catálogo</a>
             </div>
+            <p class="error-hero__ayuda mb-0">¿Necesitas ayuda? <a href="contacto.html">Escríbenos</a></p>
           </div>
+          <div class="error-hero__imagen">
+            <img src="../assets/imagenes/arreglos/hero-arreglo-elegante.jpg" alt="Ramo de flores blancas y verdes preparado en Opalina" />
+            <div class="error-hero__sello"><span aria-hidden="true">✿</span><span>Opalina<br /><small>Florería Piura</small></span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="error-enlaces pb-5 pb-lg-6" aria-labelledby="titulo-rutas-404">
+      <div class="container">
+        <div class="d-flex flex-column flex-md-row align-items-md-end justify-content-between gap-2 mb-3">
+          <div><p class="ceja mb-1">Sigue explorando</p><h2 id="titulo-rutas-404" class="h3 mb-0">¿A dónde te gustaría ir?</h2></div>
+          <a href="../index.html" class="enlace-opalina">Volver a Opalina <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="row row-cols-1 row-cols-md-3 g-3">
+          <div class="col"><a class="error-ruta" href="catalogo.html"><span class="error-ruta__numero">01</span><span><strong>Catálogo</strong><small>Encuentra un arreglo para cada ocasión.</small></span><span class="error-ruta__flecha" aria-hidden="true">↗</span></a></div>
+          <div class="col"><a class="error-ruta" href="nosotros.html"><span class="error-ruta__numero">02</span><span><strong>Nuestra historia</strong><small>Conoce el cuidado detrás de cada ramo.</small></span><span class="error-ruta__flecha" aria-hidden="true">↗</span></a></div>
+          <div class="col"><a class="error-ruta" href="contacto.html"><span class="error-ruta__numero">03</span><span><strong>Contacto</strong><small>Estamos aquí para ayudarte.</small></span><span class="error-ruta__flecha" aria-hidden="true">↗</span></a></div>
         </div>
       </div>
     </section>
@@ -102,11 +102,9 @@
     <div class="container py-4">
       <div class="row gy-4">
         <div class="col-12 col-md-6 col-lg-4">
-          <a class="footer-brand d-inline-flex align-items-center gap-2 text-decoration-none" href="../index.html">
-            <img src="../assets/imagenes/Opalina-Logo.png" alt="" width="44" height="44" />
-            <span class="lh-1"><strong class="d-block">Opalina</strong><small class="text-uppercase">Florería
-                Piura</small></span>
-          </a>
+          <a class="footer-brand d-inline-flex align-items-center gap-2 text-decoration-none" href="../index.html"><img
+              src="../assets/imagenes/Opalina-Logo.png" alt="" width="44" height="44" /><span class="lh-1"><strong
+                class="d-block">Opalina</strong><small class="text-uppercase">Florería Piura</small></span></a>
           <p class="lema-pie mt-3 mb-0">Más que flores, emociones.</p>
         </div>
         <div class="col-12 col-md-6 col-lg-2">
@@ -120,9 +118,16 @@
         <div class="col-12 col-md-6 col-lg-3">
           <h6 class="text-uppercase fw-bold">Contacto</h6>
           <ul class="list-unstyled mb-0 d-grid gap-2">
-            <li><a href="https://wa.me/51939355038" target="_blank" rel="noopener">+51 939 355 038</a></li>
-            <li><a href="mailto:contacto@opalinapiura.com">contacto@opalinapiura.com</a></li>
-            <li>Av. Vice con Jr. Tambogrande Urb. Santa Ana Mz: M Lote: 5, Piura 20001.</li>
+            <li>
+              <a href="https://wa.me/51939355038" target="_blank" rel="noopener">+51 939 355 038</a>
+            </li>
+            <li>
+              <a href="mailto:contacto@opalinapiura.com">contacto@opalinapiura.com</a>
+            </li>
+            <li>
+              Av. Vice con Jr. Tambogrande Urb. Santa Ana Mz: M Lote: 5, Piura
+              20001.
+            </li>
           </ul>
         </div>
         <div class="col-12 col-md-6 col-lg-3">
@@ -145,9 +150,12 @@
       </div>
       <hr class="my-4 border-white opacity-25" />
       <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 small">
-        <p class="mb-0">&copy; 2026 Opalina Florería Piura. Todos los derechos reservados.</p>
-        <nav class="d-flex flex-wrap gap-4" aria-label="Enlaces legales"><a href="terminos.html">Términos y
-            Condiciones</a><a href="privacidad.html">Política de Privacidad</a></nav>
+        <p class="mb-0">
+          &copy; 2026 Opalina Florería Piura. Todos los derechos reservados.
+        </p>
+        <nav class="d-flex flex-wrap gap-4" aria-label="Enlaces legales">
+          <a href="terminos.html">Términos y Condiciones</a><a href="privacidad.html">Política de Privacidad</a>
+        </nav>
       </div>
     </div>
   </footer>

@@ -19,7 +19,8 @@
   <link href="../css/componentes.css" rel="stylesheet" />
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
+  <a class="salto-contenido" href="#contenido-principal">Saltar al contenido</a>
   <nav class="navbar navbar-expand-md sticky-top navbar-opalina">
     <div class="container">
       <a class="navbar-brand d-flex align-items-center gap-2" href="../index.html">
@@ -43,16 +44,18 @@
           <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
           <li class="nav-item">
             <a class="nav-link position-relative" href="carrito.html">Carrito
-              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">2<span class="visually-hidden">artículos</span></span>
+              <span id="contador-carrito"
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+                aria-label="Artículos en el carrito">0<span class="visually-hidden">artículos</span></span>
             </a>
           </li>
-          <li class="nav-item"><a class="btn btn-primary btn-sm rounded-pill px-3" href="perfil.html">Mi cuenta</a></li>
+          <li class="nav-item"><a class="btn btn-primary btn-sm rounded-pill px-3" href="login.html">Iniciar sesión</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <main>
+  <main id="contenido-principal" class="flex-grow-1">
     <section class="py-5">
       <div class="container">
         <div class="mb-4">
@@ -73,9 +76,10 @@
                   </div>
 
                   <div class="list-group list-group-flush">
-                    <a class="list-group-item list-group-item-action active" aria-current="true" href="perfil.html">Mi Perfil</a>
+                    <a class="list-group-item list-group-item-action active" aria-current="true" href="perfil.html">Mi
+                      Perfil</a>
                     <a class="list-group-item list-group-item-action" href="historial-pedidos.html">Mis Pedidos</a>
-                    <a class="list-group-item list-group-item-action text-danger" href="login.html">Cerrar Sesión</a>
+                    <a class="list-group-item list-group-item-action account-logout" href="login.html">Cerrar Sesión</a>
                   </div>
                 </div>
               </div>
@@ -120,8 +124,8 @@
 
                     <div class="col-12">
                       <label for="direccion" class="form-label fw-semibold">Dirección de entrega</label>
-                      <input type="text" class="form-control" id="direccion" name="direccion" autocomplete="street-address"
-                        placeholder="Ingresa tu dirección" />
+                      <input type="text" class="form-control" id="direccion" name="direccion"
+                        autocomplete="street-address" placeholder="Ingresa tu dirección" />
                     </div>
 
                     <div class="col-12">
@@ -193,7 +197,8 @@
               aria-label="WhatsApp de Opalina">
               <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 aria-hidden="true" viewBox="0 0 24 24">
-                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.8 12.8 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.8 12.8 0 0 0 2.81.7A2 2 0 0 1 22 16.92" />
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.8 12.8 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.8 12.8 0 0 0 2.81.7A2 2 0 0 1 22 16.92" />
               </svg>
             </a>
           </div>
@@ -204,8 +209,8 @@
       <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 small">
         <p class="mb-0">&copy; 2026 Opalina Florería Piura. Todos los derechos reservados.</p>
         <nav class="d-flex flex-wrap gap-4" aria-label="Enlaces legales">
-          <a href="../components/legal.html">Términos y Condiciones</a>
-          <a href="../components/legal.html">Política de Privacidad</a>
+          <a href="terminos.html">Términos y Condiciones</a>
+          <a href="privacidad.html">Política de Privacidad</a>
         </nav>
       </div>
     </div>
@@ -214,6 +219,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
+  <script src="../js/tienda.js"></script>
 </body>
 
 </html>

@@ -12,16 +12,14 @@
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Nunito+Sans:wght@400;600;700&display=swap"
     rel="stylesheet" />
   <link rel="icon" type="image/png" href="../assets/imagenes/Opalina-Logo.png" />
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-    crossorigin="anonymous" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
   <link href="../css/colores.css" rel="stylesheet" />
   <link href="../css/componentes.css" rel="stylesheet" />
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
+  <a class="salto-contenido" href="#contenido-principal">Saltar al contenido</a>
   <nav class="navbar navbar-expand-md sticky-top navbar-opalina">
     <div class="container">
       <a class="navbar-brand d-flex align-items-center gap-2" href="../index.html">
@@ -31,14 +29,8 @@
           <small class="text-uppercase">Florería Piura</small>
         </span>
       </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navPrincipal"
-        aria-controls="navPrincipal"
-        aria-expanded="false"
-        aria-label="Abrir menú">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navPrincipal"
+        aria-controls="navPrincipal" aria-expanded="false" aria-label="Abrir menú">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navPrincipal">
@@ -50,18 +42,19 @@
           <li class="nav-item">
             <a class="nav-link position-relative" href="carrito.html">
               Carrito
-              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
-                2<span class="visually-hidden">artículos</span>
+              <span id="contador-carrito"
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+                aria-label="Artículos en el carrito">0<span class="visually-hidden">artículos</span>
               </span>
             </a>
           </li>
-          <li class="nav-item"><a class="btn btn-primary btn-sm rounded-pill px-3" href="perfil.html">Mi cuenta</a></li>
+          <li class="nav-item"><a class="btn btn-primary btn-sm rounded-pill px-3" href="login.html">Iniciar sesión</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <main>
+  <main id="contenido-principal" class="flex-grow-1">
     <section class="py-5" aria-labelledby="titulo-confirmacion">
       <div class="container py-lg-4">
         <div class="row justify-content-center">
@@ -71,13 +64,15 @@
                 <div
                   class="d-inline-flex align-items-center justify-content-center rounded-circle bg-success text-white p-3 mb-4"
                   aria-hidden="true">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
                     <path d="M20 6 9 17l-5-5" />
                   </svg>
                 </div>
                 <p class="ceja mb-2">Pedido realizado</p>
                 <h1 id="titulo-confirmacion" class="display-5 fw-bold mb-3">¡Gracias por tu pedido!</h1>
-                <p class="lead text-body-secondary mb-4">Hemos recibido correctamente tu solicitud. Nos comunicaremos contigo para confirmar los detalles de tu pedido.
+                <p class="lead text-body-secondary mb-4">Hemos recibido correctamente tu solicitud. Nos comunicaremos
+                  contigo para confirmar los detalles de tu pedido.
                 </p>
                 <div class="alert alert-success mb-0" role="alert">
                   <strong>Pedido confirmado.</strong> Tu número de pedido es <strong>#OP-2026-001</strong>.
@@ -119,12 +114,8 @@
                     <p class="ceja mb-2">Resumen</p>
                     <h2 class="h3 mb-4">Tu arreglo floral</h2>
                     <div class="d-flex gap-3 align-items-center mb-4">
-                      <img
-                        src="../assets/imagenes/arreglos/destacado-ramo-morado.jpg"
-                        class="rounded object-fit-cover shrink-0"
-                        alt="Ramo Opalina Morado"
-                        width="80"
-                        height="95" />
+                      <img src="../assets/imagenes/arreglos/destacado-ramo-morado.jpg"
+                        class="rounded object-fit-cover shrink-0" alt="Ramo Opalina Morado" width="80" height="95" />
                       <div>
                         <h3 class="h5 mb-1">Ramo Opalina Morado</h3>
                         <p class="text-body-secondary mb-0">Arreglo floral seleccionado.</p>
@@ -182,11 +173,21 @@
         <div class="col-12 col-md-6 col-lg-3">
           <h6 class="text-uppercase fw-bold">Síguenos</h6>
           <div class="d-flex gap-2">
-            <a class="icono-red" href="https://instagram.com/opalina_piura" target="_blank" rel="noopener" aria-label="Instagram de Opalina">
-              <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37m1.5-4.87h.01"/></svg>
+            <a class="icono-red" href="https://instagram.com/opalina_piura" target="_blank" rel="noopener"
+              aria-label="Instagram de Opalina">
+              <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                aria-hidden="true" viewBox="0 0 24 24">
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37m1.5-4.87h.01" />
+              </svg>
             </a>
-            <a class="icono-red" href="https://wa.me/51939355038" target="_blank" rel="noopener" aria-label="WhatsApp de Opalina">
-              <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.8 12.8 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.8 12.8 0 0 1 2.81.7A2 2 0 0 1 22 16.92"/></svg>
+            <a class="icono-red" href="https://wa.me/51939355038" target="_blank" rel="noopener"
+              aria-label="WhatsApp de Opalina">
+              <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                aria-hidden="true" viewBox="0 0 24 24">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.8 12.8 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.8 12.8 0 0 1 2.81.7A2 2 0 0 1 22 16.92" />
+              </svg>
             </a>
           </div>
         </div>
@@ -195,17 +196,17 @@
       <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 small">
         <p class="mb-0">&copy; 2026 Opalina Florería Piura. Todos los derechos reservados.</p>
         <nav class="d-flex flex-wrap gap-4" aria-label="Enlaces legales">
-          <a href="#!">Términos y Condiciones</a>
-          <a href="#!">Política de Privacidad</a>
+          <a href="terminos.html">Términos y Condiciones</a>
+          <a href="privacidad.html">Política de Privacidad</a>
         </nav>
       </div>
     </div>
   </footer>
 
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
+  <script src="../js/tienda.js"></script>
 </body>
 
 </html>

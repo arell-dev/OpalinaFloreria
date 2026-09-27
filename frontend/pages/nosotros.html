@@ -18,7 +18,8 @@
   <link href="../css/componentes.css" rel="stylesheet" />
 </head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
+  <a class="salto-contenido" href="#contenido-principal">Saltar al contenido</a>
   <nav class="navbar navbar-expand-md sticky-top navbar-opalina">
     <div class="container">
       <a class="navbar-brand d-flex align-items-center gap-2" href="../index.html">
@@ -28,7 +29,9 @@
           <small class="text-uppercase">Florería Piura</small>
         </span>
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navPrincipal" aria-controls="navPrincipal" aria-expanded="false" aria-label="Abrir menú"><span class="navbar-toggler-icon"></span>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navPrincipal"
+        aria-controls="navPrincipal" aria-expanded="false" aria-label="Abrir menú"><span
+          class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navPrincipal">
         <ul class="navbar-nav ms-auto mb-2 mb-md-0 align-items-md-center gap-md-3">
@@ -39,18 +42,19 @@
           <li class="nav-item">
             <a class="nav-link position-relative" href="carrito.html">
               Carrito
-              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">
-                2<span class="visually-hidden">artículos</span>
+              <span id="contador-carrito"
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+                aria-label="Artículos en el carrito">0<span class="visually-hidden">artículos</span>
               </span>
             </a>
           </li>
-          <li class="nav-item"><a class="btn btn-primary btn-sm rounded-pill px-3" href="perfil.html">Mi cuenta</a></li>
+          <li class="nav-item"><a class="btn btn-primary btn-sm rounded-pill px-3" href="login.html">Iniciar sesión</a></li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <main>
+  <main id="contenido-principal" class="flex-grow-1">
     <section class="heroe-opalina py-5" aria-labelledby="titulo-nosotros-heroe">
       <div class="container py-lg-5">
         <div class="row align-items-center g-4 g-lg-5">
@@ -154,7 +158,8 @@
                     d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 0 0 1 1h3m10-11l2 2m-2-2v10a1 1 0 0 1-1 1h-3m-6 0a1 1 0 0 0-1 1v-3m4 2a1 1 0 0 1-1 1v-3" />
                 </svg>
                 <h3 class="h4 mb-3">Entrega en Piura</h3>
-                <p class="text-body-secondary mb-0">Coordinamos la entrega directa en Piura y alrededores para que llegue a tiempo.</p>
+                <p class="text-body-secondary mb-0">Coordinamos la entrega directa en Piura y alrededores para que
+                  llegue a tiempo.</p>
               </div>
             </article>
           </div>
@@ -168,7 +173,8 @@
           <div class="col-12 col-lg-8">
             <p class="ceja mb-2">Hablemos</p>
             <h2 id="titulo-cta-nosotros" class="display-6 fw-bold mb-3">¿Listo para enviar emociones?</h2>
-            <p class="lead text-body-secondary mb-4">Explora el catálogo o escríbenos para diseñar un arreglo a tu medida.</p>
+            <p class="lead text-body-secondary mb-4">Explora el catálogo o escríbenos para diseñar un arreglo a tu
+              medida.</p>
             <a class="btn btn-primary btn-lg" href="catalogo.html">Ver catálogo</a>
           </div>
         </div>
@@ -231,8 +237,8 @@
       <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 small">
         <p class="mb-0">&copy; 2026 Opalina Florería Piura. Todos los derechos reservados.</p>
         <nav class="d-flex flex-wrap gap-4" aria-label="Enlaces legales">
-          <a href="#!">Términos y Condiciones</a>
-          <a href="#!">Política de Privacidad</a>
+          <a href="terminos.html">Términos y Condiciones</a>
+          <a href="privacidad.html">Política de Privacidad</a>
         </nav>
       </div>
     </div>
@@ -241,6 +247,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
+  <script src="../js/tienda.js"></script>
 </body>
 
 </html>

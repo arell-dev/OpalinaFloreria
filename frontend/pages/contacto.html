@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,20 +8,27 @@
   <title>Contacto | Opalina Florería Piura</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Nunito+Sans:wght@400;600;700&display=swap"
+    rel="stylesheet" />
   <link rel="icon" type="image/png" href="../assets/imagenes/Opalina-Logo.png" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous" />
   <link href="../css/colores.css" rel="stylesheet" />
   <link href="../css/componentes.css" rel="stylesheet" />
 </head>
-<body>
+
+<body class="d-flex flex-column min-vh-100">
+  <a class="salto-contenido" href="#contenido-principal">Saltar al contenido</a>
   <nav class="navbar navbar-expand-md sticky-top navbar-opalina">
     <div class="container">
       <a class="navbar-brand d-flex align-items-center gap-2" href="../index.html">
         <img src="../assets/imagenes/Opalina-Logo.png" alt="" width="40" height="40" />
-        <span class="lh-1"><strong class="d-block">Opalina</strong><small class="text-uppercase">Florería Piura</small></span>
+        <span class="lh-1"><strong class="d-block">Opalina</strong><small class="text-uppercase">Florería
+            Piura</small></span>
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navPrincipal" aria-controls="navPrincipal" aria-expanded="false" aria-label="Abrir menú">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navPrincipal"
+        aria-controls="navPrincipal" aria-expanded="false" aria-label="Abrir menú">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navPrincipal">
@@ -31,16 +39,19 @@
           <li class="nav-item"><a class="nav-link active" aria-current="page" href="contacto.html">Contacto</a></li>
           <li class="nav-item">
             <a class="nav-link position-relative" href="carrito.html">Carrito
-              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success">2<span class="visually-hidden">artículos</span></span>
+              <span id="contador-carrito"
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
+                aria-label="Artículos en el carrito">0<span class="visually-hidden">artículos</span></span>
             </a>
           </li>
-          <li class="nav-item"><a class="btn btn-primary btn-sm rounded-pill px-3" href="login.html">Iniciar sesión</a></li>
+          <li class="nav-item"><a class="btn btn-primary btn-sm rounded-pill px-3" href="login.html">Iniciar sesión</a>
+          </li>
         </ul>
       </div>
     </div>
   </nav>
 
-  <main>
+  <main id="contenido-principal" class="flex-grow-1">
     <section class="heroe-opalina py-5" aria-labelledby="titulo-contacto">
       <div class="container py-lg-4">
         <div class="row justify-content-center">
@@ -49,11 +60,13 @@
               <div class="col-12 col-lg-7">
                 <p class="ceja mb-2">Estamos para ayudarte</p>
                 <h1 id="titulo-contacto" class="display-3 fw-bold mb-3">Contáctanos</h1>
-                <p class="lead text-body-secondary mb-0">Escríbenos para consultas, pedidos personalizados, eventos especiales o cualquier pregunta sobre nuestros arreglos florales.</p>
+                <p class="lead text-body-secondary mb-0">Escríbenos para consultas, pedidos personalizados, eventos
+                  especiales o cualquier pregunta sobre nuestros arreglos florales.</p>
               </div>
               <div class="col-12 col-lg-5">
                 <div class="ratio ratio-4x3 rounded shadow overflow-hidden">
-                  <img src="../assets/imagenes/arreglos/contacto-ramo-bienvenida.jpg" alt="Ramo floral elegante de Opalina Florería" class="img-fluid w-100 h-100 object-fit-cover" />
+                  <img src="../assets/imagenes/arreglos/contacto-ramo-bienvenida.jpg"
+                    alt="Ramo floral elegante de Opalina Florería" class="img-fluid w-100 h-100 object-fit-cover" />
                 </div>
               </div>
             </div>
@@ -75,27 +88,36 @@
                       <div class="row g-3">
                         <div class="col-12 col-md-6">
                           <label for="nombre-contacto" class="form-label">Nombre</label>
-                          <input type="text" class="form-control" id="nombre-contacto" name="nombre" placeholder="Tu nombre" required />
+                          <input type="text" class="form-control" id="nombre-contacto" name="nombre"
+                            placeholder="Tu nombre" required />
                         </div>
                         <div class="col-12 col-md-6">
                           <label for="telefono-contacto" class="form-label">Teléfono</label>
-                          <input type="tel" class="form-control" id="telefono-contacto" name="telefono" placeholder="999 999 999" pattern="[0-9]{9}" title="Ingresa 9 dígitos" />
+                          <input type="tel" class="form-control" id="telefono-contacto" name="telefono"
+                            placeholder="999 999 999" pattern="[0-9]{9}" title="Ingresa 9 dígitos" />
                         </div>
                         <div class="col-12">
                           <label for="email-contacto" class="form-label">Correo electrónico</label>
-                          <input type="email" class="form-control" id="email-contacto" name="email" placeholder="tu@correo.com" required />
+                          <input type="email" class="form-control" id="email-contacto" name="email"
+                            placeholder="tu@correo.com" required />
                         </div>
                         <div class="col-12">
                           <label for="asunto-contacto" class="form-label">Asunto</label>
                           <select id="asunto-contacto" name="asunto" class="form-select">
-                            <option>Consulta general</option><option>Pedido personalizado</option><option>Evento especial</option><option>Reclamo o sugerencia</option><option>Alianzas comerciales</option>
+                            <option>Consulta general</option>
+                            <option>Pedido personalizado</option>
+                            <option>Evento especial</option>
+                            <option>Reclamo o sugerencia</option>
+                            <option>Alianzas comerciales</option>
                           </select>
                         </div>
                         <div class="col-12">
                           <label for="mensaje-contacto" class="form-label">Mensaje</label>
-                          <textarea class="form-control" id="mensaje-contacto" name="mensaje" rows="6" placeholder="Cuéntanos en qué podemos ayudarte..." required></textarea>
+                          <textarea class="form-control" id="mensaje-contacto" name="mensaje" rows="6"
+                            placeholder="Cuéntanos en qué podemos ayudarte..." required></textarea>
                         </div>
-                        <div class="col-12"><button class="btn btn-primary w-100" type="submit">Enviar mensaje</button></div>
+                        <div class="col-12"><button class="btn btn-primary w-100" type="submit">Enviar mensaje</button>
+                        </div>
                       </div>
                     </form>
                   </div>
@@ -108,21 +130,42 @@
                     <div class="card-body p-4">
                       <h2 id="titulo-info-contacto" class="h4 mb-3">Información de Contacto</h2>
                       <div class="list-group list-group-flush">
-                        <div class="list-group-item px-0 pt-0"><strong class="d-block">WhatsApp</strong><p class="mb-2">+51 939 355 038</p><a href="https://wa.me/51939355038" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm">Enviar mensaje</a></div>
-                        <div class="list-group-item px-0"><strong class="d-block">Email</strong><a class="enlace-opalina" href="mailto:contacto@opalinapiura.com">contacto@opalinapiura.com</a></div>
-                        <div class="list-group-item px-0"><strong class="d-block">Teléfono</strong><p class="mb-0">+51 939 355 038</p></div>
-                        <div class="list-group-item px-0"><strong class="d-block">Instagram</strong><p class="mb-2">@opalina_piura</p><a href="https://instagram.com/opalina_piura" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm">Seguir</a></div>
-                        <div class="list-group-item px-0 pb-0"><strong class="d-block">Facebook</strong><p class="mb-0">Opalina Florería Piura</p></div>
+                        <div class="list-group-item px-0 pt-0"><strong class="d-block">WhatsApp</strong>
+                          <p class="mb-2">+51 939 355 038</p><a href="https://wa.me/51939355038" target="_blank"
+                            rel="noopener" class="btn btn-outline-primary btn-sm">Enviar mensaje</a>
+                        </div>
+                        <div class="list-group-item px-0"><strong class="d-block">Email</strong><a
+                            class="enlace-opalina" href="mailto:contacto@opalinapiura.com">contacto@opalinapiura.com</a>
+                        </div>
+                        <div class="list-group-item px-0"><strong class="d-block">Teléfono</strong>
+                          <p class="mb-0">+51 939 355 038</p>
+                        </div>
+                        <div class="list-group-item px-0"><strong class="d-block">Instagram</strong>
+                          <p class="mb-2">@opalina_piura</p><a href="https://instagram.com/opalina_piura"
+                            target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm">Seguir</a>
+                        </div>
+                        <div class="list-group-item px-0 pb-0"><strong class="d-block">Facebook</strong>
+                          <p class="mb-0">Opalina Florería Piura</p>
+                        </div>
                       </div>
                     </div>
                   </section>
 
                   <section class="card shadow-sm" aria-labelledby="titulo-horarios">
-                    <div class="card-body p-4"><h2 id="titulo-horarios" class="h4 mb-3">Horarios de Atención</h2><strong class="d-block">Lun - Dom</strong><p class="mb-0">8:00 AM - 10:00 PM</p></div>
+                    <div class="card-body p-4">
+                      <h2 id="titulo-horarios" class="h4 mb-3">Horarios de Atención</h2><strong class="d-block">Lun -
+                        Dom</strong>
+                      <p class="mb-0">8:00 AM - 10:00 PM</p>
+                    </div>
                   </section>
 
                   <section class="card shadow-sm" aria-labelledby="titulo-ubicacion">
-                    <div class="card-body p-4"><h2 id="titulo-ubicacion" class="h4 mb-3">Ubicación</h2><p class="mb-2">Piura, Perú</p><p class="mb-2">Real Plaza Piura, frente al patio de comidas</p><p class="mb-0">Av. Vice 208, Urb. Santa Ana</p></div>
+                    <div class="card-body p-4">
+                      <h2 id="titulo-ubicacion" class="h4 mb-3">Ubicación</h2>
+                      <p class="mb-2">Piura, Perú</p>
+                      <p class="mb-2">Real Plaza Piura, frente al patio de comidas</p>
+                      <p class="mb-0">Av. Vice 208, Urb. Santa Ana</p>
+                    </div>
                   </section>
                 </div>
               </div>
@@ -137,33 +180,58 @@
     <div class="container py-4">
       <div class="row gy-4">
         <div class="col-12 col-md-6 col-lg-4">
-          <a class="footer-brand d-inline-flex align-items-center gap-2 text-decoration-none" href="../index.html"><img src="../assets/imagenes/Opalina-Logo.png" alt="" width="44" height="44" /><span class="lh-1"><strong class="d-block">Opalina</strong><small class="text-uppercase">Florería Piura</small></span></a>
+          <a class="footer-brand d-inline-flex align-items-center gap-2 text-decoration-none" href="../index.html"><img
+              src="../assets/imagenes/Opalina-Logo.png" alt="" width="44" height="44" /><span class="lh-1"><strong
+                class="d-block">Opalina</strong><small class="text-uppercase">Florería Piura</small></span></a>
           <p class="lema-pie mt-3 mb-0">Más que flores, emociones.</p>
         </div>
         <div class="col-12 col-md-6 col-lg-2">
           <h6 class="text-uppercase fw-bold">Explorar</h6>
-          <ul class="list-unstyled mb-0 d-grid gap-2"><li><a href="catalogo.html">Catálogo</a></li><li><a href="nosotros.html">Nosotros</a></li><li><a href="contacto.html">Contacto</a></li></ul>
+          <ul class="list-unstyled mb-0 d-grid gap-2">
+            <li><a href="catalogo.html">Catálogo</a></li>
+            <li><a href="nosotros.html">Nosotros</a></li>
+            <li><a href="contacto.html">Contacto</a></li>
+          </ul>
         </div>
         <div class="col-12 col-md-6 col-lg-3">
           <h6 class="text-uppercase fw-bold">Contacto</h6>
-          <ul class="list-unstyled mb-0 d-grid gap-2"><li><a href="https://wa.me/51939355038" target="_blank" rel="noopener">+51 939 355 038</a></li><li><a href="mailto:contacto@opalinapiura.com">contacto@opalinapiura.com</a></li><li>Av. Vice con Jr. Tambogrande Urb. Santa Ana Mz: M Lote: 5, Piura 20001.</li></ul>
+          <ul class="list-unstyled mb-0 d-grid gap-2">
+            <li><a href="https://wa.me/51939355038" target="_blank" rel="noopener">+51 939 355 038</a></li>
+            <li><a href="mailto:contacto@opalinapiura.com">contacto@opalinapiura.com</a></li>
+            <li>Av. Vice con Jr. Tambogrande Urb. Santa Ana Mz: M Lote: 5, Piura 20001.</li>
+          </ul>
         </div>
         <div class="col-12 col-md-6 col-lg-3">
           <h6 class="text-uppercase fw-bold">Síguenos</h6>
           <div class="d-flex gap-2">
-            <a class="icono-red" href="https://instagram.com/opalina_piura" target="_blank" rel="noopener" aria-label="Instagram de Opalina"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" viewBox="0 0 24 24"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37m1.5-4.87h.01"/></svg></a>
-            <a class="icono-red" href="https://wa.me/51939355038" target="_blank" rel="noopener" aria-label="WhatsApp de Opalina"><svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.8 12.8 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.8 12.8 0 0 0 2.81.7A2 2 0 0 1 22 16.92"/></svg></a>
+            <a class="icono-red" href="https://instagram.com/opalina_piura" target="_blank" rel="noopener"
+              aria-label="Instagram de Opalina"><svg fill="none" stroke="currentColor" stroke-linecap="round"
+                stroke-linejoin="round" stroke-width="2" aria-hidden="true" viewBox="0 0 24 24">
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37m1.5-4.87h.01" />
+              </svg></a>
+            <a class="icono-red" href="https://wa.me/51939355038" target="_blank" rel="noopener"
+              aria-label="WhatsApp de Opalina"><svg fill="none" stroke="currentColor" stroke-linecap="round"
+                stroke-linejoin="round" stroke-width="2" aria-hidden="true" viewBox="0 0 24 24">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.8 19.8 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.8 12.8 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.8 12.8 0 0 0 2.81.7A2 2 0 0 1 22 16.92" />
+              </svg></a>
           </div>
         </div>
       </div>
       <hr class="my-4 border-white opacity-25" />
       <div class="d-flex flex-column flex-sm-row justify-content-between gap-2 small">
         <p class="mb-0">&copy; 2026 Opalina Florería Piura. Todos los derechos reservados.</p>
-        <nav class="d-flex flex-wrap gap-4" aria-label="Enlaces legales"><a href="../components/legal.html">Términos y Condiciones</a><a href="../components/legal.html">Política de Privacidad</a></nav>
+        <nav class="d-flex flex-wrap gap-4" aria-label="Enlaces legales"><a href="terminos.html">Términos y
+            Condiciones</a><a href="privacidad.html">Política de Privacidad</a></nav>
       </div>
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+    crossorigin="anonymous"></script>
+  <script src="../js/tienda.js"></script>
 </body>
+
 </html>
