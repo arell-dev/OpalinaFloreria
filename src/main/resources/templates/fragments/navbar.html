@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <nav th:fragment="navbar(activo)" class="navbar navbar-expand-md sticky-top navbar-opalina">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" th:href="@{/}">
+                <img th:src="@{/assets/imagenes/Opalina-Logo.png}" alt="" width="40" height="40">
+                <span class="lh-1">
+                    <strong class="d-block">Opalina</strong>
+                    <small class="text-uppercase">Florería Piura</small>
+                </span>
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#navPrincipal" aria-controls="navPrincipal" aria-expanded="false" aria-label="Abrir menú">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="offcanvas offcanvas-end navbar-mobile-panel" tabindex="-1" id="navPrincipal" aria-labelledby="titulo-menu-movil">
+                <div class="offcanvas-header d-md-none">
+                    <h2 class="offcanvas-title" id="titulo-menu-movil">Menú</h2>
+                    <button class="btn-close" type="button" data-bs-dismiss="offcanvas" aria-label="Cerrar menú"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav ms-auto mb-2 mb-md-0 align-items-md-center gap-md-3">
+                        <li class="nav-item">
+                            <a class="nav-link" th:classappend="${activo == 'inicio'} ? 'active'" th:href="@{/}" th:aria-current="${activo == 'inicio'} ? 'page' : null">Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:classappend="${activo == 'catalogo'} ? 'active'" th:href="@{/catalogo}" th:aria-current="${activo == 'catalogo'} ? 'page' : null">Catálogo</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:classappend="${activo == 'nosotros'} ? 'active'" th:href="@{/nosotros}" th:aria-current="${activo == 'nosotros'} ? 'page' : null">Nosotros</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" th:classappend="${activo == 'contacto'} ? 'active'" th:href="@{/contacto}" th:aria-current="${activo == 'contacto'} ? 'page' : null">Contacto</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link position-relative" th:classappend="${activo == 'carrito'} ? 'active'" th:href="@{/carrito}" th:aria-current="${activo == 'carrito'} ? 'page' : null">Carrito
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success" id="contador-carrito" aria-label="Productos distintos en el carrito" th:if="${productosDistintosCarrito > 0}" th:text="${productosDistintosCarrito}">0</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" th:if="${usuarioActual == null}">
+                            <a class="btn btn-primary btn-sm rounded-pill px-3" th:href="@{/login}">Iniciar sesión</a>
+                        </li>
+                        <li class="nav-item dropdown opalina-account-dropdown navbar-user-item" th:if="${usuarioActual != null}">
+                            <button class="nav-link dropdown-toggle navbar-user-toggle opalina-account-toggle" id="menuUsuario" type="button" data-bs-toggle="dropdown" aria-expanded="false" th:attr="aria-label=${usuarioActual.rol.name() == 'ADMIN' ? 'Menú de administración' : 'Menú de cuenta'}">
+                                <span class="navbar-user-avatar" aria-hidden="true" th:text="${#strings.substring(usuarioActual.nombre, 0, 1)}">U</span>
+                                <span th:text="${usuarioActual.rol.name() == 'ADMIN' ? 'Administración' : usuarioActual.nombre}">Mi cuenta</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end opalina-account-menu" aria-labelledby="menuUsuario">
+                                <li th:if="${usuarioActual.rol.name() == 'ADMIN'}">
+                                    <a class="dropdown-item" th:href="@{/admin/pedidos}">Panel de administración</a>
+                                </li>
+                                <li th:if="${usuarioActual.rol.name() == 'ADMIN'}">
+                                    <a class="dropdown-item" th:href="@{/admin/configuracion}">Configuración de tienda</a>
+                                </li>
+                                <li th:if="${usuarioActual.rol.name() != 'ADMIN'}">
+                                    <a class="dropdown-item" th:href="@{/cuenta/perfil}">Mi perfil</a>
+                                </li>
+                                <li th:if="${usuarioActual.rol.name() != 'ADMIN'}">
+                                    <a class="dropdown-item" th:href="@{/cuenta/pedidos}">Mis pedidos</a>
+                                </li>
+                                <li class="opalina-account-menu__logout">
+                                    <form th:action="@{/logout}" method="post">
+                                        <button class="dropdown-item opalina-account-menu__logout-button" type="submit">Cerrar sesión</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+</body>
+
+</html>

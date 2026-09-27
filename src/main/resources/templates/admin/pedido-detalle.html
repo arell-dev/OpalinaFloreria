@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Detalle del pedido')}"></head>
+
+<body class="admin-app">
+    <a class="admin-skip" href="#contenido-admin">Ir al contenido</a>
+    <header th:replace="~{fragments/admin-header :: header}"></header>
+
+    <div class="admin-workspace">
+        <div th:replace="~{fragments/admin-sidebar :: sidebar('pedidos')}"></div>
+
+        <main id="contenido-admin" class="admin-main">
+            <div class="admin-page-heading">
+                <div>
+                    <p class="admin-overline">Administración / Pedidos</p>
+                    <h1 id="titulo-detalle-pedido" th:text="|Pedido ${pedido.id}|">Detalle del pedido</h1>
+                    <p class="admin-page-description">Registrado el <span th:text="${#temporals.format(pedido.creadoEn, 'dd/MM/yyyy · HH:mm')}">Fecha</span></p>
+                </div>
+                <div class="admin-heading-actions">
+                    <a class="btn btn-outline-primary" th:href="@{/admin/pedidos}">← Pedidos</a>
+                    <button class="btn btn-outline-primary d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarAdmin" aria-controls="sidebarAdmin">☰ Menú</button>
+                </div>
+            </div>
+
+            <div th:replace="~{fragments/mensajes :: mensajes}"></div>
+
+            <div id="pedido-contenido">
+                <section class="card admin-state-card" aria-labelledby="titulo-estado">
+                    <div class="admin-state-top">
+                        <div>
+                            <p class="admin-overline">Seguimiento del pedido</p>
+                            <h2 id="titulo-estado">Estado actual
+                                <span id="estado-actual" class="admin-status" th:classappend="${pedido.estado.name() == 'EN_PROCESO' ? 'admin-status--proceso' : 'admin-status--' + #strings.toLowerCase(pedido.estado.name())}" th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(pedido.estado.name(), '_', ' ')))}">Estado</span>
+                            </h2>
+                            <p id="estado-descripcion" class="text-body-secondary mb-0" th:text="|El pedido está ${#strings.toLowerCase(#strings.replace(pedido.estado.name(), '_', ' '))}.|"> Estado del pedido</p>
+                        </div>
+                        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#modal-estado-pedido">Cambiar estado <span aria-hidden="true">↗</span>
+                        </button>
+                    </div>
+                    <ol class="admin-progress" aria-label="Progreso del pedido">
+                        <li th:classappend="${pedido.estado.ordinal() > 0 and pedido.estado.name() != 'CANCELADO' ? 'complete' : (pedido.estado.name() == 'PENDIENTE' ? 'current' : '')}">Pendiente</li>
+                        <li th:classappend="${pedido.estado.ordinal() > 1 and pedido.estado.name() != 'CANCELADO' ? 'complete' : (pedido.estado.name() == 'EN_PROCESO' ? 'current' : '')}">En proceso</li>
+                        <li th:classappend="${pedido.estado.ordinal() > 2 and pedido.estado.name() != 'CANCELADO' ? 'complete' : (pedido.estado.name() == 'ENVIADO' ? 'current' : '')}">Enviado</li>
+                        <li th:classappend="${pedido.estado.name() == 'ENTREGADO' ? 'complete current' : ''}">Entregado</li>
+                    </ol>
+                </section>
+
+                <div class="admin-detail-grid">
+                    <div class="admin-detail-main">
+                        <section class="card">
+                            <div class="card-header"><h2>Productos del pedido</h2></div>
+                            <div class="card-body" id="detalle-productos-pedido">
+                                <article class="admin-order-item" th:each="item : ${pedido.items}">
+                                    <img th:src="@{${item.imagen}}" th:alt="${item.nombreProducto}" width="56" height="56">
+                                    <div>
+                                        <strong th:text="${item.nombreProducto}">Producto</strong>
+                                        <p th:text="|${item.categoria} · Cantidad: ${item.cantidad}|">Categoría - Cantidad</p>
+                                    </div>
+                                    <strong class="text-nowrap" th:text="|S/ ${#numbers.formatDecimal(item.totalLinea, 1, 2)}|">S/ 0.00</strong>
+                                </article>
+                            </div>
+                        </section>
+
+                        <section class="card">
+                            <div class="card-header"><h2>Cliente y entrega</h2></div>
+                            <div class="card-body admin-info-grid">
+                                <div>
+                                    <h3>Datos del cliente</h3>
+                                    <dl class="admin-dl">
+                                        <dt>Nombre</dt><dd th:text="${pedido.nombreCliente}">Cliente</dd>
+                                        <dt>Correo</dt><dd th:text="${pedido.email}">Correo</dd>
+                                        <dt>Teléfono</dt><dd th:text="${pedido.telefono}">Teléfono</dd>
+                                        <dt>Cliente desde</dt>
+                                        <dd th:text="${cliente != null ? #temporals.format(cliente.creadoEn, 'dd/MM/yyyy') : '—'}">Fecha</dd>
+                                    </dl>
+                                    <a class="btn btn-outline-primary mt-3" target="_blank" rel="noopener" th:href="|https://wa.me/${#strings.replace(#strings.replace(pedido.telefono, ' ', ''), '+', '')}|">Contactar por WhatsApp</a>
+                                </div>
+                                <div>
+                                    <h3>Entrega</h3>
+                                    <dl class="admin-dl">
+                                        <dt>Modalidad</dt>
+                                        <dd th:text="${pedido.entrega.modalidad.name() == 'RECOJO' ? 'Recojo en tienda' : 'Delivery'}">Modalidad</dd>
+                                        <dt>Dirección</dt><dd th:text="${#strings.isEmpty(pedido.entrega.direccion) ? 'Recojo en tienda' : pedido.entrega.direccion}">Dirección</dd>
+                                        <dt>Referencia</dt><dd th:text="${#strings.isEmpty(pedido.entrega.referencia) ? '—' : pedido.entrega.referencia}">Referencia</dd>
+                                        <dt>Fecha</dt>
+                                        <dd th:text="${pedido.entrega.fecha != null ? #temporals.format(pedido.entrega.fecha, 'dd/MM/yyyy') : '—'}">Fecha</dd>
+                                        <dt>Indicaciones</dt><dd th:text="${#strings.isEmpty(pedido.entrega.notas) ? '—' : pedido.entrega.notas}">Indicaciones</dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section class="card">
+                            <div class="card-header"><h2>Historial del pedido</h2></div>
+                            <div class="card-body">
+                                <ol id="historial-pedido" class="admin-history">
+                                    <li th:each="cambio : ${pedido.historial}">
+                                        <strong th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(cambio.estado.name(), '_', ' ')))}">Estado</strong>
+                                        <small th:text="${#temporals.format(cambio.fecha, 'dd/MM/yyyy · HH:mm')}">Fecha</small>
+                                    </li>
+                                </ol>
+                            </div>
+                        </section>
+                    </div>
+
+                    <aside class="admin-detail-summary">
+                        <section class="card">
+                            <div class="card-header"><h2>Resumen del pedido</h2></div>
+                            <div class="card-body">
+                                <dl class="admin-money">
+                                    <dt>Productos</dt>
+                                    <dd th:text="|S/ ${#numbers.formatDecimal(pedido.subtotal, 1, 2)}|">S/ 0.00</dd>
+                                    <dt>Envío</dt>
+                                    <dd th:text="|S/ ${#numbers.formatDecimal(pedido.costoDelivery, 1, 2)}|">S/ 0.00</dd>
+                                    <dt class="admin-total">Total</dt>
+                                    <dd class="admin-total" th:text="|S/ ${#numbers.formatDecimal(pedido.total, 1, 2)}|">S/ 0.00</dd>
+                                </dl>
+                            </div>
+                        </section>
+                        <section class="card">
+                            <div class="card-header"><h2>Información de pago</h2></div>
+                            <div class="card-body">
+                                <dl class="admin-money">
+                                    <dt>Método</dt>
+                                    <dd th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(pedido.entrega.metodoPago.name(), '_', ' ')))}">Método</dd>
+                                    <dt>Estado</dt>
+                                    <dd th:text="${#strings.capitalize(#strings.toLowerCase(pedido.estadoPago.name()))}">Estado</dd>
+                                    <dt>Pagado</dt>
+                                    <dd th:text="${pedido.estadoPago.name() == 'PAGADO' ? 'S/ ' + #numbers.formatDecimal(pedido.total, 1, 2) : 'S/ 0.00'}">S/ 0.00</dd>
+                                    <dt>Pendiente</dt>
+                                    <dd th:text="${pedido.estadoPago.name() == 'PAGADO' ? 'S/ 0.00' : 'S/ ' + #numbers.formatDecimal(pedido.total, 1, 2)}">S/ 0.00</dd>
+                                </dl>
+                                <p class="form-text mb-0 mt-3">El estado del pedido y la confirmación del pago se gestionan por separado.</p>
+                            </div>
+                        </section>
+                        <button class="btn btn-outline-primary w-100" type="button" data-print-order>Imprimir pedido</button>
+                    </aside>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal fade" id="modal-estado-pedido" tabindex="-1" aria-labelledby="titulo-cambiar-estado"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="@{/admin/pedidos/{id}/estado(id=${pedido.id})}" method="post">
+                    <div class="modal-header">
+                        <div>
+                            <p class="admin-overline mb-1">Seguimiento</p>
+                            <h2 class="modal-title h4" id="titulo-cambiar-estado">Cambiar estado</h2>
+                        </div>
+                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="admin-state-options">
+                            <label class="admin-state-option" th:each="estado : ${estados}"
+                                th:for="|estado-${estado.name()}|">
+                                <input class="form-check-input" type="radio" name="estado" th:id="|estado-${estado.name()}|" th:value="${estado}" th:checked="${estado == pedido.estado}" required>
+                                <span>
+                                    <strong th:text="${estado.name() == 'EN_PROCESO' ? 'En proceso' : #strings.capitalize(#strings.toLowerCase(estado.name()))}">Estado</strong>
+                                    <small class="d-block text-body-secondary" th:text="${estado.name() == 'CANCELADO' ? 'Marca el pedido como cancelado.' : 'Actualiza el seguimiento para el cliente.'}">Descripción</small>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancelar</button>
+                        <button class="btn btn-primary" type="submit">Guardar estado</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="admin-footer"><span>&copy; 2026 Opalina Florería Piura</span></footer>
+    <th:block th:replace="~{fragments/scripts :: scripts}"></th:block>
+</body>
+</html>

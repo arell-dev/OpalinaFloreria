@@ -1,0 +1,29 @@
+:root {
+  --crema: #fff8ef;
+  --papel: #ffffff;
+
+  --ciruela: #5d465f;
+  --rosa-suave: #f7dde1;
+  --rosa-claro: #fff2f0;
+
+  --salvia: #9caf96;
+  --salvia-oscuro: #536b4f;
+  --salvia-claro: #eef3e8;
+
+  --calido: #c78f57;
+  --calido-suave: #f7e8d7;
+  --calido-texto: #825932;
+
+  --tinta: #2f2a2c;
+  --apagado: #6f6568;
+  --linea: #eaded7;
+
+  --espacio-seccion: 3rem;
+
+  --radio: 8px;
+  --radio-pill: 999px;
+  --sombra: 0 18px 45px rgba(93, 70, 95, 0.12);
+
+  --fuente-titulo: "Cormorant Garamond", Georgia, serif;
+  --fuente-cuerpo: "Nunito Sans", "Segoe UI", Arial, sans-serif;
+}

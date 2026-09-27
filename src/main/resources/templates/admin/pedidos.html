@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Pedidos')}"></head>
+
+<body class="admin-app">
+    <a class="admin-skip" href="#contenido-admin">Ir al contenido</a>
+    <header th:replace="~{fragments/admin-header :: header}"></header>
+
+    <div class="admin-workspace">
+        <div th:replace="~{fragments/admin-sidebar :: sidebar('pedidos')}"></div>
+
+        <main id="contenido-admin" class="admin-main">
+            <div class="admin-page-heading">
+                <div>
+                    <p class="admin-overline">Administración / Pedidos</p>
+                    <h1>Pedidos</h1>
+                    <p class="admin-page-description">Consulta y actualiza las compras de tus clientes.</p>
+                </div>
+                <div class="admin-heading-actions">
+                    <button class="btn btn-outline-primary d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarAdmin" aria-controls="sidebarAdmin">☰ Menú</button>
+                </div>
+            </div>
+
+            <div th:replace="~{fragments/mensajes :: mensajes}"></div>
+
+            <div class="admin-contenido">
+                <section class="admin-metrics" aria-label="Resumen de pedidos">
+                    <article class="card">
+                        <div class="card-body">
+                            <p class="admin-metric-label">Pedidos registrados</p>
+                            <strong class="admin-metric-value" th:text="${totalPedidos}">0</strong>
+                        </div>
+                    </article>
+                    <article class="card">
+                        <div class="card-body">
+                            <p class="admin-metric-label">Pendientes</p>
+                            <strong class="admin-metric-value" th:text="${pedidosPendientes}">0</strong>
+                        </div>
+                    </article>
+                    <article class="card">
+                        <div class="card-body">
+                            <p class="admin-metric-label">Entregados</p>
+                            <strong class="admin-metric-value" th:text="${pedidosEntregados}">0</strong>
+                        </div>
+                    </article>
+                    <article class="card">
+                        <div class="card-body">
+                            <p class="admin-metric-label">Valor de pedidos</p>
+                            <strong class="admin-metric-value" th:text="|S/ ${#numbers.formatDecimal(valorPedidos, 1, 2)}|">S/ 0.00</strong>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="card admin-toolbar-card" aria-label="Filtros de pedidos">
+                    <div class="card-body">
+                        <form class="admin-toolbar" method="get" th:action="@{/admin/pedidos}">
+                            <div>
+                                <label class="form-label" for="buscar-pedido">Buscar pedido</label>
+                                <input class="form-control" type="search" id="buscar-pedido" name="q" th:value="${consulta}" placeholder="Número, cliente o correo">
+                            </div>
+                            <input type="hidden" name="estado" th:if="${estadoSeleccionado != null}" th:value="${estadoSeleccionado}">
+                            <button class="btn btn-primary" type="submit">Buscar</button>
+                        </form>
+                        <nav class="admin-filtros-estados mt-3" aria-label="Filtrar pedidos por estado">
+                            <a class="btn" th:classappend="${estadoSeleccionado == null} ? 'btn-primary active' : 'btn-outline-primary'"
+                                th:href="@{/admin/pedidos(q=${consulta})}" aria-current="${estadoSeleccionado == null} ? 'page' : null">
+                                Todos <span th:text="${totalPedidos}">0</span>
+                            </a>
+                            <a class="btn" th:each="estado : ${estados}"
+                                th:classappend="${estado == estadoSeleccionado} ? 'btn-primary active' : 'btn-outline-primary'"
+                                th:href="@{/admin/pedidos(estado=${estado},q=${consulta})}"
+                                th:aria-current="${estado == estadoSeleccionado} ? 'page' : null">
+                                <span th:text="${estado.name() == 'EN_PROCESO' ? 'En proceso' : #strings.capitalize(#strings.toLowerCase(estado.name()))}">Estado</span>
+                                <span th:text="${estado.name() == 'PENDIENTE' ? pedidosPendientes : (estado.name() == 'EN_PROCESO' ? pedidosEnProceso : (estado.name() == 'ENVIADO' ? pedidosEnviados : (estado.name() == 'ENTREGADO' ? pedidosEntregados : pedidosCancelados)))}">0</span>
+                            </a>
+                        </nav>
+                    </div>
+                </section>
+
+                <section class="card admin-results mt-4" aria-label="Lista de pedidos">
+                    <div class="admin-results-heading">
+                        <h2>Pedidos</h2>
+                        <span role="status" aria-live="polite" th:text="|${#lists.size(pedidos)} de ${totalPedidos} pedidos|">Pedidos</span>
+                    </div>
+                    <div class="admin-table-viewport" tabindex="0" role="region"
+                        aria-label="Tabla desplazable de pedidos">
+                        <table class="table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Pedido</th>
+                                    <th scope="col">Cliente</th>
+                                    <th scope="col">Productos</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Estado</th>
+                                    <th scope="col">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="pedido : ${pedidos}">
+                                    <td>
+                                        <a class="admin-table-primary" th:href="@{/admin/pedidos/{id}(id=${pedido.id})}" th:text="${pedido.id}">OP-0000</a>
+                                        <small class="d-block text-body-secondary" th:text="${#temporals.format(pedido.creadoEn, 'dd/MM/yyyy')}">Fecha</small>
+                                    </td>
+                                    <td>
+                                        <span class="d-block" th:text="${pedido.nombreCliente}">Cliente</span>
+                                        <small class="text-body-secondary" th:text="${pedido.email}">Correo</small>
+                                    </td>
+                                    <td th:text="${pedido.items.size()}">0</td>
+                                    <td class="text-nowrap fw-semibold"
+                                        th:text="|S/ ${#numbers.formatDecimal(pedido.total, 1, 2)}|">S/ 0.00</td>
+                                    <td>
+                                        <span class="admin-status" th:classappend="${pedido.estado.name() == 'EN_PROCESO' ? 'admin-status--proceso' : 'admin-status--' + #strings.toLowerCase(pedido.estado.name())}" th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(pedido.estado.name(), '_', ' ')))}">Estado</span>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-sm btn-outline-primary" th:href="@{/admin/pedidos/{id}(id=${pedido.id})}">Ver pedido</a>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(pedidos)}">
+                                    <td colspan="6">
+                                        <div class="admin-empty">
+                                            <strong>No hay pedidos para mostrar</strong>
+                                            <span>Prueba con otro filtro o término de búsqueda.</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="admin-results-foot">Los detalles y las acciones están disponibles en cada fila.</div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <footer class="admin-footer"><span>&copy; 2026 Opalina Florería Piura</span></footer>
+    <th:block th:replace="~{fragments/scripts :: scripts}"></th:block>
+</body>
+</html>

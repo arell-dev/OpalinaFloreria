@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es">
+
+<head th:replace="~{fragments/head :: head('Iniciar sesión')}"></head>
+
+<body class="d-flex flex-column min-vh-100">
+  <a class="salto-contenido" href="#contenido-principal">Saltar al contenido</a>
+  <nav th:replace="~{fragments/navbar :: navbar('')}"></nav>
+
+  <main id="contenido-principal" class="flex-grow-1 cuenta-pagina">
+    <section class="py-5 cuenta-seccion" aria-labelledby="titulo-login">
+      <div class="container py-lg-4">
+        <div class="row justify-content-center">
+          <div class="col-12 col-xxl-10">
+            <div class="row align-items-center g-4 g-lg-5">
+              <div class="col-12 col-lg-7 order-2 order-lg-1">
+                <p class="ceja mb-2">Acceso de clientes</p>
+                <h1 id="titulo-login" class="display-3 fw-bold mb-3">Iniciar sesión</h1>
+                <p class="lead text-body-secondary">Accede a tu cuenta para gestionar tus pedidos, consultar historial y completar tus compras más rápido.</p>
+                <div class="ratio ratio-4x3 cuenta-imagen rounded overflow-hidden shadow">
+                  <img th:src="@{/assets/imagenes/arreglos/opalina-arreglo-09.jpg}" alt="Arreglo floral de Opalina" class="w-100 h-100 object-fit-cover" />
+                </div>
+              </div>
+
+              <div class="col-12 col-lg-5 order-1 order-lg-2">
+                <div class="card shadow-sm">
+                  <div class="card-body p-4 p-lg-5">
+                    <div class="text-center mb-4">
+                      <h2 class="h3 mb-2">Bienvenida de vuelta</h2>
+                      <p class="text-body-secondary mb-0">Ingresa tus datos para continuar.</p>
+                    </div>
+                    <div class="alert alert-danger" role="alert" th:if="${error}" th:text="${error}"></div>
+                    <form id="formulario-ingreso" th:action="@{/login}" th:object="${loginForm}" method="post" class="d-grid gap-4">
+                      <input type="hidden" name="returnTo" th:value="${returnTo}">
+                      <div>
+                        <label for="correo" class="form-label fw-semibold">Correo electrónico</label>
+                        <input type="email" class="form-control" id="correo" th:field="*{email}" placeholder="cliente@correo.com" autocomplete="email" required />
+                        <div class="form-text text-danger" th:errors="*{email}"></div>
+                      </div>
+                      <div>
+                        <label for="clave" class="form-label fw-semibold">Contraseña</label>
+                        <div class="input-group">
+                          <input type="password" class="form-control" id="clave" th:field="*{clave}" placeholder="Ingresa tu contraseña" autocomplete="current-password" required />
+                          <button class="btn btn-outline-secondary" type="button" data-toggle-password="clave" aria-label="Mostrar contraseña" aria-pressed="false"><svg width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8"/><circle cx="12" cy="12" r="3"/></svg></button>
+                        </div>
+                        <div class="form-text">Usa el botón para mostrar u ocultar tu contraseña.</div>
+                        <div class="form-text text-danger" th:errors="*{clave}"></div>
+                      </div>
+                      <button class="btn btn-primary btn-lg w-100" type="submit">Iniciar sesión</button>
+                    </form>
+                    <div class="d-flex flex-wrap justify-content-between gap-2 mt-4">
+                      <a class="enlace-opalina" th:href="@{/registro}">Crear cuenta</a>
+                      <a class="enlace-opalina" th:href="@{/}">Volver a la tienda</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+
+</body>
+
+</html>

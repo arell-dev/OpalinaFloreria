@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <header class="admin-topbar" th:fragment="header">
+        <a class="admin-brand" th:href="@{/admin/pedidos}">
+            <img th:src="@{/assets/imagenes/Opalina-Logo.png}" width="36" height="36" alt="">
+            <span><strong>Opalina</strong><small>Administración</small></span>
+        </a>
+        <div class="dropdown opalina-account-dropdown">
+            <button class="admin-user admin-user-menu dropdown-toggle opalina-account-toggle" id="menuAdministrador" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="admin-user-avatar" aria-hidden="true">A</span>
+                <span th:text="${usuarioActual != null ? usuarioActual.nombre : 'Administrador'}">Administrador</span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end opalina-account-menu" aria-labelledby="menuAdministrador">
+                <li><a class="dropdown-item" th:href="@{/admin/configuracion}">Configuración</a></li>
+                <li class="opalina-account-menu__logout">
+                    <form th:action="@{/logout}" method="post">
+                        <button class="dropdown-item opalina-account-menu__logout-button" type="submit">Cerrar sesión</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </header>
+</body>
+
+</html>

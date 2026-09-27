@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('No encontrado')}"></head>
+
+<body class="d-flex flex-column min-vh-100">
+  <a class="salto-contenido" href="#contenido-principal">Saltar al contenido</a>
+  <nav th:replace="~{fragments/navbar :: navbar('')}"></nav>
+
+  <main id="contenido-principal" class="flex-grow-1 pagina-error">
+    <section class="error-hero" aria-labelledby="titulo-404">
+      <div class="container py-5 py-lg-6">
+        <div class="error-hero__tarjeta">
+          <div class="error-hero__contenido">
+            <p class="ceja mb-3">Te perdiste entre las flores</p>
+            <p class="error-hero__codigo" aria-hidden="true">404</p>
+            <h1 id="titulo-404">Esta página no floreció</h1>
+            <p class="error-hero__texto">El enlace puede estar vencido o la página se movió. Volvamos a un lugar conocido.</p>
+            <div class="d-flex flex-column flex-sm-row gap-3 mt-4">
+              <a th:href="@{/}" class="btn btn-primary btn-lg">Ir al inicio <span aria-hidden="true">→</span></a>
+              <a th:href="@{/catalogo}" class="btn btn-outline-primary btn-lg">Explorar el catálogo</a>
+            </div>
+            <p class="error-hero__ayuda mb-0">¿Necesitas ayuda? <a th:href="@{/contacto}">Escríbenos</a></p>
+          </div>
+          <div class="error-hero__imagen">
+            <img th:src="@{/assets/imagenes/arreglos/hero-arreglo-elegante.jpg}" alt="Ramo de flores blancas y verdes preparado en Opalina" />
+            <div class="error-hero__sello"><span aria-hidden="true">✿</span><span>Opalina<br /><small>Florería Piura</small></span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="error-enlaces pb-5 pb-lg-6" aria-labelledby="titulo-rutas-404">
+      <div class="container">
+        <div class="d-flex flex-column flex-md-row align-items-md-end justify-content-between gap-2 mb-3">
+          <div>
+            <p class="ceja mb-1">Sigue explorando</p>
+            <h2 id="titulo-rutas-404" class="h3 mb-0">¿A dónde te gustaría ir?</h2>
+          </div>
+          <a th:href="@{/}" class="enlace-opalina">Volver a Opalina <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="row row-cols-1 row-cols-md-3 g-3">
+          <div class="col"><a class="error-ruta" th:href="@{/catalogo}"><span class="error-ruta__numero">01</span><span><strong>Catálogo</strong><small>Encuentra un arreglo para cada ocasión.</small></span><span class="error-ruta__flecha" aria-hidden="true">↗</span></a></div>
+
+          <div class="col"><a class="error-ruta" th:href="@{/nosotros}"><span class="error-ruta__numero">02</span><span><strong>Nuestra historia</strong><small>Conoce el cuidado detrás de cada ramo.</small></span><span class="error-ruta__flecha" aria-hidden="true">↗</span></a>
+          </div>
+          
+          <div class="col"><a class="error-ruta" th:href="@{/contacto}"><span class="error-ruta__numero">03</span><span><strong>Contacto</strong><small>Estamos aquí para ayudarte.</small></span><span class="error-ruta__flecha" aria-hidden="true">↗</span></a></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+
+</html>

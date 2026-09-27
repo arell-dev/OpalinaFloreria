@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Clientes')}"></head>
+
+<body class="admin-app">
+    <a class="admin-skip" href="#contenido-admin">Ir al contenido</a>
+    <header th:replace="~{fragments/admin-header :: header}"></header>
+
+    <div class="admin-workspace">
+        <div th:replace="~{fragments/admin-sidebar :: sidebar('clientes')}"></div>
+
+        <main id="contenido-admin" class="admin-main">
+            <div class="admin-page-heading">
+                <div>
+                    <p class="admin-overline">Administración / Clientes</p>
+                    <h1>Clientes</h1>
+                    <p class="admin-page-description">Consulta los contactos y pedidos registrados en el panel.</p>
+                </div>
+                <div class="admin-heading-actions">
+                    <button class="btn btn-outline-primary d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarAdmin" aria-controls="sidebarAdmin">☰ Menú</button>
+                </div>
+            </div>
+
+            <div class="admin-contenido">
+                <section class="admin-metrics" aria-label="Resumen de clientes">
+                    <article class="card"><div class="card-body">
+                        <p class="admin-metric-label">Clientes registrados</p>
+                        <strong class="admin-metric-value" th:text="${totalClientes}">0</strong>
+                    </div></article>
+                    <article class="card"><div class="card-body">
+                        <p class="admin-metric-label">Pedidos vinculados</p>
+                        <strong class="admin-metric-value" th:text="${pedidosVinculados}">0</strong>
+                    </div></article>
+                    <article class="card"><div class="card-body">
+                        <p class="admin-metric-label">Valor de pedidos</p>
+                        <strong class="admin-metric-value" th:text="|S/ ${#numbers.formatDecimal(totalGastado, 1, 2)}|">S/ 0.00</strong>
+                    </div></article>
+                    <article class="card"><div class="card-body">
+                        <p class="admin-metric-label">Promedio por pedido</p>
+                        <strong class="admin-metric-value" th:text="|S/ ${#numbers.formatDecimal(promedioPedido, 1, 2)}|">S/ 0.00</strong>
+                    </div></article>
+                </section>
+
+                <section class="card admin-toolbar-card mt-4" aria-label="Buscar y ordenar clientes">
+                    <form class="card-body" method="get" th:action="@{/admin/clientes}">
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="form-label" for="buscar-cliente">Buscar cliente</label>
+                                <input class="form-control" type="search" id="buscar-cliente" name="q" th:value="${consulta}" placeholder="Nombre, correo o teléfono">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label" for="orden-clientes">Ordenar por</label>
+                                <select class="form-select" id="orden-clientes" name="ordenar">
+                                    <option value="nombre" th:selected="${ordenSeleccionado == 'nombre'}">Nombre</option>
+                                    <option value="pedidos" th:selected="${ordenSeleccionado == 'pedidos'}">Más pedidos</option>
+                                    <option value="total" th:selected="${ordenSeleccionado == 'total'}">Mayor valor de pedidos</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <button class="btn btn-primary" type="submit">Aplicar filtros</button>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="card admin-results mt-4" aria-label="Lista de clientes">
+                    <div class="admin-results-heading">
+                        <h2>Clientes</h2>
+                        <span role="status" aria-live="polite" th:text="|${#lists.size(clientes)} clientes|">Clientes</span>
+                    </div>
+                    <div class="admin-table-viewport" tabindex="0" role="region"
+                        aria-label="Tabla de clientes">
+                        <table class="table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Cliente</th>
+                                    <th scope="col">Correo</th>
+                                    <th scope="col">Teléfono</th>
+                                    <th scope="col">Pedidos registrados</th>
+                                    <th scope="col">Valor de pedidos</th>
+                                    <th scope="col">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="resumen : ${clientes}">
+                                    <td class="fw-semibold" th:text="${resumen.cliente.nombre}">Nombre</td>
+                                    <td th:text="${resumen.cliente.email}">Correo</td>
+                                    <td th:text="${resumen.cliente.telefono}">Teléfono</td>
+                                    <td th:text="${resumen.pedidos}">0</td>
+                                    <td class="text-nowrap fw-semibold"
+                                        th:text="|S/ ${#numbers.formatDecimal(resumen.totalGastado, 1, 2)}|">S/ 0.00</td>
+                                    <td>
+                                        <a class="btn btn-sm btn-outline-primary" th:href="@{/admin/pedidos(q=${resumen.cliente.email})}">Ver pedidos</a>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(clientes)}">
+                                    <td colspan="6">
+                                        <div class="admin-empty">
+                                            <strong>No hay clientes para mostrar</strong>
+                                            <span>Prueba con otro nombre, correo o teléfono.</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <p class="form-text mt-3">Los totales corresponden a los pedidos disponibles en este panel. Los pedidos conservan los datos de contacto registrados al momento de compra.</p>
+            </div>
+        </main>
+    </div>
+
+    <footer class="admin-footer"><span>&copy; 2026 Opalina Florería Piura</span></footer>
+    <th:block th:replace="~{fragments/scripts :: scripts}"></th:block>
+</body>
+</html>

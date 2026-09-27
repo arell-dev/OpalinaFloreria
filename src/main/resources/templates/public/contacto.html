@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es">
+
+<head th:replace="~{fragments/head :: head('Contacto')}"></head>
+
+<body class="d-flex flex-column min-vh-100">
+  <a class="salto-contenido" href="#contenido-principal">Saltar al contenido</a>
+  <nav th:replace="~{fragments/navbar :: navbar('contacto')}"></nav>
+
+  <main id="contenido-principal" class="flex-grow-1">
+    <section class="heroe-opalina py-5" aria-labelledby="titulo-contacto">
+      <div class="container py-lg-4">
+        <div class="row justify-content-center">
+          <div class="col-12 col-xxl-10">
+            <div class="row align-items-center g-4 g-lg-5">
+              <div class="col-12 col-lg-7">
+                <p class="ceja mb-2">Estamos para ayudarte</p>
+                <h1 id="titulo-contacto" class="display-3 fw-bold mb-3">Contáctanos</h1>
+                <p class="lead text-body-secondary mb-0">Escríbenos para consultas, pedidos personalizados, eventos especiales o cualquier pregunta sobre nuestros arreglos florales.</p>
+              </div>
+              <div class="col-12 col-lg-5">
+                <div class="ratio ratio-4x3 rounded shadow overflow-hidden">
+                  <img th:src="@{/assets/imagenes/arreglos/contacto-ramo-bienvenida.jpg}" alt="Ramo floral elegante de Opalina Florería" class="img-fluid w-100 h-100 object-fit-cover" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-5" aria-labelledby="encabezado-form-contacto">
+      <div class="container py-lg-4">
+        <div class="row justify-content-center">
+          <div class="col-12 col-xxl-10">
+            <div class="row g-4 align-items-start">
+              <div class="col-12 col-lg-7">
+                <div class="card shadow-sm">
+                  <div class="card-body p-4 p-lg-5">
+                    <h2 id="encabezado-form-contacto" class="h3 mb-4">Envíanos un mensaje</h2>
+                    <div th:replace="~{fragments/mensajes :: mensajes}"></div>
+                    <form th:action="@{/contacto}" th:object="${contactoForm}" method="post">
+                      <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                          <label for="nombre-contacto" class="form-label">Nombre</label>
+                          <input type="text" class="form-control" id="nombre-contacto" th:field="*{nombre}" placeholder="Tu nombre" required />
+                          <div class="form-text text-danger" th:errors="*{nombre}"></div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                          <label for="telefono-contacto" class="form-label">Teléfono</label>
+                          <input type="tel" class="form-control" id="telefono-contacto" name="telefono" placeholder="999 999 999" pattern="[0-9]{9}" title="Ingresa 9 dígitos" />
+                        </div>
+                        <div class="col-12">
+                          <label for="email-contacto" class="form-label">Correo electrónico</label>
+                          <input type="email" class="form-control" id="email-contacto" th:field="*{email}" placeholder="tu@correo.com" required />
+                          <div class="form-text text-danger" th:errors="*{email}"></div>
+                        </div>
+                        <div class="col-12">
+                          <label for="asunto-contacto" class="form-label">Asunto</label>
+                          <select id="asunto-contacto" name="asunto" class="form-select">
+                            <option>Consulta general</option>
+                            <option>Pedido personalizado</option>
+                            <option>Evento especial</option>
+                            <option>Reclamo o sugerencia</option>
+                            <option>Alianzas comerciales</option>
+                          </select>
+                        </div>
+                        <div class="col-12">
+                          <label for="mensaje-contacto" class="form-label">Mensaje</label>
+                          <textarea class ="form-control" id="mensaje-contacto" th:field="*{mensaje}" rows="6" placeholder="Cuéntanos en qué podemos ayudarte..." required></textarea>
+                          <div class="form-text text-danger" th:errors="*{mensaje}"></div>
+                        </div>
+                        <div class="col-12"><button class="btn btn-primary w-100" type="submit">Enviar mensaje</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-12 col-lg-5">
+                <div class="d-grid gap-4">
+                  <section class="card shadow-sm" aria-labelledby="titulo-info-contacto">
+                    <div class="card-body p-4">
+                      <h2 id="titulo-info-contacto" class="h4 mb-3">Información de Contacto</h2>
+                      <div class="list-group list-group-flush">
+                        <div class="list-group-item px-0 pt-0"><strong class="d-block">WhatsApp</strong>
+                          <p class="mb-2">+51 939 355 038</p><a href="https://wa.me/51939355038" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm">Enviar mensaje</a>
+                        </div>
+                        <div class="list-group-item px-0"><strong class="d-block">Email</strong><a class="enlace-opalina" href="mailto:contacto@opalinapiura.com">contacto@opalinapiura.com</a>
+                        </div>
+                        <div class="list-group-item px-0"><strong class="d-block">Teléfono</strong>
+                          <p class="mb-0">+51 939 355 038</p>
+                        </div>
+                        <div class="list-group-item px-0"><strong class="d-block">Instagram</strong>
+                          <p class="mb-2">@opalina_piura</p><a href="https://instagram.com/opalina_piura" target="_blank" rel="noopener" class="btn btn-outline-primary btn-sm">Seguir</a>
+                        </div>
+                        <div class="list-group-item px-0 pb-0"><strong class="d-block">Facebook</strong>
+                          <p class="mb-0">Opalina Florería Piura</p>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section class="card shadow-sm" aria-labelledby="titulo-horarios">
+                    <div class="card-body p-4">
+                      <h2 id="titulo-horarios" class="h4 mb-3">Horarios de Atención</h2><strong class="d-block">Lun - Dom</strong>
+                      <p class="mb-0">8:00 AM - 10:00 PM</p>
+                    </div>
+                  </section>
+
+                  <section class="card shadow-sm" aria-labelledby="titulo-ubicacion">
+                    <div class="card-body p-4">
+                      <h2 id="titulo-ubicacion" class="h4 mb-3">Ubicación</h2>
+                      <p class="mb-2">Piura, Perú</p>
+                      <p class="mb-2">Real Plaza Piura, frente al patio de comidas</p>
+                      <p class="mb-0">Av. Vice 208, Urb. Santa Ana</p>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+
+</body>
+
+</html>

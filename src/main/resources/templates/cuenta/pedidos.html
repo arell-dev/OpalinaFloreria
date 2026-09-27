@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+
+<head th:replace="~{fragments/head :: head('Mis pedidos')}"></head>
+
+<body class="d-flex flex-column min-vh-100">
+  <a class="salto-contenido" href="#contenido-principal">Saltar al contenido</a>
+  <nav th:replace="~{fragments/navbar :: navbar('cuenta')}"></nav>
+
+  <main id="contenido-principal" class="flex-grow-1">
+    <section class="py-5" aria-labelledby="titulo-mis-pedidos">
+      <div class="container py-lg-4">
+        <div class="mb-4">
+          <p class="ceja mb-2">Mi cuenta</p>
+          <h1 id="titulo-mis-pedidos" class="display-5 fw-bold mb-2">Mis Pedidos</h1>
+          <p class="text-body-secondary mb-0">Consulta el estado de tus pedidos y sigue el avance de cada entrega.</p>
+        </div>
+
+        <div class="row g-4 align-items-start">
+          <div class="col-12 col-lg-4">
+            <aside class="account-sidebar w-100">
+              <div class="card h-100">
+                <div class="card-body">
+                  <div class="text-center border-bottom pb-3 mb-3">
+                    <span class="avatar-initials" aria-hidden="true" th:text="${iniciales}">OP</span>
+                    <h2 class="h5 mb-1 mt-2" th:text="${cliente.nombre}">Cliente</h2>
+                    <p class="text-body-secondary small mb-0" th:text="${cliente.email}">Correo</p>
+                  </div>
+                  <div class="list-group list-group-flush">
+                    <a class="list-group-item list-group-item-action" th:href="@{/cuenta/perfil}">Mi Perfil</a>
+                    <a class="list-group-item list-group-item-action active" aria-current="true" th:href="@{/cuenta/pedidos}">Mis Pedidos</a>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+
+          <div class="col-12 col-lg-8">
+            <ul class="nav nav-pills flex-wrap gap-2 mb-4" id="filtro-estado-pedido">
+              <li class="nav-item"><a class="nav-link" th:classappend="${estadoSeleccionado == null} ? 'active'" th:href="@{/cuenta/pedidos}">Todos</a></li>
+              <li class="nav-item"><a class="nav-link" th:classappend="${estadoSeleccionado?.name() == 'PENDIENTE'} ? 'active'" th:href="@{/cuenta/pedidos(estado='PENDIENTE')}">Pendientes</a></li>
+              <li class="nav-item"><a class="nav-link" th:classappend="${estadoSeleccionado?.name() == 'EN_PROCESO'} ? 'active'" th:href="@{/cuenta/pedidos(estado='EN_PROCESO')}">En proceso</a></li>
+              <li class="nav-item"><a class="nav-link" th:classappend="${estadoSeleccionado?.name() == 'ENVIADO'} ? 'active'" th:href="@{/cuenta/pedidos(estado='ENVIADO')}">Enviados</a></li>
+              <li class="nav-item"><a class="nav-link" th:classappend="${estadoSeleccionado?.name() == 'ENTREGADO'} ? 'active'" th:href="@{/cuenta/pedidos(estado='ENTREGADO')}">Entregados</a></li>
+              <li class="nav-item"><a class="nav-link" th:classappend="${estadoSeleccionado?.name() == 'CANCELADO'} ? 'active'" th:href="@{/cuenta/pedidos(estado='CANCELADO')}">Cancelados</a></li>
+            </ul>
+
+            <div class="d-grid gap-3" id="lista-pedidos" aria-live="polite">
+              <article class="card shadow-sm pedido-card" th:each="pedido : ${pedidos}">
+                <div class="card-body p-4">
+                  <div class="d-flex flex-wrap justify-content-between gap-3 align-items-start">
+                    <div>
+                      <p class="small text-body-secondary mb-1" th:text="|Pedido ${pedido.id} · ${#temporals.format(pedido.creadoEn, 'dd/MM/yyyy')}|">Pedido</p>
+                      <h2 class="h5 mb-2" th:text="${pedido.items[0].nombreProducto}">Arreglo floral</h2>
+                      <p class="mb-0 text-body-secondary" th:text="|${#lists.size(pedido.items)} artículo(s) · S/ ${#numbers.formatDecimal(pedido.total, 1, 2)}|">Resumen</p>
+                    </div>
+                    <span class="insignia" th:text="${#strings.replace(pedido.estado.name(), '_', ' ')}">Estado</span>
+                  </div>
+                  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3">
+                    <span class="small text-body-secondary" th:text="${pedido.entrega.modalidad == T(com.floral.opalina.model.enums.ModalidadEntrega).RECOJO ? 'Recojo en tienda' : 'Delivery a domicilio'}">Entrega</span>
+                    <a class="btn btn-outline-primary btn-sm" th:href="@{/cuenta/pedidos/{id}(id=${pedido.id})}">Ver seguimiento</a>
+                  </div>
+                </div>
+              </article>
+              <div class="card card-body text-center py-5" th:if="${#lists.isEmpty(pedidos)}">
+                <h2 class="h4">Todavía no tienes pedidos en esta categoría.</h2>
+                <a class="btn btn-primary align-self-center mt-2" th:href="@{/catalogo}">Explorar catálogo</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+
+</body>
+
+</html>

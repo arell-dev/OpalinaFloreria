@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Detalle del producto')}"></head>
+
+<body class="admin-app">
+    <a class="admin-skip" href="#contenido-admin">Ir al contenido</a>
+    <header th:replace="~{fragments/admin-header :: header}"></header>
+
+    <div class="admin-workspace">
+        <div th:replace="~{fragments/admin-sidebar :: sidebar('productos')}"></div>
+
+        <main id="contenido-admin" class="admin-main">
+            <div class="admin-page-heading">
+                <div>
+                    <p class="admin-overline">Administración / Productos</p>
+                    <h1>Detalle del producto</h1>
+                    <p class="admin-page-description" th:text="${producto.sku}">SKU</p>
+                </div>
+                <div class="admin-heading-actions">
+                    <a class="btn btn-outline-primary" th:href="@{/admin/productos}">← Productos</a>
+                    <button class="btn btn-outline-primary d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarAdmin" aria-controls="sidebarAdmin">☰ Menú</button>
+                </div>
+            </div>
+
+            <div th:replace="~{fragments/mensajes :: mensajes}"></div>
+
+            <div class="admin-contenido">
+                <div class="admin-product-detail">
+                    <section class="card" aria-label="Imagen del producto">
+                        <div class="card-body">
+                            <img class="admin-detalle-producto__imagen" th:src="@{${producto.imagen}}" th:alt="${producto.nombre}">
+                        </div>
+                    </section>
+
+                    <section class="card" aria-labelledby="titulo-producto">
+                        <div class="card-body p-4 p-lg-5">
+                            <p class="admin-overline">Detalle del catálogo</p>
+                            <h2 id="titulo-producto" class="admin-product-name" th:text="${producto.nombre}">Producto</h2>
+                            <p class="admin-product-price" th:text="|S/ ${#numbers.formatDecimal(producto.precio, 1, 2)}|">S/ 0.00</p>
+                            <p class="text-body-secondary" th:text="${producto.descripcion}">Descripción del producto.</p>
+                            <dl class="admin-dl mt-4">
+                                <dt>SKU</dt><dd th:text="${producto.sku}">SKU</dd>
+                                <dt>Categoría</dt><dd th:text="${producto.categoria}">Categoría</dd>
+                                <dt>Existencias</dt><dd th:text="${producto.stock}">0</dd>
+                                <dt>Estado</dt>
+                                <dd>
+                                    <span class="admin-status" th:classappend="${producto.disponible and producto.stock > 0 ? 'admin-status--disponible' : (producto.stock == 0 ? 'admin-status--sin-stock' : 'admin-status--oculto')}" th:text="${producto.disponible ? (producto.stock > 0 ? 'Disponible' : 'Sin stock') : 'No disponible'}">Estado</span>
+                                </dd>
+                                <dt>Destacado</dt>
+                                <dd th:text="${producto.destacado ? 'Sí' : 'No'}">No</dd>
+                            </dl>
+                            <div class="d-flex flex-wrap gap-2 mt-4">
+                                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#modal-editar-producto">Editar producto</button>
+                                <a class="btn btn-outline-primary" th:href="@{/productos/{id}(id=${producto.id})}" target="_blank" rel="noopener">Ver en la tienda</a>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal fade" id="modal-editar-producto" tabindex="-1" aria-labelledby="titulo-editar-producto"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <form th:action="@{/admin/productos/{id}(id=${producto.id})}"
+                    th:object="${productoForm}" method="post">
+                    <div class="modal-header">
+                        <div>
+                            <p class="admin-overline mb-1">Catálogo</p>
+                            <h2 class="modal-title h4" id="titulo-editar-producto">Editar producto</h2>
+                        </div>
+                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-8">
+                                <label class="form-label" for="nombre">Nombre</label>
+                                <input class="form-control" id="nombre" th:field="*{nombre}" required>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label class="form-label" for="sku">SKU</label>
+                                <input class="form-control" id="sku" th:field="*{sku}" required>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="categoria">Categoría</label>
+                                <input class="form-control" id="categoria" th:field="*{categoria}" required>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="form-label" for="precio">Precio (S/)</label>
+                                <input class="form-control" id="precio" type="number" min="0" step="0.01"
+                                    th:field="*{precio}" required>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="form-label" for="stock">Stock</label>
+                                <input class="form-control" id="stock" type="number" min="0"
+                                    th:field="*{stock}" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="descripcion">Descripción</label>
+                                <textarea class="form-control" id="descripcion" rows="3"
+                                    th:field="*{descripcion}" required></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="imagen">Ruta web de la imagen</label>
+                                <input class="form-control" id="imagen" th:field="*{imagen}" required>
+                            </div>
+                            <div class="col-auto form-check ms-3">
+                                <input class="form-check-input" id="disponible" type="checkbox" th:field="*{disponible}">
+                                <label class="form-check-label" for="disponible">Disponible</label>
+                            </div>
+                            <div class="col-auto form-check">
+                                <input class="form-check-input" id="destacado" type="checkbox" th:field="*{destacado}">
+                                <label class="form-check-label" for="destacado">Destacado</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancelar</button>
+                        <button class="btn btn-primary" type="submit">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="admin-footer"><span>&copy; 2026 Opalina Florería Piura</span></footer>
+    <th:block th:replace="~{fragments/scripts :: scripts}"></th:block>
+</body>
+</html>

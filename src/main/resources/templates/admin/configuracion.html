@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Configuración')}"></head>
+
+<body class="admin-app">
+    <a class="admin-skip" href="#contenido-admin">Ir al contenido</a>
+    <header th:replace="~{fragments/admin-header :: header}"></header>
+
+    <div class="admin-workspace">
+        <div th:replace="~{fragments/admin-sidebar :: sidebar('configuracion')}"></div>
+
+        <main id="contenido-admin" class="admin-main">
+            <div class="admin-page-heading">
+                <div>
+                    <p class="admin-overline">Administración / Configuración</p>
+                    <h1>Configuración</h1>
+                    <p class="admin-page-description">Gestiona la información de tu tienda.</p>
+                </div>
+                <div class="admin-heading-actions">
+                    <button class="btn btn-outline-primary d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarAdmin" aria-controls="sidebarAdmin">☰ Menú</button>
+                </div>
+            </div>
+
+            <div th:replace="~{fragments/mensajes :: mensajes}"></div>
+
+            <div class="admin-contenido">
+                <form id="form-configuracion" th:action="@{/admin/configuracion}"
+                    th:object="${configuracion}" method="post">
+                    <div class="row g-4">
+                        <div class="col-12 col-xl-6">
+                            <section class="card h-100 shadow-sm" aria-labelledby="titulo-tienda">
+                                <div class="card-body p-4">
+                                    <h2 id="titulo-tienda" class="h4 mb-3">Información de la Tienda</h2>
+                                    <div class="mb-3">
+                                        <label for="nombre-tienda" class="form-label">Nombre de la tienda</label>
+                                        <input type="text" class="form-control" id="nombre-tienda" th:field="*{nombre}" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email-tienda" class="form-label">Email de contacto</label>
+                                        <input type="email" class="form-control" id="email-tienda" th:field="*{email}" required>
+                                    </div>
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-12 col-md-6">
+                                            <label for="telefono-tienda" class="form-label">Teléfono</label>
+                                            <input type="tel" class="form-control" id="telefono-tienda" th:field="*{telefono}" required>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <label for="whatsapp-tienda" class="form-label">WhatsApp</label>
+                                            <input type="tel" class="form-control" id="whatsapp-tienda" th:field="*{whatsapp}" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="direccion-tienda" class="form-label">Dirección</label>
+                                        <input type="text" class="form-control" id="direccion-tienda" th:field="*{direccion}" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="col-12 col-xl-6">
+                            <section class="card h-100 shadow-sm" aria-labelledby="titulo-delivery">
+                                <div class="card-body p-4">
+                                    <h2 id="titulo-delivery" class="h4 mb-3">Configuración de Delivery</h2>
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-12 col-md-6">
+                                            <label for="costo-delivery" class="form-label">Costo de delivery (S/)</label>
+                                            <input type="number" class="form-control" id="costo-delivery" th:field="*{costoDelivery}" step="0.01" min="0" required>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <label for="minimo-gratis" class="form-label">Monto mínimo para delivery gratis (S/)</label>
+                                            <input type="number" class="form-control" id="minimo-gratis" th:field="*{deliveryGratisDesde}" step="0.01" min="0" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="zona-delivery" class="form-label">Zona de delivery</label>
+                                        <input type="text" class="form-control" id="zona-delivery" th:field="*{zonaDelivery}" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="col-12 col-xl-6">
+                            <section class="card h-100 shadow-sm" aria-labelledby="titulo-horarios">
+                                <div class="card-body p-4">
+                                    <h2 id="titulo-horarios" class="h4 mb-3">Horarios de Atención</h2>
+                                    <div class="mb-3">
+                                        <label for="horario-general" class="form-label">Horario general</label>
+                                        <input type="text" class="form-control" id="horario-general" th:field="*{horarioGeneral}" required>
+                                        <div class="form-text">Lun - Dom</div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                </div>
+                            </section>
+                        </div>
+
+                        <div class="col-12 col-xl-6">
+                            <section class="card h-100 shadow-sm" aria-labelledby="titulo-redes">
+                                <div class="card-body p-4">
+                                    <h2 id="titulo-redes" class="h4 mb-3">Redes Sociales</h2>
+                                    <div class="mb-3">
+                                        <label for="instagram" class="form-label">Instagram</label>
+                                        <input type="text" class="form-control" id="instagram" th:field="*{instagram}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="facebook" class="form-label">Facebook</label>
+                                        <input type="text" class="form-control" id="facebook" th:field="*{facebook}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="tiktok" class="form-label">TikTok</label>
+                                        <input type="text" class="form-control" id="tiktok" th:field="*{tiktok}">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <footer class="admin-footer"><span>&copy; 2026 Opalina Florería Piura</span></footer>
+    <th:block th:replace="~{fragments/scripts :: scripts}"></th:block>
+</body>
+</html>

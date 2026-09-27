@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es">
+
+<head th:replace="~{fragments/head :: head(${producto.nombre})}"></head>
+
+<body class="d-flex flex-column min-vh-100">
+  <a class="salto-contenido" href="#contenido-principal">Saltar al contenido</a>
+  <nav th:replace="~{fragments/navbar :: navbar('catalogo')}"></nav>
+
+  <main id="contenido-principal" class="flex-grow-1">
+    <section class="py-5" aria-labelledby="nombre-producto">
+      <div class="container">
+        <nav aria-label="Ruta de navegación" class="mb-4">
+          <a th:href="@{/catalogo}" class="link-secondary fw-semibold text-decoration-none">← Volver al catálogo</a>
+        </nav>
+
+        <div id="detalle-producto" class="row align-items-start g-4 g-lg-5">
+          <div class="col-12 col-lg-7">
+            <div class="card shadow-sm p-3 p-lg-4">
+              <div class="ratio ratio-4x3">
+                <img th:src="@{${producto.imagen}}" th:alt="${producto.nombre}" class="img-fluid w-100 h-100 object-fit-cover rounded" />
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-5">
+            <div class="h-100">
+              <span class="insignia" th:text="${producto.categoria}">Categoría</span>
+              <h1 id="nombre-producto" class="display-5 fw-bold mt-3 mb-2" th:text="${producto.nombre}">Producto</h1>
+              <p class="h3 text-success fw-bold my-4" th:text="|S/ ${#numbers.formatDecimal(producto.precio, 1, 2)}|">S/0.00</p>
+              <p class="text-body-secondary mb-4" th:text="${producto.descripcion}">Descripción del arreglo.</p>
+
+              <div class="list-group list-group-flush mb-4">
+                <div class="list-group-item px-0 d-flex flex-wrap gap-2">
+                  <strong class="text-primary">Disponibilidad</strong>
+                  <span class="text-body-secondary" th:text="${producto.stock > 0 ? producto.stock + ' en stock' : 'Agotado'}">Stock</span>
+                </div>
+              </div>
+
+              <form th:action="@{/carrito/items}" method="post">
+                <input type="hidden" name="productoId" th:value="${producto.id}">
+                <div class="row align-items-center g-3 mb-4">
+                  <div class="col-auto">
+                    <label for="cantidad" class="form-label fw-semibold mb-0">Cantidad:</label>
+                  </div>
+                  <div class="col-4 col-sm-3">
+                    <input type="number" id="cantidad" name="cantidad" class="form-control text-center" min="1" th:max="${producto.stock}" value="1" required />
+                  </div>
+                </div>
+
+                <button id="btn-agregar" class="btn btn-primary btn-lg w-100" type="submit" th:disabled="${producto.stock < 1}">Agregar al carrito</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+
+</body>
+
+</html>

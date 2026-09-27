@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Productos')}"></head>
+
+<body class="admin-app">
+    <a class="admin-skip" href="#contenido-admin">Ir al contenido</a>
+    <header th:replace="~{fragments/admin-header :: header}"></header>
+
+    <div class="admin-workspace">
+        <div th:replace="~{fragments/admin-sidebar :: sidebar('productos')}"></div>
+
+        <main id="contenido-admin" class="admin-main">
+            <div class="admin-page-heading">
+                <div>
+                    <p class="admin-overline">Administración / Productos</p>
+                    <h1>Productos</h1>
+                    <p class="admin-page-description">Administra precios, existencias y disponibilidad.</p>
+                </div>
+                <div class="admin-heading-actions">
+                    <button class="btn btn-outline-primary d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarAdmin" aria-controls="sidebarAdmin">☰ Menú</button>
+                    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#modal-nuevo-producto">+ Nuevo producto</button>
+                </div>
+            </div>
+
+            <div th:replace="~{fragments/mensajes :: mensajes}"></div>
+
+            <div class="admin-contenido">
+                <section class="admin-metrics" aria-label="Resumen de productos">
+                    <article class="card"><div class="card-body">
+                        <p class="admin-metric-label">Total de productos</p>
+                        <strong class="admin-metric-value" th:text="${totalProductos}">0</strong>
+                    </div></article>
+                    <article class="card"><div class="card-body">
+                        <p class="admin-metric-label">Disponibles</p>
+                        <strong class="admin-metric-value" th:text="${productosDisponibles}">0</strong>
+                    </div></article>
+                    <article class="card"><div class="card-body">
+                        <p class="admin-metric-label">Sin stock</p>
+                        <strong class="admin-metric-value" th:text="${productosSinStock}">0</strong>
+                    </div></article>
+                    <article class="card"><div class="card-body">
+                        <p class="admin-metric-label">Destacados</p>
+                        <strong class="admin-metric-value" th:text="${productosDestacados}">0</strong>
+                    </div></article>
+                </section>
+
+                <section class="card admin-toolbar-card" aria-label="Filtros del catálogo">
+                    <form class="card-body admin-filter-grid" method="get" th:action="@{/admin/productos}">
+                        <div>
+                            <label class="form-label" for="filtro-busqueda-producto">Buscar producto</label>
+                            <input class="form-control" type="search" id="filtro-busqueda-producto" name="q" th:value="${consulta}" placeholder="Nombre, descripción o SKU">
+                        </div>
+                        <div>
+                            <label class="form-label" for="filtro-categoria-producto">Categoría</label>
+                            <select class="form-select" id="filtro-categoria-producto" name="categoria">
+                                <option value="">Todas las categorías</option>
+                                <option th:each="categoria : ${categorias}" th:value="${categoria}" th:text="${categoria}" th:selected="${categoria == categoriaSeleccionada}">Categoría</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label" for="filtro-estado-producto">Disponibilidad</label>
+                            <select class="form-select" id="filtro-estado-producto" name="disponibilidad">
+                                <option value="">Todos los estados</option>
+                                <option value="disponible" th:selected="${disponibilidadSeleccionada == 'disponible'}">Disponible</option>
+                                <option value="sin-stock" th:selected="${disponibilidadSeleccionada == 'sin-stock'}">Sin stock</option>
+                                <option value="oculto" th:selected="${disponibilidadSeleccionada == 'oculto'}">No disponible</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary align-self-end" type="submit">Filtrar productos</button>
+                    </form>
+                </section>
+
+                <section class="card admin-results mt-4" aria-label="Catálogo de productos">
+                    <div class="admin-results-heading">
+                        <h2>Productos</h2>
+                        <span role="status" aria-live="polite" th:text="|${#lists.size(productos)} de ${totalProductos} productos|">Productos</span>
+                    </div>
+                    <div class="admin-table-viewport" tabindex="0" role="region"
+                        aria-label="Tabla desplazable de productos">
+                        <table class="table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Producto</th>
+                                    <th scope="col">Categoría</th>
+                                    <th scope="col">Precio</th>
+                                    <th scope="col">Stock</th>
+                                    <th scope="col">Estado</th>
+                                    <th scope="col">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="producto : ${productos}">
+                                    <td>
+                                        <div class="admin-product-cell">
+                                            <img th:src="@{${producto.imagen}}" alt="" width="48" height="48">
+                                            <div>
+                                                <a class="admin-row-title" th:href="@{/admin/productos/{id}(id=${producto.id})}" th:text="${producto.nombre}">Producto</a>
+                                                <small class="admin-cell-subtitle" th:text="${producto.sku}">SKU</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td th:text="${producto.categoria}">Categoría</td>
+                                    <td class="text-nowrap fw-semibold" th:text="|S/ ${#numbers.formatDecimal(producto.precio, 1, 2)}|">S/ 0.00</td>
+                                    <td th:text="${producto.stock}">0</td>
+                                    <td>
+                                        <span class="admin-status" th:classappend="${producto.disponible and producto.stock > 0 ? 'admin-status--disponible' : (producto.stock == 0 ? 'admin-status--sin-stock' : 'admin-status--oculto')}" th:text="${producto.disponible ? (producto.stock > 0 ? 'Disponible' : 'Sin stock') : 'No disponible'}">Estado</span>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-sm btn-outline-primary" th:href="@{/admin/productos/{id}(id=${producto.id})}">Editar</a>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(productos)}">
+                                    <td colspan="6">
+                                        <div class="admin-empty">
+                                            <strong>No se encontraron productos</strong>
+                                            <span>Ajusta los filtros o registra un producto.</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="admin-results-foot">Los detalles y las acciones están disponibles en cada fila.</div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal fade" id="modal-nuevo-producto" tabindex="-1" aria-labelledby="titulo-nuevo-producto"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <form th:action="@{/admin/productos}" th:object="${productoForm}" method="post">
+                    <div class="modal-header">
+                        <div>
+                            <p class="admin-overline mb-1">Catálogo</p>
+                            <h2 class="modal-title h4" id="titulo-nuevo-producto">Nuevo producto</h2>
+                        </div>
+                        <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-12 col-md-8">
+                                <label class="form-label" for="nombre">Nombre</label>
+                                <input class="form-control" id="nombre" th:field="*{nombre}" required>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <label class="form-label" for="sku">SKU</label>
+                                <input class="form-control" id="sku" th:field="*{sku}" required>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="categoria">Categoría</label>
+                                <input class="form-control" id="categoria" th:field="*{categoria}" required>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="form-label" for="precio">Precio (S/)</label>
+                                <input class="form-control" id="precio" type="number" min="0" step="0.01" th:field="*{precio}" required>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <label class="form-label" for="stock">Stock</label>
+                                <input class="form-control" id="stock" type="number" min="0" th:field="*{stock}" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="descripcion">Descripción</label>
+                                <textarea class="form-control" id="descripcion" rows="3" th:field="*{descripcion}" required></textarea>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label" for="imagen">Ruta web de la imagen</label>
+                                <input class="form-control" id="imagen" th:field="*{imagen}" placeholder="/assets/imagenes/productos/archivo.jpg" required>
+                            </div>
+                            <div class="col-auto form-check ms-3">
+                                <input class="form-check-input" id="disponible" type="checkbox" th:field="*{disponible}">
+                                <label class="form-check-label" for="disponible">Disponible</label>
+                            </div>
+                            <div class="col-auto form-check">
+                                <input class="form-check-input" id="destacado" type="checkbox" th:field="*{destacado}">
+                                <label class="form-check-label" for="destacado">Destacado</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancelar</button>
+                        <button class="btn btn-primary" type="submit">Crear producto</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="admin-footer"><span>&copy; 2026 Opalina Florería Piura</span></footer>
+    <th:block th:replace="~{fragments/scripts :: scripts}"></th:block>
+</body>
+</html>

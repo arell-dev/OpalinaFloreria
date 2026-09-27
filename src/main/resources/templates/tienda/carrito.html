@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="es">
+
+<head th:replace="~{fragments/head :: head('Carrito')}"></head>
+
+<body class="d-flex flex-column min-vh-100">
+  <a class="salto-contenido" href="#contenido-principal">Saltar al contenido</a>
+  <nav th:replace="~{fragments/navbar :: navbar('carrito')}"></nav>
+
+  <main id="contenido-principal" class="flex-grow-1">
+    <section class="py-5" aria-labelledby="titulo-carrito">
+      <div class="container py-lg-4">
+        <div class="row justify-content-center">
+          <div class="col-12 col-xxl-10">
+            <p class="ceja mb-2">Tu selección</p>
+            <h1 id="titulo-carrito" class="display-5 fw-bold mb-4">Carrito de Compras</h1>
+            <div class="row g-4 align-items-start">
+              <div class="col-12 col-lg-8">
+                <div th:replace="~{fragments/mensajes :: mensajes}"></div>
+                <div id="carrito-vacio" class="card text-center p-4 p-md-5" th:if="${#lists.isEmpty(items)}">
+                  <div class="card-body">
+                    <p class="ceja">Tu selección</p>
+                    <h2 class="h3">Tu carrito está vacío</h2>
+                    <p class="text-body-secondary">Explora el catálogo y encuentra flores para regalar.</p><a class="btn btn-primary" th:href="@{/catalogo}">Ver catálogo</a>
+                  </div>
+                </div>
+                <div id="items-carrito" class="d-grid gap-3" th:unless="${#lists.isEmpty(items)}">
+                  <article class="card shadow-sm carrito-item" th:each="item : ${items}">
+                    <div class="card-body p-3 p-md-4">
+                      <div class="row g-3 align-items-center">
+                        <div class="col-4 col-sm-auto">
+                          <div class="ratio ratio-1x1 rounded overflow-hidden miniatura-carrito">
+                            <img class="w-100 h-100 object-fit-cover" th:src="@{${item.producto.imagen}}" th:alt="${item.producto.nombre}">
+                          </div>
+                        </div>
+                        <div class="col-8 col-sm">
+                          <h2 class="h5 mb-1" th:text="${item.producto.nombre}">Producto</h2>
+                          <p class="mb-0 fw-bold" th:text="|S/ ${#numbers.formatDecimal(item.producto.precio, 1, 2)} por unidad|">Precio</p>
+                        </div>
+                        <div class="col-7 col-sm-auto">
+                          <div class="carrito-cantidad" role="group" th:aria-label="|Cantidad de ${item.producto.nombre}|">
+                            <form th:action="@{/carrito/items/{id}/cantidad(id=${item.producto.id})}" method="post">
+                              <input type="hidden" name="ajuste" value="-1">
+                              <button class="btn-cantidad" type="submit" aria-label="Reducir una unidad" th:disabled="${item.cantidad <= 1}">−</button>
+                            </form>
+                            <output class="carrito-cantidad__valor" aria-live="polite" th:text="${item.cantidad}">1</output>
+                            <form th:action="@{/carrito/items/{id}/cantidad(id=${item.producto.id})}" method="post">
+                              <input type="hidden" name="ajuste" value="1">
+                              <button class="btn-cantidad" type="submit" aria-label="Aumentar una unidad" th:disabled="${item.cantidad >= item.producto.stock}">+</button>
+                            </form>
+                          </div>
+                          <small class="text-body-secondary" th:text="|${item.producto.stock} disponibles|">Stock</small>
+                        </div>
+                        <div class="col-5 col-sm-auto text-end">
+                          <form th:action="@{/carrito/items/{id}/eliminar(id=${item.producto.id})}" method="post">
+                            <button class="btn btn-outline-primary btn-sm" type="submit">Quitar</button>
+                          </form>
+                          <strong class="d-block mt-2" th:text="|S/ ${#numbers.formatDecimal(item.total, 1, 2)}|">Total</strong>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+
+              </div>
+
+              <div class="col-12 col-lg-4">
+                <aside class="card shadow-sm resumen-carrito" aria-labelledby="titulo-resumen">
+                  <div class="card-body p-4">
+                    <h2 id="titulo-resumen" class="h4 mb-4">Resumen</h2>
+                    <div class="d-flex justify-content-between gap-3 mb-2"><span>Subtotal</span><span id="subtotal-carrito" th:text="|S/ ${#numbers.formatDecimal(subtotal, 1, 2)}|">S/ 0.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between gap-3 mb-3"><span>Delivery <small class="d-block text-body-secondary">Gratis desde S/ 200</small></span><span id="delivery-carrito" th:text="|S/ ${#numbers.formatDecimal(delivery, 1, 2)}|">S/ 15.00</span>
+                    </div>
+                    <hr />
+                    <div class="d-flex justify-content-between gap-3 fs-5 fw-bold mb-4"><span>Total</span><span id="total-carrito" th:text="|S/ ${#numbers.formatDecimal(total, 1, 2)}|">S/ 0.00</span></div>
+                    <a th:href="@{/pedido}" class="btn btn-primary w-100" data-ir-a-pedido>Proceder al pedido</a>
+                    <p id="checkout-vacio-ayuda" class="form-text text-center mt-2 mb-0" hidden> Agrega un producto para continuar con tu pedido.</p>
+                  </div>
+                </aside>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+
+</body>
+
+</html>

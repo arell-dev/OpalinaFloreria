@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Términos y condiciones')}"></head>
+
+<body class="d-flex flex-column min-vh-100">
+  <a class="salto-contenido" href="#contenido-principal">Saltar al contenido</a>
+  <nav th:replace="~{fragments/navbar :: navbar('')}"></nav>
+
+  <main id="contenido-principal" class="flex-grow-1">
+    <section class="legal-hero" aria-labelledby="titulo-terminos">
+      <div class="container py-5 py-lg-6">
+        <div class="row align-items-end g-4">
+          <div class="col-12 col-lg-8">
+            <p class="ceja mb-3">Compras y condiciones de uso</p>
+            <h1 id="titulo-terminos" class="legal-hero__title">Términos y Condiciones</h1>
+            <p class="legal-hero__intro mb-0">Consulta las condiciones de compra, entrega y uso del sitio antes de realizar tu pedido.</p>
+          </div>
+          <div class="col-12 col-lg-4">
+            <div class="legal-actualizacion">
+              <span class="legal-actualizacion__marca" aria-hidden="true">O</span>
+              <span><small>Última actualización</small><strong>Marzo de 2026</strong></span>
+              <a href="#documento-legal" aria-label="Ir al documento">Leer <span aria-hidden="true">↓</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="legal-body py-5" aria-labelledby="indice-terminos">
+      <div class="container">
+        <div class="row g-4 g-xl-5 align-items-start">
+          <aside class="col-12 col-lg-4 col-xxl-3">
+            <div class="card legal-indice shadow-sm">
+              <div class="card-body">
+                <p class="ceja mb-2">Documento</p>
+                <h2 class="h5 mb-3" id="indice-terminos">En esta página</h2>
+                <nav aria-label="Secciones del documento">
+                  <ol class="legal-indice__lista">
+                    <li><a href="#terminos-01"><span>01</span>Aceptación de los términos</a></li>
+                    <li><a href="#terminos-02"><span>02</span>Información del servicio</a></li>
+                    <li><a href="#terminos-03"><span>03</span>Pedidos y pagos</a></li>
+                    <li><a href="#terminos-04"><span>04</span>Entregas</a></li>
+                    <li><a href="#terminos-05"><span>05</span>Política de cambios y devoluciones</a></li>
+                    <li><a href="#terminos-06"><span>06</span>Cancelaciones</a></li>
+                    <li><a href="#terminos-07"><span>07</span>Uso del sitio web</a></li>
+                    <li><a href="#terminos-08"><span>08</span>Propiedad intelectual</a></li>
+                    <li><a href="#terminos-09"><span>09</span>Limitación de responsabilidad</a></li>
+                    <li><a href="#terminos-10"><span>10</span>Modificaciones</a></li>
+                    <li><a href="#terminos-11"><span>11</span>Contacto</a></li>
+                  </ol>
+                </nav>
+                <div class="legal-indice__ayuda">
+                  <strong>Antes de comprar</strong>
+                  <p>Revisa las condiciones de pago, entrega y cambios. Si necesitas ayuda, escríbenos.</p>
+                  <a th:href="@{/contacto}" class="enlace-opalina">Contactar con Opalina <span aria-hidden="true">→</span></a>
+                </div>
+              </div>
+            </div>
+          </aside>
+          <div class="col-12 col-lg-8 col-xxl-9">
+            <div class="card legal-document shadow-sm" id="documento-legal">
+              <div class="card-body p-4 p-lg-5">
+                <div class="legal-seccion mb-4" id="terminos-01">
+                  <h2>1. Aceptación de los términos</h2>
+                  <p>Al acceder y utilizar el sitio web de Opalina Florería Piura, el usuario acepta cumplir con los presentes términos y condiciones de uso. Si no está de acuerdo con alguna parte de estos términos, no deberá utilizar nuestro sitio web.</p>
+                </div>
+                <div class="legal-seccion mb-4" id="terminos-02">
+                  <h2>2. Información del servicio</h2>
+                  <p>Opalina Florería Piura ofrece servicios de venta y entrega de arreglos florales en la ciudad de Piura, Perú. Nuestros productos están sujetos a disponibilidad de flores y materiales.</p>
+                </div>
+                <div class="legal-seccion mb-4" id="terminos-03">
+                  <h2>3. Pedidos y pagos</h2>
+                  <p>Los pedidos se confirman únicamente después de la verificación del pago. Aceptamos pagos mediante Yape, Plin, efectivo contra entrega y transferencia bancaria. Los precios están expresados en soles peruanos (S/) e incluyen IGV.</p>
+                </div>
+                <div class="legal-seccion mb-4" id="terminos-04">
+                  <h2>4. Entregas</h2>
+                  <p>Realizamos entregas en Piura urbana. El costo de delivery es de S/ 15.00, con envío gratuito en compras mayores a S/ 200.00. Las entregas se realizan en un plazo de 24 a 48 horas dependiendo de la disponibilidad y zona de entrega.</p>
+                </div>
+                <div class="legal-seccion mb-4" id="terminos-05">
+                  <h2>5. Política de cambios y devoluciones</h2>
+                  <p>Debido a la naturaleza perecedera de nuestros productos, no se aceptan devoluciones. Sin embargo, si el arreglo llega en mal estado o no coincide con el pedido, el cliente debe contactarnos dentro de las 24 horas siguientes a la entrega para evaluar el caso.</p>
+                </div>
+                <div class="legal-seccion mb-4" id="terminos-06">
+                  <h2>6. Cancelaciones</h2>
+                  <p>Los pedidos pueden cancelarse sin cargo hasta 4 horas antes de la hora programada de entrega. Después de ese plazo, no se aceptarán cancelaciones.</p>
+                </div>
+                <div class="legal-seccion mb-4" id="terminos-07">
+                  <h2>7. Uso del sitio web</h2>
+                  <p>El usuario se compromete a utilizar el sitio web de manera lícita y respetuosa. Está prohibido cualquier uso que pueda dañar, sobrecargar o impedir el normal funcionamiento del sitio.</p>
+                </div>
+                <div class="legal-seccion mb-4" id="terminos-08">
+                  <h2>8. Propiedad intelectual</h2>
+                  <p>Todo el contenido del sitio web (textos, imágenes, logos, diseños) es propiedad de Opalina Florería Piura y está protegido por las leyes de propiedad intelectual.</p>
+                </div>
+                <div class="legal-seccion mb-4" id="terminos-09">
+                  <h2>9. Limitación de responsabilidad</h2>
+                  <p>Opalina Florería Piura no se hace responsable por daños derivados del uso incorrecto del sitio web o de la información contenida en él.</p>
+                </div>
+                <div class="legal-seccion mb-4" id="terminos-10">
+                  <h2>10. Modificaciones</h2>
+                  <p>Nos reservamos el derecho de modificar estos términos y condiciones en cualquier momento. Las modificaciones serán efectivas inmediatamente después de su publicación en el sitio web.</p>
+                </div>
+                <div class="legal-seccion mb-4" id="terminos-11">
+                  <h2>11. Contacto</h2>
+                  <p class="mb-3">Para cualquier consulta sobre estos términos, puede contactarnos a través de:</p>
+                  <ul class="list-unstyled d-grid gap-2">
+                    <li><strong class="d-block">WhatsApp</strong><a class="enlace-opalina" href="https://wa.me/51939355038" target="_blank" rel="noopener">+51 939 355 038</a></li>
+                    <li><strong class="d-block">Email</strong><a class="enlace-opalina" href="mailto:contacto@opalinapiura.com">contacto@opalinapiura.com</a></li>
+                    <li><strong class="d-block">Instagram</strong><a class="enlace-opalina" href="https://instagram.com/opalina_piura" target="_blank" rel="noopener">@opalina_piura</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+
+</html>

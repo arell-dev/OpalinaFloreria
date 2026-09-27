@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="es">
+
+<head th:replace="~{fragments/head :: head('Mi perfil')}"></head>
+
+<body class="d-flex flex-column min-vh-100">
+  <a class="salto-contenido" href="#contenido-principal">Saltar al contenido</a>
+  <nav th:replace="~{fragments/navbar :: navbar('cuenta')}"></nav>
+
+  <main id="contenido-principal" class="flex-grow-1">
+    <section class="py-5">
+      <div class="container">
+        <div class="mb-4">
+          <p class="ceja mb-2">Cuenta</p>
+          <h1 class="display-5 fw-bold mb-2">Mi perfil</h1>
+          <p class="text-body-secondary mb-0">Actualiza tus datos para gestionar tus pedidos con mayor facilidad.</p>
+        </div>
+
+        <div class="row g-4 align-items-start">
+          <div class="col-12 col-lg-4">
+            <aside class="account-sidebar w-100">
+              <div class="card h-100">
+                <div class="card-body">
+                  <div class="text-center border-bottom pb-3 mb-3">
+                    <span class="avatar-initials" aria-hidden="true" th:text="${iniciales}">OP</span>
+                    <h2 class="h5 mb-1 mt-2" th:text="${cliente.nombre}">Mi cuenta</h2>
+                    <p class="text-body-secondary small mb-0" th:text="${cliente.email}">Correo</p>
+                  </div>
+
+                  <div class="list-group list-group-flush">
+                    <a class="list-group-item list-group-item-action active" aria-current="true" th:href="@{/cuenta/perfil}">Mi Perfil</a>
+                    <a class="list-group-item list-group-item-action" th:href="@{/cuenta/pedidos}">Mis Pedidos</a>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+
+          <div class="col-12 col-lg-8">
+            <div class="card">
+              <div class="card-body p-4 p-lg-5">
+                <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-4">
+                  <div>
+                    <p class="ceja mb-2">Información personal</p>
+                    <h2 class="h1 mb-0">Tus datos</h2>
+                  </div>
+                </div>
+
+                <div th:replace="~{fragments/mensajes :: mensajes}"></div>
+                <form th:action="@{/cuenta/perfil}" th:object="${perfilForm}" method="post">
+                  <div class="row g-3">
+                    <div class="col-md-6">
+                      <label for="nombre" class="form-label fw-semibold">Nombres</label>
+                      <input type="text" class="form-control" id="nombre" th:field="*{nombre}" autocomplete="given-name" placeholder="Ingresa tus nombres" />
+                      <div class="form-text text-danger" th:errors="*{nombre}"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <label for="apellidos" class="form-label fw-semibold">Apellidos</label>
+                      <input type="text" class="form-control" id="apellidos" th:field="*{apellidos}" autocomplete="family-name" placeholder="Ingresa tus apellidos" />
+                      <div class="form-text text-danger" th:errors="*{apellidos}"></div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <label for="correo" class="form-label fw-semibold">Correo electrónico</label>
+                      <input type="email" class="form-control" id="correo" th:value="${cliente.email}" autocomplete="email" readonly />
+                    </div>
+
+                    <div class="col-md-6">
+                      <label for="telefono" class="form-label fw-semibold">Teléfono</label>
+                      <input type="tel" class="form-control" id="telefono" th:field="*{telefono}" autocomplete="tel" placeholder="Ingresa tu teléfono" />
+                      <div class="form-text text-danger" th:errors="*{telefono}"></div>
+                    </div>
+
+                    <div class="col-12">
+                      <label for="direccion" class="form-label fw-semibold">Dirección de entrega</label>
+                      <input type="text" class="form-control" id="direccion" th:field="*{direccion}" autocomplete="street-address" placeholder="Ingresa tu dirección" />
+                    </div>
+
+                    <div class="col-12">
+                      <label for="referencia" class="form-label fw-semibold">Referencia</label>
+                      <textarea class="form-control" id="referencia" th:field="*{referencia}" rows="3" placeholder="Agrega una referencia para la entrega"></textarea>
+                    </div>
+
+                    <div class="col-12 pt-2">
+                      <div class="d-flex flex-wrap gap-2">
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                        <button type="reset" class="btn btn-outline-secondary">Limpiar</button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+
+</body>
+
+</html>

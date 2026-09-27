@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="es">
+
+<head th:replace="~{fragments/head :: head('Detalle de pedido')}"></head>
+
+<body class="d-flex flex-column min-vh-100">
+  <a class="salto-contenido" href="#contenido-principal">Saltar al contenido</a>
+  <nav th:replace="~{fragments/navbar :: navbar('cuenta')}"></nav>
+
+  <main id="contenido-principal" class="flex-grow-1">
+    <section class="py-5" aria-labelledby="titulo-detalle-pedido">
+      <div class="container py-lg-4">
+        <a th:href="@{/cuenta/pedidos}" class="enlace-opalina d-inline-block mb-3">&#8592; Volver a mis pedidos</a>
+
+        <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+          <div>
+            <p class="ceja mb-2" id="ceja-orden" th:text="|Pedido ${pedido.id}|">Pedido</p>
+            <h1 id="titulo-detalle-pedido" class="display-6 fw-bold mb-2">Detalle del pedido</h1>
+            <p class="text-body-secondary mb-0" id="fecha-orden" th:text="|Realizado el ${#temporals.format(pedido.creadoEn, 'dd/MM/yyyy')}|">Fecha del pedido</p>
+          </div>
+          <span class="estado-estado" id="estado-orden" th:classappend="${pedido.estado.name() == 'EN_PROCESO' ? ' estado-proceso' : ' estado-' + #strings.toLowerCase(pedido.estado.name())}" th:text="${#strings.replace(pedido.estado.name(), '_', ' ')}">Estado</span>
+        </div>
+
+        <div class="row g-4 align-items-start">
+          <div class="col-12 col-lg-4">
+            <aside class="account-sidebar w-100">
+              <div class="card h-100">
+                <div class="card-body">
+                  <div class="text-center border-bottom pb-3 mb-3">
+                    <span class="avatar-initials" aria-hidden="true" th:text="${iniciales}">OP</span>
+                    <h2 class="h5 mb-1 mt-2" th:text="${pedido.nombreCliente}">Cliente</h2>
+                    <p class="text-body-secondary small mb-0" th:text="${pedido.email}">Correo</p>
+                  </div>
+                  <div class="list-group list-group-flush">
+                    <a class="list-group-item list-group-item-action" th:href="@{/cuenta/perfil}">Mi Perfil</a>
+                    <a class="list-group-item list-group-item-action active" aria-current="true" th:href="@{/cuenta/pedidos}">Mis Pedidos</a>
+                  </div>
+                </div>
+              </div>
+            </aside>
+          </div>
+
+          <div class="col-12 col-lg-8">
+            <div class="d-grid gap-4">
+              <section class="card shadow-sm" aria-labelledby="titulo-estado-pedido">
+                <div class="card-body p-4">
+                  <h2 id="titulo-estado-pedido" class="h4 mb-4">Estado del pedido</h2>
+                  <ol class="pedido-timeline">
+                    <li class="paso-tiempo paso-tiempo--hecho">
+                      <span class="paso-tiempo__punto" aria-hidden="true"></span>
+                      <h3>Pedido recibido</h3>
+                      <p id="fecha-paso-1" th:text="${#temporals.format(pedido.creadoEn, 'dd/MM/yyyy')}">Fecha</p>
+                    </li>
+                    <li class="paso-tiempo" th:classappend="${pedido.estado.name() == 'PENDIENTE' ? 'paso-tiempo--actual' : 'paso-tiempo--hecho'}">
+                      <span class="paso-tiempo__punto" aria-hidden="true"></span>
+                      <h3>En preparación</h3>
+                      <p id="fecha-paso-2" th:text="${pedido.estado.name() == 'PENDIENTE' ? 'En preparación' : 'Completado'}">Estado</p>
+                    </li>
+                    <li class="paso-tiempo" th:classappend="${pedido.estado.name() == 'ENVIADO' ? 'paso-tiempo--actual' : (pedido.estado.name() == 'ENTREGADO' ? 'paso-tiempo--hecho' : 'paso-tiempo--pendiente')}">
+                      <span class="paso-tiempo__punto" aria-hidden="true"></span>
+                      <h3>En camino</h3>
+                      <p id="fecha-paso-3">Pendiente</p>
+                    </li>
+                    <li class="paso-tiempo" th:classappend="${pedido.estado.name() == 'ENTREGADO' ? 'paso-tiempo--actual' : 'paso-tiempo--pendiente'}">
+                      <span class="paso-tiempo__punto" aria-hidden="true"></span>
+                      <h3>Entregado</h3>
+                      <p id="fecha-paso-4">Pendiente</p>
+                    </li>
+                  </ol>
+                </div>
+              </section>
+
+              <section class="card shadow-sm" aria-labelledby="titulo-productos-pedido">
+                <div class="card-body p-4">
+                  <h2 id="titulo-productos-pedido" class="h4 mb-3">Productos</h2>
+                  <div class="d-grid gap-3" id="items-detalle-pedido" aria-live="polite">
+                    <article class="checkout-item" th:each="item : ${pedido.items}">
+                      <img class="checkout-item-image" th:src="@{${item.imagen}}" th:alt="${item.nombreProducto}" width="80" height="80">
+                      <div class="checkout-item-details">
+                        <h3 class="h5 mb-1" th:text="${item.nombreProducto}">Producto</h3>
+                        <p class="text-body-secondary mb-0" th:text="|${item.categoria} · Cantidad: ${item.cantidad}|">Detalle</p>
+                      </div>
+                      <strong class="checkout-item-price" th:text="|S/ ${#numbers.formatDecimal(item.totalLinea, 1, 2)}|">S/ 0.00</strong>
+                    </article>
+                  </div>
+              </section>
+
+              <div class="row g-4">
+                <div class="col-12 col-md-6">
+                  <section class="card h-100 shadow-sm" aria-labelledby="titulo-entrega-pedido">
+                    <div class="card-body p-4">
+                      <h2 id="titulo-entrega-pedido" class="h4 mb-3">Información de Entrega</h2>
+                      <p class="mb-2" id="modalidad-entrega"><strong>Modalidad:</strong>
+                        <span th:text="${pedido.entrega.modalidad}">Entrega</span>
+                      </p>
+                      <p class="mb-2" id="direccion-entrega"><strong>Dirección:</strong>
+                        <span th:text="${pedido.entrega.direccion ?: 'Recojo en tienda'}">Dirección</span>
+                      </p>
+                      <p class="mb-0" id="notas-entrega"><strong>Notas:</strong>
+                        <span th:text="${pedido.entrega.notas ?: pedido.entrega.referencia ?: '—'}">Notas</span>
+                      </p>
+                    </div>
+                  </section>
+                </div>
+                <div class="col-12 col-md-6">
+                  <section class="card h-100 shadow-sm" aria-labelledby="titulo-pago-pedido">
+                    <div class="card-body p-4">
+                      <h2 id="titulo-pago-pedido" class="h4 mb-3">Información de Pago</h2>
+                      <p class="mb-2" id="metodo-pago"><strong>Método:</strong>
+                        <span th:text="${pedido.entrega.metodoPago}">Método</span>
+                      </p>
+                      <p class="mb-0" id="estado-pago"><strong>Estado:</strong>
+                        <span class="estado-estado" th:text="${pedido.estadoPago}">Estado del pago</span>
+                      </p>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-8 ms-lg-auto">
+            <section class="card shadow-sm" aria-labelledby="titulo-resumen-pedido">
+              <div class="card-body p-4">
+                <h2 id="titulo-resumen-pedido" class="h4 mb-3">Resumen</h2>
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-body-secondary">Subtotal</span>
+                  <span th:text="|S/ ${#numbers.formatDecimal(pedido.subtotal, 1, 2)}|">S/ 0.00</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                  <span class="text-body-secondary">Delivery</span>
+                  <span th:text="${pedido.costoDelivery == 0 ? 'Gratis' : 'S/ ' + #numbers.formatDecimal(pedido.costoDelivery, 1, 2)}">S/0.00</span>
+                </div>
+                <hr class="my-3">
+                <div class="d-flex justify-content-between fw-bold fs-5">
+                  <span>Total</span><span th:text="|S/ ${#numbers.formatDecimal(pedido.total, 1, 2)}|">S/ 0.00</span>
+                </div>
+                <div class="d-grid gap-2 mt-4">
+                  <a href="https://wa.me/51939355038" target="_blank" rel="noopener" class="btn btn-primary">Contactar por WhatsApp</a>
+                  <a th:href="@{/catalogo}" class="btn btn-outline-primary">Volver al catálogo</a>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+
+</body>
+
+</html>

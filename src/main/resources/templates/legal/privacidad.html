@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Política de privacidad')}"></head>
+
+<body class="d-flex flex-column min-vh-100">
+  <a class="salto-contenido" href="#contenido-principal">Saltar al contenido</a>
+  <nav th:replace="~{fragments/navbar :: navbar('')}"></nav>
+
+  <main id="contenido-principal" class="flex-grow-1">
+    <section class="legal-hero" aria-labelledby="titulo-privacidad">
+      <div class="container py-5 py-lg-6">
+        <div class="row align-items-end g-4">
+          <div class="col-12 col-lg-8">
+            <p class="ceja mb-3">Privacidad y datos personales</p>
+            <h1 id="titulo-privacidad" class="legal-hero__title">Política de Privacidad</h1>
+            <p class="legal-hero__intro mb-0">Conoce qué información utilizamos, para qué la usamos y cómo puedes ejercer tus derechos.</p>
+          </div>
+          <div class="col-12 col-lg-4">
+            <div class="legal-actualizacion">
+              <span class="legal-actualizacion__marca" aria-hidden="true">O</span>
+              <span><small>Última actualización</small><strong>Marzo de 2026</strong></span>
+              <a href="#documento-legal" aria-label="Ir al documento">Leer <span aria-hidden="true">↓</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="legal-body py-5" aria-labelledby="indice-privacidad">
+      <div class="container">
+        <div class="row g-4 g-xl-5 align-items-start">
+          <aside class="col-12 col-lg-4 col-xxl-3">
+            <div class="card legal-indice shadow-sm">
+              <div class="card-body">
+                <p class="ceja mb-2">Documento</p>
+                <h2 class="h5 mb-3" id="indice-privacidad">En esta página</h2>
+                <nav aria-label="Secciones del documento">
+                  <ol class="legal-indice__lista">
+                    <li><a href="#privacidad-01"><span>01</span>Información que recopilamos</a></li>
+                    <li><a href="#privacidad-02"><span>02</span>Uso de la información</a></li>
+                    <li><a href="#privacidad-03"><span>03</span>Protección de datos</a></li>
+                    <li><a href="#privacidad-04"><span>04</span>Compartir información</a></li>
+                    <li><a href="#privacidad-05"><span>05</span>Cookies</a></li>
+                    <li><a href="#privacidad-06"><span>06</span>Derechos del usuario</a></li>
+                    <li><a href="#privacidad-07"><span>07</span>Retención de datos</a></li>
+                    <li><a href="#privacidad-08"><span>08</span>Menores de edad</a></li>
+                    <li><a href="#privacidad-09"><span>09</span>Cambios en la política</a></li>
+                    <li><a href="#privacidad-10"><span>10</span>Contacto</a></li>
+                  </ol>
+                </nav>
+                <div class="legal-indice__ayuda">
+                  <strong>Sobre este documento</strong>
+                  <p>Si tienes una consulta sobre el uso de tus datos, nuestro equipo puede orientarte.</p>
+                  <a th:href="@{/contacto}" class="enlace-opalina">Contactar con Opalina <span aria-hidden="true">→</span></a>
+                </div>
+              </div>
+            </div>
+          </aside>
+          <div class="col-12 col-lg-8 col-xxl-9">
+            <div class="card legal-document shadow-sm" id="documento-legal">
+              <div class="card-body p-4 p-lg-5">
+                <div class="legal-seccion mb-4" id="privacidad-01">
+                  <h2>1. Información que recopilamos</h2>
+                  <p>En Opalina Florería Piura, recopilamos la siguiente información personal de nuestros usuarios:</p>
+                  <ul>
+                    <li>Nombre completo</li>
+                    <li>Correo electrónico</li>
+                    <li>Número de teléfono</li>
+                    <li>Dirección de entrega</li>
+                    <li>Información de pago (procesada de forma segura)</li>
+                    <li>Historial de pedidos</li>
+                  </ul>
+                </div>
+                <div class="legal-seccion mb-4" id="privacidad-02">
+                  <h2>2. Uso de la información</h2>
+                  <p>Utilizamos la información recopilada para:</p>
+                  <ul>
+                    <li>Procesar y entregar pedidos</li>
+                    <li>Brindar atención al cliente</li>
+                    <li>Enviar comunicaciones sobre el estado de los pedidos</li>
+                    <li>Mejorar nuestros servicios y productos</li>
+                    <li>Enviar promociones y ofertas (solo con consentimiento)</li>
+                  </ul>
+                </div>
+                <div class="legal-seccion mb-4" id="privacidad-03">
+                  <h2>3. Protección de datos</h2>
+                  <p>Implementamos medidas de seguridad técnicas y organizativas para proteger su información personal contra acceso no autorizado, pérdida, alteración o destrucción. Utilizamos conexiones seguras (HTTPS) y almacenamos las contraseñas de forma encriptada.</p>
+                </div>
+                <div class="legal-seccion mb-4" id="privacidad-04">
+                  <h2>4. Compartir información</h2>
+                  <p>No vendemos, alquilamos ni compartimos su información personal con terceros, excepto cuando es necesario para:</p>
+                  <ul>
+                    <li>Procesar pagos (proveedores de pago)</li>
+                    <li>Realizar entregas (servicio de delivery)</li>
+                    <li>Cumplir con obligaciones legales</li>
+                  </ul>
+                </div>
+                <div class="legal-seccion mb-4" id="privacidad-05">
+                  <h2>5. Cookies</h2>
+                  <p>Nuestro sitio web utiliza cookies para mejorar la experiencia del usuario, recordar preferencias y  analizar el tráfico del sitio. Puede configurar su navegador para rechazar las cookies, aunque esto puede afectar algunas funcionalidades.</p>
+                </div>
+                <div class="legal-seccion mb-4" id="privacidad-06">
+                  <h2>6. Derechos del usuario</h2>
+                  <p>Usted tiene derecho a:</p>
+                  <ul>
+                    <li>Acceder a su información personal</li>
+                    <li>Rectificar datos incorrectos</li>
+                    <li>Solicitar la eliminación de sus datos</li>
+                    <li>Oponerse al tratamiento de sus datos</li>
+                    <li>Retirar su consentimiento en cualquier momento</li>
+                  </ul>
+                </div>
+                <div class="legal-seccion mb-4" id="privacidad-07">
+                  <h2>7. Retención de datos</h2>
+                  <p>Conservamos su información personal mientras mantenga una cuenta activa con nosotros o mientras sea necesario para prestar nuestros servicios y cumplir con obligaciones legales.</p>
+                </div>
+                <div class="legal-seccion mb-4" id="privacidad-08">
+                  <h2>8. Menores de edad</h2>
+                  <p>Nuestro sitio web no está dirigido a menores de 18 años. No recopilamos intencionalmente información personal de menores.</p>
+                </div>
+                <div class="legal-seccion mb-4" id="privacidad-09">
+                  <h2>9. Cambios en la política</h2>
+                  <p>Nos reservamos el derecho de modificar esta política de privacidad. Los cambios serán notificados a través del sitio web y, cuando sea apropiado, por correo electrónico.</p>
+                </div>
+                <div class="legal-seccion mb-4" id="privacidad-10">
+                  <h2>10. Contacto</h2>
+                  <p class="mb-3">Para consultas sobre privacidad o para ejercer sus derechos, puede contactarnos:</p>
+                  <ul class="list-unstyled d-grid gap-2">
+                    <li><strong class="d-block">Email</strong><a class="enlace-opalina" href="mailto:privacidad@opalinapiura.com">privacidad@opalinapiura.com</a></li>
+                    <li><strong class="d-block">WhatsApp</strong><a class="enlace-opalina" href="https://wa.me/51939355038" target="_blank" rel="noopener">+51 939 355 038</a></li>
+                    <li><strong class="d-block">Dirección</strong><span>Piura, Perú</span></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+</body>
+
+</html>

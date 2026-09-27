@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/head :: head('Reportes')}"></head>
+
+<body class="admin-app">
+    <a class="admin-skip" href="#contenido-admin">Ir al contenido</a>
+    <header th:replace="~{fragments/admin-header :: header}"></header>
+
+    <div class="admin-workspace">
+        <div th:replace="~{fragments/admin-sidebar :: sidebar('reportes')}"></div>
+
+        <main id="contenido-admin" class="admin-main">
+            <div class="admin-page-heading">
+                <div>
+                    <p class="admin-overline">Administración / Reportes</p>
+                    <h1>Reportes</h1>
+                    <p class="admin-page-description">Revisa el movimiento de pedidos y los productos más solicitados.</p>
+                </div>
+                <div class="admin-heading-actions">
+                    <button class="btn btn-outline-primary d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarAdmin" aria-controls="sidebarAdmin">☰ Menú</button>
+                </div>
+            </div>
+
+            <div class="admin-contenido">
+                <section class="card admin-toolbar-card mb-4" aria-label="Filtrar reporte por estado">
+                    <form class="card-body" method="get" th:action="@{/admin/reportes}">
+                        <div class="row align-items-end g-3">
+                            <div class="col-12 col-md-8">
+                                <label class="form-label" for="estado-reporte">Estado de los pedidos</label>
+                                <select class="form-select" id="estado-reporte" name="estado">
+                                    <option value="" th:selected="${estadoSeleccionado == null}">Todos los estados
+                                    </option>
+                                    <option th:each="estado : ${estados}" th:value="${estado}" th:selected="${estado == estadoSeleccionado}" th:text="${estado.name() == 'EN_PROCESO' ? 'En proceso' : #strings.capitalize(#strings.toLowerCase(estado.name()))}">Estado</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-4">
+                                <button class="btn btn-primary" type="submit">Actualizar reporte</button>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+
+                <section class="admin-metrics" aria-label="Resumen del reporte">
+                    <article class="card">
+                        <div class="card-body">
+                            <p class="admin-metric-label">Pedidos</p>
+                            <strong class="admin-metric-value" th:text="${resumen.totalPedidos}">0</strong>
+                        </div>
+                    </article>
+                    <article class="card">
+                        <div class="card-body">
+                            <p class="admin-metric-label">Valor de pedidos</p>
+                            <strong class="admin-metric-value" th:text="|S/ ${#numbers.formatDecimal(resumen.ventas, 1, 2)}|">S/ 0.00</strong>
+                        </div>
+                    </article>
+                    <article class="card">
+                        <div class="card-body">
+                            <p class="admin-metric-label">Promedio por pedido</p>
+                            <strong class="admin-metric-value" th:text="|S/ ${#numbers.formatDecimal(resumen.promedio, 1, 2)}|">S/ 0.00</strong>
+                        </div>
+                    </article>
+                    <article class="card">
+                        <div class="card-body">
+                            <p class="admin-metric-label">Unidades solicitadas</p>
+                            <strong class="admin-metric-value" th:text="${resumen.unidades}">0</strong>
+                        </div>
+                    </article>
+                </section>
+
+                <section class="card admin-results mt-4" aria-label="Productos solicitados">
+                    <div class="admin-results-heading">
+                        <h2>Productos solicitados</h2>
+                        <span role="status" aria-live="polite" th:text="|${#lists.size(productosVendidos)} productos|">Productos</span>
+                    </div>
+                    <div class="admin-table-viewport" tabindex="0" role="region"
+                        aria-label="Tabla de productos solicitados">
+                        <table class="table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Producto</th>
+                                    <th scope="col">Unidades</th>
+                                    <th scope="col">Valor en pedidos</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="venta : ${productosVendidos}">
+                                    <td class="fw-semibold" th:text="${venta.nombre}">Producto</td>
+                                    <td th:text="${venta.cantidad}">0</td>
+                                    <td class="text-nowrap fw-semibold" th:text="|S/ ${#numbers.formatDecimal(venta.total, 1, 2)}|">S/ 0.00</td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(productosVendidos)}">
+                                    <td colspan="3">
+                                        <div class="admin-empty">
+                                            <strong>No hay pedidos con este estado</strong>
+                                            <span>Selecciona otro estado para consultar el resumen.</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                <p class="form-text mt-3">El valor corresponde a los importes registrados en pedidos y no representa pagos confirmados.</p>
+            </div>
+        </main>
+    </div>
+
+    <footer class="admin-footer"><span>&copy; 2026 Opalina Florería Piura</span></footer>
+    <th:block th:replace="~{fragments/scripts :: scripts}"></th:block>
+</body>
+
+</html>

@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="es">
+
+<head th:replace="~{fragments/head :: head('Finalizar pedido')}"></head>
+
+<body class="d-flex flex-column min-vh-100">
+  <a class="salto-contenido" href="#contenido-principal">Saltar al contenido</a>
+  <nav th:replace="~{fragments/navbar :: navbar('carrito')}"></nav>
+
+  <main id="contenido-principal" class="flex-grow-1">
+    <section class="py-5" aria-labelledby="titulo-pedido">
+      <div class="container py-lg-4">
+        <div class="checkout-shell">
+          <header class="checkout-heading mb-4">
+            <p class="ceja mb-2">Compra</p>
+            <h1 id="titulo-pedido" class="display-5 fw-bold mb-2">Realizar pedido</h1>
+            <p class="text-body-secondary mb-4">Revisa tu selección, indica cómo recibirla y confirma los datos.</p>
+            <ol class="checkout-progress" data-checkout-steps aria-label="Pasos para realizar el pedido">
+              <li data-checkout-step="1" class="is-current" aria-current="step"><span class="checkout-progress-number">1</span><span>Tu  pedido</span></li>
+              <li data-checkout-step="2"><span class="checkout-progress-number">2</span><span>Entrega</span></li>
+              <li data-checkout-step="3"><span class="checkout-progress-number">3</span><span>Confirmar</span></li>
+            </ol>
+            <div class="alert alert-danger mt-4 mb-0" role="alert" th:if="${error}" th:text="${error}"></div>
+          </header>
+
+          <form class="checkout-layout" id="formulario-checkout" data-checkout-form th:action="@{/pedido/confirmar}" th:object="${checkoutForm}" method="post" novalidate>
+            <div class="checkout-main">
+              <section class="card checkout-card" data-checkout-panel="1" aria-labelledby="titulo-paso-pedido" th:unless="${pedidoConfirmado != null}">
+                <div class="card-body p-4 p-lg-5">
+                  <p class="ceja mb-2">Paso 1 de 3</p>
+                  <h2 id="titulo-paso-pedido" class="h1 mb-2" tabindex="-1">Revisa tu pedido</h2>
+                  <p class="text-body-secondary mb-4">Revisa los productos y las cantidades. Si necesitas hacer cambios, vuelve al carrito.</p>
+                  <div id="checkout-items" class="checkout-items" aria-live="polite">
+                    <article class="checkout-item" th:each="item : ${items}">
+                      <img class="checkout-item-image" th:src="@{${item.producto.imagen}}" th:alt="${item.producto.nombre}" width="80" height="80">
+                      <div class="checkout-item-details">
+                        <h3 class="h5 mb-1" th:text="${item.producto.nombre}">Producto</h3>
+                        <p class="text-body-secondary mb-0" th:text="|Cantidad: ${item.cantidad}|">Cantidad</p>
+                      </div>
+                      <strong th:text="|S/ ${#numbers.formatDecimal(item.total, 1, 2)}|">Total</strong>
+                    </article>
+                  </div>
+                  <div class="checkout-actions mt-4">
+                    <a class="btn btn-outline-primary" th:href="@{/carrito}">Editar carrito</a>
+                    <button class="btn btn-primary" type="button" data-checkout-next="2">Continuar a entrega <span aria-hidden="true">→</span></button>
+                  </div>
+                </div>
+              </section>
+
+              <section class="card checkout-card" data-checkout-panel="2" aria-labelledby="titulo-paso-entrega" hidden th:unless="${pedidoConfirmado != null}">
+                <div class="card-body p-4 p-lg-5">
+                  <p class="ceja mb-2">Paso 2 de 3</p>
+                  <h2 id="titulo-paso-entrega" class="h1 mb-2" tabindex="-1">¿Dónde y cuándo lo entregamos?</h2>
+                  <p class="text-body-secondary mb-4">Completa los datos marcados como obligatorios para coordinar contigo.</p>
+                  <div class="alert alert-danger mb-4" role="alert" data-checkout-validation-summary hidden> Revisa los campos obligatorios marcados antes de continuar.
+                  </div>
+                  <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                      <label for="clienteNombre" class="form-label fw-semibold">Nombre de quien recibe <span class="text-danger" aria-hidden="true">*</span></label>
+                      <input type="text" class="form-control" id="clienteNombre" th:field="*{nombreReceptor}" th:errorclass="is-invalid" autocomplete="name" placeholder="Ej. María López" minlength="3" maxlength="80" required />
+                      <div class="invalid-feedback">Indica el nombre de la persona que recibirá el pedido.</div>
+                      <div class="form-text text-danger" th:errors="*{nombreReceptor}"></div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="clienteCorreo" class="form-label fw-semibold">Correo de tu cuenta</label>
+                      <input type="email" class="form-control" id="clienteCorreo" th:field="*{email}" th:errorclass="is-invalid" autocomplete="email" readonly aria-describedby="ayuda-correo-pedido" />
+                      <div class="form-text" id="ayuda-correo-pedido">El pedido quedará asociado a este correo.</div>
+                      <div class="form-text text-danger" th:errors="*{email}"></div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="clienteTelefono" class="form-label fw-semibold">Teléfono de contacto <span class="text-danger" aria-hidden="true">*</span></label>
+                      <input type="tel" class="form-control" id="clienteTelefono" th:field="*{telefono}" th:errorclass="is-invalid" autocomplete="tel" inputmode="tel" placeholder="+51 999 888 777" pattern="(?:\+?51\s?)?9(?:[\s-]?\d){8}" title="Ingresa un celular peruano de 9 dígitos; puedes anteponer +51." required />
+                      <div class="form-text">Usaremos este número para coordinar la entrega.</div>
+                      <div class="invalid-feedback">Ingresa un celular peruano válido de 9 dígitos.</div>
+                      <div class="form-text text-danger" th:errors="*{telefono}"></div>
+                    </div>
+                    <div class="col-12">
+                      <label for="modalidad-entrega" class="form-label fw-semibold">¿Cómo recibirás tu pedido? <span class="text-danger" aria-hidden="true">*</span></label>
+                      <select class="form-select" id="modalidad-entrega" th:field="*{modalidad}" th:errorclass="is-invalid" required>
+                        <option value="DELIVERY">Delivery a domicilio</option>
+                        <option value="RECOJO">Recojo en tienda</option>
+                      </select>
+                      <div class="invalid-feedback">Selecciona cómo recibirás el pedido.</div>
+                      <div class="form-text text-danger" th:errors="*{modalidad}"></div>
+                    </div>
+                    <div class="col-12" data-address-fields>
+                      <label for="clienteDireccion" class="form-label fw-semibold">Dirección completa <span class="text-danger" aria-hidden="true">*</span></label>
+                      <input type="text" class="form-control" id="clienteDireccion" th:field="*{direccion}" th:errorclass="is-invalid" autocomplete="street-address" placeholder="Av. / calle, número, urbanización y distrito" maxlength="180" required />
+                      <div class="invalid-feedback">Escribe la calle, número, urbanización y distrito.</div>
+                      <div class="form-text text-danger" th:errors="*{direccion}"></div>
+                    </div>
+                    <div class="col-12" data-address-fields>
+                      <label for="clienteReferencia" class="form-label fw-semibold">Referencia <span class="text-body-secondary fw-normal">(opcional)</span></label>
+                      <input type="text" class="form-control" id="clienteReferencia" th:field="*{referencia}" autocomplete="off" placeholder="Ej. Casa de dos pisos, portón negro" maxlength="180" />
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="fechaEntrega" class="form-label fw-semibold">Fecha de entrega <span class="text-danger" aria-hidden="true">*</span></label>
+                      <input type="date" class="form-control" id="fechaEntrega" th:field="*{fecha}" th:errorclass="is-invalid" required />
+                      <div class="form-text">Elige desde mañana.</div>
+                      <div class="invalid-feedback">Selecciona una fecha disponible a partir de mañana.</div>
+                      <div class="form-text text-danger" th:errors="*{fecha}"></div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="horaEntrega" class="form-label fw-semibold">Horario preferido <span class="text-danger" aria-hidden="true">*</span></label>
+                      <select class="form-select" id="horaEntrega" th:field="*{hora}" th:errorclass="is-invalid" required>
+                        <option value="" selected disabled>Selecciona un horario</option>
+                        <option value="09:00">Mañana · 9:00 a. m. – 12:00 p. m.</option>
+                        <option value="12:00">Mediodía · 12:00 p. m. – 3:00 p. m.</option>
+                        <option value="15:00">Tarde · 3:00 p. m. – 6:00 p. m.</option>
+                        <option value="18:00">Noche · 6:00 p. m. – 8:00 p. m.</option>
+                      </select>
+                      <div class="invalid-feedback">Selecciona una franja horaria para la entrega.</div>
+                      <div class="form-text text-danger" th:errors="*{hora}"></div>
+                    </div>
+                    <div class="col-12">
+                      <label for="mensaje" class="form-label fw-semibold">Mensaje para la tarjeta <span class="text-body-secondary fw-normal">(opcional)</span></label>
+                      <textarea class="form-control" id="mensaje" th:field="*{notas}" rows="3" maxlength="300" placeholder="Escribe el mensaje que acompañará las flores"></textarea>
+                    </div>
+                    <div class="col-12">
+                      <label for="metodo-pago" class="form-label fw-semibold">Método de pago <span class="text-danger"  aria-hidden="true">*</span></label>
+                      <select class="form-select" id="metodo-pago" th:field="*{metodoPago}" th:errorclass="is-invalid" required>
+                        <option value="" selected disabled>Selecciona un método de pago</option>
+                        <option value="YAPE">Yape</option>
+                        <option value="TRANSFERENCIA">Transferencia</option>
+                        <option value="EFECTIVO">Pago al recibir</option>
+                      </select>
+                      <div class="form-text">Te compartiremos las indicaciones de pago después de confirmar la disponibilidad.</div>
+                      <div class="invalid-feedback">Selecciona un método de pago.</div>
+                      <div class="form-text text-danger" th:errors="*{metodoPago}"></div>
+                    </div>
+                  </div>
+                  <div class="checkout-actions mt-4">
+                    <button class="btn btn-outline-primary" type="button" data-checkout-back="1">← Volver al pedido</button>
+                    <button class="btn btn-primary" type="button" data-checkout-next="3">Revisar pedido <span aria-hidden="true">→</span></button>
+                  </div>
+                </div>
+              </section>
+
+              <section class="card checkout-card" data-checkout-panel="3" aria-labelledby="titulo-paso-confirmar"
+                hidden>
+                <div class="card-body p-4 p-lg-5">
+                  <div id="checkout-review" th:unless="${pedidoConfirmado != null}">
+                    <p class="ceja mb-2">Paso 3 de 3</p>
+                    <h2 id="titulo-paso-confirmar" class="h1 mb-2" tabindex="-1">Confirma los datos</h2>
+                    <p class="text-body-secondary mb-4">Verifica que todo esté correcto antes de registrar tu pedido.
+                    </p>
+                    <div class="alert alert-danger mb-4" role="alert" data-checkout-validation-summary hidden>Confirma la casilla obligatoria para registrar tu pedido.</div>
+                    <div class="checkout-review-grid">
+                      <section class="checkout-review-section" aria-labelledby="checkout-review-contact-title">
+                        <h3 id="checkout-review-contact-title" class="h5">Contacto</h3>
+                        <p id="checkout-review-contact" class="mb-0"></p>
+                      </section>
+                      <section class="checkout-review-section" aria-labelledby="checkout-review-delivery-title">
+                        <h3 id="checkout-review-delivery-title" class="h5">Entrega</h3>
+                        <p id="checkout-review-delivery" class="mb-0"></p>
+                      </section>
+                      <section class="checkout-review-section" aria-labelledby="checkout-review-payment-title">
+                        <h3 id="checkout-review-payment-title" class="h5">Pago</h3>
+                        <p id="checkout-review-payment" class="mb-0"></p>
+                      </section>
+                    </div>
+                    <div class="form-check mt-4">
+                      <input class="form-check-input" type="checkbox" id="acepta-pedido" required />
+                      <label class="form-check-label" for="acepta-pedido">Confirmo que los datos de entrega y los productos son correctos. <span class="text-danger" aria-hidden="true">*</span></label>
+                      <div class="invalid-feedback">Confirma los datos para poder registrar el pedido.</div>
+                    </div>
+                    <div class="checkout-actions mt-4">
+                      <button class="btn btn-outline-primary" type="button" data-checkout-back="2">← Editar entrega</button>
+                      <button class="btn btn-primary" type="submit" data-confirm-order>Confirmar pedido</button>
+                    </div>
+                  </div>
+                  <div class="checkout-success text-center py-3" id="checkout-success" th:if="${pedidoConfirmado != null}" role="status" aria-live="polite">
+                    <span class="checkout-success-icon" aria-hidden="true">✓</span>
+                    <p class="ceja mb-2">Pedido registrado</p>
+                    <h2 class="h1 mb-2">¡Gracias por elegir Opalina!</h2>
+                    <p class="text-body-secondary">Tu número de pedido es <strong id="checkout-order-number" th:text="${pedidoConfirmado.id}"></strong>.Puedes consultar su estado desde tu cuenta.</p>
+                    <a class="btn btn-primary mt-2" th:href="@{/cuenta/pedidos}">Ver mis pedidos</a>
+                    <a class="btn btn-outline-primary mt-2" th:href="@{/}">Volver al inicio</a>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <aside class="card checkout-summary" aria-labelledby="checkout-summary-title">
+              <div class="card-body p-4">
+                <p class="ceja mb-2">Resumen</p>
+                <h2 id="checkout-summary-title" class="h3 mb-4">Tu pedido</h2>
+                <div id="resumen-pedido" class="checkout-summary-items" aria-live="polite">
+                  <div class="d-flex justify-content-between gap-3" th:each="item : ${items}">
+                    <span th:text="|${item.producto.nombre} × ${item.cantidad}|">Producto</span>
+                    <span th:text="|S/ ${#numbers.formatDecimal(item.total, 1, 2)}|">S/ 0.00</span>
+                  </div>
+                </div>
+                <hr />
+                <div class="d-flex justify-content-between gap-3 mb-2"><span>Subtotal</span><span id="checkout-subtotal" th:text="|S/ ${#numbers.formatDecimal(subtotal, 1, 2)}|">S/ 0.00</span></div>
+                <div class="d-flex justify-content-between gap-3 mb-3"><span>Delivery</span><span id="checkout-delivery" th:text="|S/ ${#numbers.formatDecimal(delivery, 1, 2)}|">S/ 0.00</span></div>
+                <div class="d-flex justify-content-between gap-3 fs-5 fw-bold"><span>Total</span><span id="checkout-total" th:text="|S/ ${#numbers.formatDecimal(total, 1, 2)}|">S/ 0.00</span></div>
+              </div>
+            </aside>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+
+</body>
+
+</html>
