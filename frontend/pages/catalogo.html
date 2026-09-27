@@ -42,11 +42,12 @@
           <li class="nav-item">
             <a class="nav-link position-relative" href="carrito.html">Carrito
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
-                id="contador-carrito" aria-label="Artículos en el carrito">0<span
+                id="contador-carrito" aria-label="Artículos en el carrito" hidden>0<span
                   class="visually-hidden">artículos</span></span>
             </a>
           </li>
-          <li class="nav-item"><a class="btn btn-primary btn-sm rounded-pill px-3" href="login.html">Iniciar sesión</a>
+          <li class="nav-item"><a class="btn btn-primary btn-sm rounded-pill px-3" href="login.html"
+              data-auth-link>Iniciar sesión</a>
           </li>
         </ul>
       </div>
@@ -115,227 +116,43 @@
                 <fieldset class="mb-4">
                   <legend class="h6 mb-2">Categoría</legend>
                   <div class="d-flex flex-wrap gap-2">
-                    <button type="button" class="btn btn-primary btn-sm rounded-pill" aria-pressed="true">Todos</button>
-                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill"
-                      aria-pressed="false">Románticos</button>
-                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill"
-                      aria-pressed="false">Cumpleaños</button>
-                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill"
-                      aria-pressed="false">Condolencias</button>
-                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill"
-                      aria-pressed="false">Temporada</button>
-                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill"
-                      aria-pressed="false">Premium</button>
+                    <button type="button" class="btn btn-primary btn-sm rounded-pill" aria-pressed="true"
+                      data-filtro-categoria="todos">Todos</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill" aria-pressed="false"
+                      data-filtro-categoria="Romántico">Romántico</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill" aria-pressed="false"
+                      data-filtro-categoria="Cumpleaños">Cumpleaños</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill" aria-pressed="false"
+                      data-filtro-categoria="Condolencias">Condolencias</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill" aria-pressed="false"
+                      data-filtro-categoria="Temporada">Temporada</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill" aria-pressed="false"
+                      data-filtro-categoria="Premium">Premium</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill" aria-pressed="false"
+                      data-filtro-categoria="Personalizado">Personalizado</button>
                   </div>
                 </fieldset>
 
                 <fieldset class="mb-0">
                   <legend class="h6 mb-2">Precio referencial</legend>
                   <div class="d-flex flex-wrap gap-2">
-                    <button type="button" class="btn btn-primary btn-sm rounded-pill" aria-pressed="true">Todos</button>
-                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill"
-                      aria-pressed="false">Económico</button>
-                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill"
-                      aria-pressed="false">Medio</button>
-                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill"
-                      aria-pressed="false">Premium</button>
-                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill"
-                      aria-pressed="false">Ceremonial</button>
+                    <button type="button" class="btn btn-primary btn-sm rounded-pill" aria-pressed="true"
+                      data-filtro-precio="todos">Todos</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill" aria-pressed="false"
+                      data-filtro-precio="economico">Económico</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill" aria-pressed="false"
+                      data-filtro-precio="medio">Medio</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill" aria-pressed="false"
+                      data-filtro-precio="premium">Premium</button>
+                    <button type="button" class="btn btn-outline-primary btn-sm rounded-pill" aria-pressed="false"
+                      data-filtro-precio="ceremonial">Ceremonial</button>
                   </div>
                 </fieldset>
               </div>
             </div>
 
-            <div id="grid-productos" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-              <div class="col">
-                <article class="card h-100 overflow-hidden" data-id="1">
-                  <div class="ratio ratio-4x3">
-                    <img src="../assets/imagenes/productos/8-MiniRamoCotidiano.png" alt="Mini Ramo Cotidiano"
-                      class="card-img-top w-100 h-100 object-fit-cover" />
-                  </div>
-                  <div class="card-body d-flex flex-column">
-                    <span class="insignia insignia-salvia align-self-start">Temporada</span>
-                    <h3 class="h4 mt-3">Mini Ramo Cotidiano</h3>
-                    <p class="card-text text-body-secondary">1-3 tallos con follaje y tarjeta corta para detalles de
-                      oficina.</p>
-                    <div class="d-flex align-items-center justify-content-between gap-2 mt-auto pt-3">
-                      <strong>S/ 22.00</strong><a href="producto.html" class="btn btn-outline-primary btn-sm">Ver
-                        más</a>
-                    </div>
-                  </div>
-                </article>
-              </div>
-              <div class="col">
-                <article class="card h-100 overflow-hidden" data-id="2">
-                  <div class="ratio ratio-4x3"><img src="../assets/imagenes/productos/12-RamoOpalinaMorado.png"
-                      alt="Ramo Opalina Morado" class="card-img-top w-100 h-100 object-fit-cover" /></div>
-                  <div class="card-body d-flex flex-column">
-                    <span class="insignia align-self-start">Romántico</span>
-                    <h3 class="h4 mt-3">Ramo Opalina Morado</h3>
-                    <p class="card-text text-body-secondary">Gerberas, hortensias y margaritas en paleta lila/morado.
-                    </p>
-                    <div class="d-flex align-items-center justify-content-between gap-2 mt-auto pt-3">
-                      <strong>S/ 55.00</strong><a href="producto.html" class="btn btn-outline-primary btn-sm">Ver
-                        más</a>
-                    </div>
-                  </div>
-                </article>
-              </div>
-              <div class="col">
-                <article class="card h-100 overflow-hidden" data-id="3">
-                  <div class="ratio ratio-4x3"><img src="../assets/imagenes/productos/9-RamoAmarillo21Marzo.png"
-                      alt="Ramo Amarillo 21 de Marzo" class="card-img-top w-100 h-100 object-fit-cover" /></div>
-                  <div class="card-body d-flex flex-column">
-                    <span class="insignia insignia-salvia align-self-start">Temporada</span>
-                    <h3 class="h4 mt-3">Ramo Amarillo 21 de Marzo</h3>
-                    <p class="card-text text-body-secondary">Girasoles y flores amarillas de tendencia con lazo
-                      amarillo.</p>
-                    <div class="d-flex align-items-center justify-content-between gap-2 mt-auto pt-3">
-                      <strong>S/ 65.00</strong><a href="producto.html" class="btn btn-outline-primary btn-sm">Ver
-                        más</a>
-                    </div>
-                  </div>
-                </article>
-              </div>
-              <div class="col">
-                <article class="card h-100 overflow-hidden" data-id="4">
-                  <div class="ratio ratio-4x3"><img src="../assets/imagenes/productos/3-Buchon12Rosas.jpg"
-                      alt="Buchón 12 Rosas" class="card-img-top w-100 h-100 object-fit-cover" /></div>
-                  <div class="card-body d-flex flex-column">
-                    <span class="insignia align-self-start">Romántico</span>
-                    <h3 class="h4 mt-3">Buchón 12 Rosas</h3>
-                    <p class="card-text text-body-secondary">Bouquet grande con 12 rosas en papel coreano rojo/negro.
-                    </p>
-                    <div class="d-flex align-items-center justify-content-between gap-2 mt-auto pt-3">
-                      <strong>S/ 85.00</strong><a href="producto.html" class="btn btn-outline-primary btn-sm">Ver
-                        más</a>
-                    </div>
-                  </div>
-                </article>
-              </div>
-              <div class="col">
-                <article class="card h-100 overflow-hidden" data-id="5">
-                  <div class="ratio ratio-4x3"><img src="../assets/imagenes/productos/2-BoxFloralConChocolates.jpg"
-                      alt="Box Floral con Chocolates" class="card-img-top w-100 h-100 object-fit-cover" /></div>
-                  <div class="card-body d-flex flex-column">
-                    <span class="insignia align-self-start">Cumpleaños</span>
-                    <h3 class="h4 mt-3">Box Floral con Chocolates</h3>
-                    <p class="card-text text-body-secondary">Ramo corto en box cilíndrica con rosas y chocolatitos.</p>
-                    <div class="d-flex align-items-center justify-content-between gap-2 mt-auto pt-3">
-                      <strong>S/ 95.00</strong><a href="producto.html" class="btn btn-outline-primary btn-sm">Ver
-                        más</a>
-                    </div>
-                  </div>
-                </article>
-              </div>
-              <div class="col">
-                <article class="card h-100 overflow-hidden" data-id="6">
-                  <div class="ratio ratio-4x3"><img src="../assets/imagenes/productos/11-RamoLiriosPremium.png"
-                      alt="Ramo de Lirios Premium" class="card-img-top w-100 h-100 object-fit-cover" /></div>
-                  <div class="card-body d-flex flex-column">
-                    <span class="insignia insignia-calida align-self-start">Premium</span>
-                    <h3 class="h4 mt-3">Ramo de Lirios Premium</h3>
-                    <p class="card-text text-body-secondary">Lirios claros con flores de apoyo y follaje fresco.</p>
-                    <div class="d-flex align-items-center justify-content-between gap-2 mt-auto pt-3">
-                      <strong>S/ 110.00</strong><a href="producto.html" class="btn btn-outline-primary btn-sm">Ver
-                        más</a>
-                    </div>
-                  </div>
-                </article>
-              </div>
-              <div class="col">
-                <article class="card h-100 overflow-hidden" data-id="7">
-                  <div class="ratio ratio-4x3"><img src="../assets/imagenes/productos/6-JardinOpalinaGrande.png"
-                      alt="Jardín de Opalina Grande" class="card-img-top w-100 h-100 object-fit-cover" /></div>
-                  <div class="card-body d-flex flex-column">
-                    <span class="insignia insignia-calida align-self-start">Premium</span>
-                    <h3 class="h4 mt-3">Jardín de Opalina Grande</h3>
-                    <p class="card-text text-body-secondary">Bouquet firma grande, multivarietal con tarjeta impresa.
-                    </p>
-                    <div class="d-flex align-items-center justify-content-between gap-2 mt-auto pt-3">
-                      <strong>S/ 150.00</strong><a href="producto.html" class="btn btn-outline-primary btn-sm">Ver
-                        más</a>
-                    </div>
-                  </div>
-                </article>
-              </div>
-              <div class="col">
-                <article class="card h-100 overflow-hidden" data-id="8">
-                  <div class="ratio ratio-4x3"><img src="../assets/imagenes/productos/10-RamoGraduación.png"
-                      alt="Ramo de Graduación" class="card-img-top w-100 h-100 object-fit-cover" /></div>
-                  <div class="card-body d-flex flex-column">
-                    <span class="insignia align-self-start">Cumpleaños</span>
-                    <h3 class="h4 mt-3">Ramo de Graduación</h3>
-                    <p class="card-text text-body-secondary">Rosas o gerberas con lazo y mini topper personalizable.</p>
-                    <div class="d-flex align-items-center justify-content-between gap-2 mt-auto pt-3">
-                      <strong>S/ 78.00</strong><a href="producto.html" class="btn btn-outline-primary btn-sm">Ver
-                        más</a>
-                    </div>
-                  </div>
-                </article>
-              </div>
-              <div class="col">
-                <article class="card h-100 overflow-hidden" data-id="9">
-                  <div class="ratio ratio-4x3"><img src="../assets/imagenes/productos/7-LagrimaCondolencias.png"
-                      alt="Lágrima Condolencias" class="card-img-top w-100 h-100 object-fit-cover" /></div>
-                  <div class="card-body d-flex flex-column">
-                    <span class="insignia insignia-calida align-self-start">Condolencias</span>
-                    <h3 class="h4 mt-3">Lágrima Condolencias</h3>
-                    <p class="card-text text-body-secondary">Arreglo sobrio de condolencia estandarizado con faja.</p>
-                    <div class="d-flex align-items-center justify-content-between gap-2 mt-auto pt-3">
-                      <strong>S/ 120.00</strong><a href="producto.html" class="btn btn-outline-primary btn-sm">Ver
-                        más</a>
-                    </div>
-                  </div>
-                </article>
-              </div>
-              <div class="col">
-                <article class="card h-100 overflow-hidden" data-id="10">
-                  <div class="ratio ratio-4x3"><img src="../assets/imagenes/productos/4-CoronaPremium.jpg"
-                      alt="Corona Premium" class="card-img-top w-100 h-100 object-fit-cover" /></div>
-                  <div class="card-body d-flex flex-column">
-                    <span class="insignia insignia-calida align-self-start">Condolencias</span>
-                    <h3 class="h4 mt-3">Corona Premium</h3>
-                    <p class="card-text text-body-secondary">Corona o parante ceremonial con flores mixtas y mensaje.
-                    </p>
-                    <div class="d-flex align-items-center justify-content-between gap-2 mt-auto pt-3">
-                      <strong>S/ 280.00</strong><a href="producto.html" class="btn btn-outline-primary btn-sm">Ver
-                        más</a>
-                    </div>
-                  </div>
-                </article>
-              </div>
-              <div class="col">
-                <article class="card h-100 overflow-hidden" data-id="11">
-                  <div class="ratio ratio-4x3"><img src="../assets/imagenes/productos/5-DuoBobaFlor.png"
-                      alt="Dúo Boba + Flor" class="card-img-top w-100 h-100 object-fit-cover" /></div>
-                  <div class="card-body d-flex flex-column">
-                    <span class="insignia insignia-salvia align-self-start">Temporada</span>
-                    <h3 class="h4 mt-3">Dúo Boba + Flor</h3>
-                    <p class="card-text text-body-secondary">Colaborativo con Boba Pop. Sleeve pequeño con tarjeta.</p>
-                    <div class="d-flex align-items-center justify-content-between gap-2 mt-auto pt-3">
-                      <strong>S/ 32.00</strong><a href="producto.html" class="btn btn-outline-primary btn-sm">Ver
-                        más</a>
-                    </div>
-                  </div>
-                </article>
-              </div>
-              <div class="col">
-                <article class="card h-100 overflow-hidden" data-id="12">
-                  <div class="ratio ratio-4x3"><img src="../assets/imagenes/productos/1-arregloPersonalizado.jpg"
-                      alt="Arreglo Personalizado" class="card-img-top w-100 h-100 object-fit-cover" /></div>
-                  <div class="card-body d-flex flex-column">
-                    <span class="insignia insignia-salvia align-self-start">Personalizado</span>
-                    <h3 class="h4 mt-3">Arreglo Personalizado</h3>
-                    <p class="card-text text-body-secondary">Diseño según ocasión, colores preferidos y presupuesto.</p>
-                    <div class="d-flex align-items-center justify-content-between gap-2 mt-auto pt-3">
-                      <strong>S/ 120.00</strong><a href="producto.html" class="btn btn-outline-primary btn-sm">Ver
-                        más</a>
-                    </div>
-                  </div>
-                </article>
-              </div>
-            </div>
+            <p id="resultado-catalogo" class="form-text" role="status" aria-live="polite"></p>
+            <div id="grid-productos" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" aria-live="polite"></div>
           </div>
         </div>
       </div>
@@ -407,7 +224,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
-  <script src="../js/tienda.js"></script>
+  <script type="module" src="../js/app.js"></script>
 </body>
 
 </html>

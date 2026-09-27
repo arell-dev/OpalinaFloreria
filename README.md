@@ -11,14 +11,39 @@ y ajustes puntuales que Bootstrap no expresa directamente.
 
 ## Estado actual
 
-El alcance documentado en este README corresponde al FrontEnd. La lógica de
-autenticación, persistencia de usuarios, inventario, pagos y pedidos queda
-reservada para el backend futuro.
+El frontend conserva sus páginas Bootstrap y ahora usa JavaScript modular para
+simular el catálogo, inventario, carrito, checkout, cuentas y administración.
+Los productos, clientes, pedidos y configuración se comparten en `localStorage`;
+la sesión de demostración vive en `sessionStorage`. No se procesan pagos ni se
+guardan contraseñas o cuentas creadas desde el registro.
 
-Las páginas HTML existentes son funcionales como prototipo navegable. Algunos
-formularios todavía son visuales y no envían información a una API. El carrito
-incluye una interacción local para modificar cantidades y recalcular subtotal
-y total.
+La autenticación y el rol de administrador son simulaciones del navegador, no
+controles de seguridad. En la migración a Spring Boot se reemplazarán por
+controladores y servicios del servidor, y posteriormente por Spring Security.
+
+## JavaScript y datos de demostración
+
+El código de `frontend/js/` está separado en datos iniciales, repositorio,
+servicios de negocio, utilidades DOM e inicializadores de páginas. Las vistas
+leen de los mismos servicios, por lo que las modificaciones de inventario y
+pedidos se reflejan en la tienda y el panel. El repositorio permite sustituir
+la implementación local por llamadas a la futura API.
+
+Para usar módulos ES, sirve la carpeta `frontend` mediante HTTP (por ejemplo,
+con Live Server en VS Code); abrir los HTML directamente como `file://` puede
+bloquear sus imports. Desde la raíz del repositorio también puedes ejecutar:
+
+```powershell
+python -m http.server 8000 --directory frontend
+```
+
+Después abre `http://localhost:8000/`. Las credenciales visibles de prueba son:
+
+- Cliente: `maria.lopez@opalina.test` / `Cliente2026!`
+- Administrador: `admin@opalina.test` / `Admin2026!`
+
+Los cambios de la demo pueden reiniciarse borrando las claves `opalina-demo-*`
+y `opalina-cart-*` del almacenamiento local del navegador.
 
 ## Estructura del proyecto
 
@@ -51,7 +76,12 @@ OpalinaFloreria/
 │   │   ├── colores.css
 │   │   └── componentes.css
 │   └── js/
-│       └── cuenta.js
+│       ├── app.js
+│       ├── data/seed.js
+│       ├── pages/ (storefront.js, admin.js)
+│       ├── repositories/demo-repository.js
+│       ├── services/ (auth-service.js, store-service.js)
+│       └── ui/dom.js
 ├── backend/
 ├── LICENSE
 └── README.md
@@ -227,15 +257,15 @@ una utilidad de Bootstrap resuelve el mismo comportamiento.
 ## Interfaces disponibles
 
 - `index.html`: presentación, beneficios y productos destacados.
-- `pages/catalogo.html`: filtros visuales y grilla de doce productos.
+- `pages/catalogo.html`: búsqueda, filtros dinámicos y grilla desde el catálogo compartido.
 - `pages/producto.html`: detalle del Ramo Opalina Morado.
 - `pages/carrito.html`: productos seleccionados, cantidades y resumen.
 - `pages/pedido.html`: formulario de entrega y selección de arreglo.
 - `pages/confirmacion.html`: confirmación y resumen de solicitud.
 - `pages/contacto.html`: información de contacto y formulario.
 - `pages/nosotros.html`: historia, valores y propuesta de Opalina.
-- `pages/login.html`: acceso visual de usuarios.
-- `pages/registro.html`: creación visual de cuentas.
+- `pages/login.html`: acceso de demostración para cliente y administrador.
+- `pages/registro.html`: validación informativa; no crea ni persiste una cuenta.
 - `pages/perfil.html`: datos de cuenta y perfil.
 
 `historial-pedidos.html` y `detalle-pedido.html` están reservados para una
@@ -248,9 +278,9 @@ para copiar el markup compartido en cada documento. Debido a que el proyecto
 es HTML estático, el navbar y el footer se incrustan en línea; no se utilizan
 `fetch`, iframes ni un motor de plantillas.
 
-Las rutas principales ya conectan Inicio, Catálogo, Nosotros, Contacto,
-Carrito, Login, Registro, Producto, Pedido y Confirmación. Los enlaces legales
-permanecen pendientes hasta que existan páginas legales definitivas.
+Las rutas principales conectan Inicio, Catálogo, Nosotros, Contacto, Carrito,
+Login, Registro, Producto, Pedido, Confirmación, páginas de cuenta, panel
+administrativo y páginas legales.
 
 Desde una página en `frontend/pages/` se utilizan rutas relativas como:
 
@@ -265,25 +295,21 @@ Desde `frontend/index.html` las rutas comienzan directamente en `pages/`,
 
 ## JavaScript del FrontEnd
 
-El JavaScript se mantiene dentro de `frontend/` porque controla comportamiento
-del navegador y de la interfaz:
+El punto de entrada `frontend/js/app.js` carga el inicializador correspondiente
+a cada página. Los módulos de `data`, `repositories`, `services`, `pages` y
+`ui` separan catálogo inicial, almacenamiento, reglas de negocio, vistas y
+utilidades DOM. Los datos se representan con nodos DOM y `textContent` para no
+insertar datos editables como HTML.
 
-- `frontend/js/cuenta.js` alterna la visibilidad de las contraseñas en login y
-  registro.
-- `carrito.html` contiene una interacción local para sumar, restar y eliminar
-  productos, además de recalcular subtotal y total.
-- Bootstrap proporciona el comportamiento del navbar responsive mediante su
-  bundle oficial.
-
-No se colocan scripts de interfaz dentro de `backend/`. En el futuro, el
-backend podrá exponer APIs y persistencia, mientras el frontend consumirá esos
-servicios mediante una capa de integración separada.
+Bootstrap conserva el comportamiento del navbar responsive y los modales del
+panel. El checkout guarda pedidos de demostración, actualiza inventario y
+conserva el nombre, imagen y precio del producto en cada pedido. La capa de
+repositorio permite conectar más adelante los servicios de Spring.
 
 ## Ejecución y comprobación
 
-El frontend puede abrirse directamente desde `frontend/index.html`. También es
-recomendable usar cualquier servidor estático local para que las rutas relativas
-se comporten igual que en un despliegue web.
+Sirve `frontend/` con un servidor HTTP local. Los imports de módulos ES no son
+compatibles de forma fiable al abrir páginas directamente desde `file://`.
 
 Antes de integrar una nueva página se debe comprobar:
 
@@ -312,10 +338,10 @@ Antes de integrar una nueva página se debe comprobar:
 - [Ratio](https://getbootstrap.com/docs/5.3/helpers/ratio/)
 - [Utilidades responsive](https://getbootstrap.com/docs/5.3/layout/breakpoints/)
 
-## Trabajo pendiente
+## Siguiente etapa
 
-- Implementar el backend y conectar los formularios con servicios reales.
-- Persistir carrito, usuarios, pedidos e inventario.
-- Completar historial y detalle de pedidos.
-- Crear las páginas definitivas de términos y privacidad.
-- Sustituir los datos de ejemplo por información dinámica.
+- Migrar los servicios de demostración a Spring Web y Thymeleaf manteniendo las
+  vistas Bootstrap existentes.
+- Sustituir el repositorio local por almacenamiento en memoria del servidor y
+  documentar las rutas REST que se prueben con Postman.
+- Implementar persistencia y seguridad real en las etapas posteriores del curso.

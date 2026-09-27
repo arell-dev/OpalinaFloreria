@@ -40,11 +40,12 @@
           <li class="nav-item">
             <a class="nav-link position-relative" href="carrito.html">Carrito
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
-                id="contador-carrito" aria-label="Artículos en el carrito">0<span
+                id="contador-carrito" aria-label="Artículos en el carrito" hidden>0<span
                   class="visually-hidden">artículos</span></span>
             </a>
           </li>
-          <li class="nav-item"><a class="btn btn-primary btn-sm rounded-pill px-3" href="login.html">Iniciar sesión</a></li>
+          <li class="nav-item"><a class="btn btn-primary btn-sm rounded-pill px-3" href="login.html"
+              data-auth-link>Iniciar sesión</a></li>
         </ul>
       </div>
     </div>
@@ -71,14 +72,15 @@
                 <div class="card-body">
                   <div class="text-center border-bottom pb-3 mb-3">
                     <span class="avatar-initials" aria-hidden="true">ML</span>
-                    <h2 class="h5 mb-1 mt-2">María López</h2>
-                    <p class="text-body-secondary small mb-0">maria.lopez@opalina.test</p>
+                    <h2 class="h5 mb-1 mt-2" data-customer-name>Cliente</h2>
+                    <p class="text-body-secondary small mb-0" data-customer-email></p>
                   </div>
                   <div class="list-group list-group-flush">
                     <a class="list-group-item list-group-item-action" href="perfil.html">Mi Perfil</a>
                     <a class="list-group-item list-group-item-action active" aria-current="true"
                       href="historial-pedidos.html">Mis Pedidos</a>
-                    <a class="list-group-item list-group-item-action text-danger" href="login.html">Cerrar Sesión</a>
+                    <a class="list-group-item list-group-item-action text-danger" href="login.html" data-logout>Cerrar
+                      Sesión</a>
                   </div>
                 </div>
               </div>
@@ -118,16 +120,9 @@
               <section class="card shadow-sm" aria-labelledby="titulo-productos-pedido">
                 <div class="card-body p-4">
                   <h2 id="titulo-productos-pedido" class="h4 mb-3">Productos</h2>
-                  <div class="d-flex align-items-center gap-3">
-                    <img src="../assets/imagenes/productos/6-JardinOpalinaGrande.png" alt="Jardín de Opalina Grande"
-                      class="miniatura-carrito rounded" width="72" height="72" />
-                    <div class="flex-grow-1">
-                      <h3 class="h5 mb-1">Jardín de Opalina Grande</h3>
-                      <p class="text-body-secondary small mb-0">Premium &middot; Cantidad: 1</p>
-                    </div>
-                    <strong class="flex-shrink-0">S/ 150.00</strong>
+                  <div class="d-grid gap-3" id="items-detalle-pedido" aria-live="polite">
+
                   </div>
-                </div>
               </section>
 
               <div class="row g-4">
@@ -238,7 +233,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
-  <script src="../js/tienda.js"></script>
+  <script type="module" src="../js/app.js"></script>
 </body>
 
 </html>

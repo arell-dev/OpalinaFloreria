@@ -46,10 +46,11 @@
             <a class="nav-link position-relative" href="carrito.html">Carrito
               <span id="contador-carrito"
                 class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
-                aria-label="Artículos en el carrito">0<span class="visually-hidden">artículos</span></span>
+                aria-label="Artículos en el carrito" hidden>0<span class="visually-hidden">artículos</span></span>
             </a>
           </li>
-          <li class="nav-item"><a class="btn btn-primary btn-sm rounded-pill px-3" href="login.html">Iniciar sesión</a></li>
+          <li class="nav-item"><a class="btn btn-primary btn-sm rounded-pill px-3" href="login.html"
+              data-auth-link>Iniciar sesión</a></li>
         </ul>
       </div>
     </div>
@@ -58,120 +59,198 @@
   <main id="contenido-principal" class="flex-grow-1">
     <section class="py-5" aria-labelledby="titulo-pedido">
       <div class="container py-lg-4">
-        <div class="row justify-content-center">
-          <div class="col-12 col-xxl-10">
-            <div class="mb-4">
-              <p class="ceja mb-2">Compra</p>
-              <h1 id="titulo-pedido" class="display-5 fw-bold mb-2">Realizar pedido</h1>
-              <p class="text-body-secondary mb-0">Completa los datos necesarios para coordinar tu pedido.</p>
-            </div>
+        <div class="checkout-shell">
+          <header class="checkout-heading mb-4">
+            <p class="ceja mb-2">Compra</p>
+            <h1 id="titulo-pedido" class="display-5 fw-bold mb-2">Realizar pedido</h1>
+            <p class="text-body-secondary mb-4">Revisa tu selección, indica cómo recibirla y confirma los datos.</p>
+            <ol class="checkout-progress" data-checkout-steps aria-label="Pasos para realizar el pedido">
+              <li data-checkout-step="1" aria-current="step"><span class="checkout-progress-number">1</span><span>Tu
+                  pedido</span></li>
+              <li data-checkout-step="2"><span class="checkout-progress-number">2</span><span>Entrega</span></li>
+              <li data-checkout-step="3"><span class="checkout-progress-number">3</span><span>Confirmar</span></li>
+            </ol>
+            <div id="aviso-pedido" class="alert d-none mt-4 mb-0" role="alert" aria-live="assertive"></div>
+          </header>
 
-            <div class="row g-4">
-              <div class="col-12 col-lg-7">
-                <div class="card h-100 shadow-sm">
-                  <div class="card-body p-4 p-lg-5">
-                    <div class="mb-4">
-                      <p class="ceja mb-2">Datos del pedido</p>
-                      <h2 class="h1 mb-0">Información de entrega</h2>
-                    </div>
-
-                    <form>
-                      <div class="row g-3">
-                        <div class="col-12 col-md-6">
-                          <label for="clienteNombre" class="form-label fw-semibold">Nombres</label>
-                          <input type="text" class="form-control" id="clienteNombre" name="clienteNombre"
-                            autocomplete="given-name" placeholder="Ingresa tus nombres" />
-                        </div>
-                        <div class="col-12 col-md-6">
-                          <label for="clienteTelefono" class="form-label fw-semibold">Teléfono</label>
-                          <input type="tel" class="form-control" id="clienteTelefono" name="clienteTelefono"
-                            autocomplete="tel" placeholder="Ingresa tu teléfono" />
-                        </div>
-                        <div class="col-12">
-                          <label for="clienteDireccion" class="form-label fw-semibold">Dirección de entrega</label>
-                          <input type="text" class="form-control" id="clienteDireccion" name="clienteDireccion"
-                            autocomplete="street-address" placeholder="Ingresa la dirección de entrega" />
-                        </div>
-                        <div class="col-12 col-md-6">
-                          <label for="fechaEntrega" class="form-label fw-semibold">Fecha de entrega</label>
-                          <input type="date" class="form-control" id="fechaEntrega" name="fechaEntrega" />
-                        </div>
-                        <div class="col-12 col-md-6">
-                          <label for="horaEntrega" class="form-label fw-semibold">Hora de entrega</label>
-                          <input type="time" class="form-control" id="horaEntrega" name="horaEntrega" />
-                        </div>
-                        <div class="col-12">
-                          <label for="mensaje" class="form-label fw-semibold">Mensaje para acompañar el pedido</label>
-                          <textarea class="form-control" id="mensaje" name="mensaje" rows="4"
-                            placeholder="Escribe el mensaje que deseas incluir"></textarea>
-                        </div>
-                        <div class="col-12 pt-2">
-                          <button type="submit" class="btn btn-primary btn-lg">Continuar con el pedido</button>
-                        </div>
-                      </div>
-                    </form>
+          <form class="checkout-layout" data-checkout-form novalidate>
+            <div class="checkout-main">
+              <section class="card checkout-card" data-checkout-panel="1" aria-labelledby="titulo-paso-pedido">
+                <div class="card-body p-4 p-lg-5">
+                  <p class="ceja mb-2">Paso 1 de 3</p>
+                  <h2 id="titulo-paso-pedido" class="h1 mb-2" tabindex="-1">Revisa tu pedido</h2>
+                  <p class="text-body-secondary mb-4">Revisa los productos y las cantidades. Si necesitas hacer cambios,
+                    vuelve al carrito.</p>
+                  <div id="checkout-items" class="checkout-items" aria-live="polite"></div>
+                  <div class="checkout-actions mt-4">
+                    <a class="btn btn-outline-primary" href="carrito.html">Editar carrito</a>
+                    <button class="btn btn-primary" type="button" data-checkout-next="2">Continuar a entrega <span
+                        aria-hidden="true">→</span></button>
                   </div>
                 </div>
-              </div>
+              </section>
 
-              <div class="col-12 col-lg-5">
-                <div class="card mb-4 shadow-sm">
-                  <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                      <div>
-                        <p class="ceja mb-1">Producto</p>
-                        <h2 class="h3 mb-0">Arreglos disponibles</h2>
-                      </div>
-                      <span class="badge rounded-pill bg-success">Selección</span>
+              <section class="card checkout-card" data-checkout-panel="2" aria-labelledby="titulo-paso-entrega" hidden>
+                <div class="card-body p-4 p-lg-5">
+                  <p class="ceja mb-2">Paso 2 de 3</p>
+                  <h2 id="titulo-paso-entrega" class="h1 mb-2" tabindex="-1">¿Dónde y cuándo lo entregamos?</h2>
+                  <p class="text-body-secondary mb-4">Completa los datos marcados como obligatorios para coordinar
+                    contigo.</p>
+                  <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                      <label for="clienteNombre" class="form-label fw-semibold">Nombre de quien recibe <span
+                          class="text-danger" aria-hidden="true">*</span></label>
+                      <input type="text" class="form-control" id="clienteNombre" name="clienteNombre"
+                        autocomplete="name" placeholder="Ej. María López" maxlength="100" required />
+                      <div class="invalid-feedback">Indica el nombre de la persona que recibirá el pedido.</div>
                     </div>
-
-                    <div class="list-group">
-                      <label class="list-group-item list-group-item-action d-flex gap-3 align-items-center">
-                        <input class="form-check-input shrink-0" type="radio" name="producto"
-                          value="ramo-opalina-morado" />
-                        <img src="../assets/imagenes/arreglos/destacado-ramo-morado.jpg"
-                          class="rounded object-fit-cover" alt="Ramo Opalina Morado" width="72" height="88" />
-                        <div class="flex-grow-1">
-                          <div class="d-flex justify-content-between gap-2">
-                            <span class="fw-bold">Ramo Opalina Morado</span>
-                            <strong>S/ 55.00</strong>
-                          </div>
-                          <small class="text-body-secondary">Ramo suave en tonos morados y rosados.</small>
-                        </div>
-                      </label>
-
-                      <label class="list-group-item list-group-item-action d-flex gap-3 align-items-center">
-                        <input class="form-check-input shrink-0" type="radio" name="producto"
-                          value="ramo-amarillo-21-marzo" />
-                        <img src="../assets/imagenes/arreglos/destacado-girasoles.jpg" class="rounded object-fit-cover"
-                          alt="Ramo Amarillo 21 de Marzo" width="72" height="88" />
-                        <div class="flex-grow-1">
-                          <div class="d-flex justify-content-between gap-2">
-                            <span class="fw-bold">Ramo Amarillo 21 de Marzo</span>
-                            <strong>S/ 65.00</strong>
-                          </div>
-                          <small class="text-body-secondary">Girasoles luminosos con follaje natural.</small>
-                        </div>
-                      </label>
-
-                      <label class="list-group-item list-group-item-action d-flex gap-3 align-items-center">
-                        <input class="form-check-input shrink-0" type="radio" name="producto" value="buchon-rosas" />
-                        <img src="../assets/imagenes/arreglos/destacado-rosas-premium.jpg"
-                          class="rounded object-fit-cover" alt="Buchón de Rosas" width="72" height="88" />
-                        <div class="flex-grow-1">
-                          <div class="d-flex justify-content-between gap-2">
-                            <span class="fw-bold">Buchón de Rosas</span>
-                            <strong>S/ 85.00</strong>
-                          </div>
-                          <small class="text-body-secondary">Rosas abundantes con acabado moderno.</small>
-                        </div>
-                      </label>
+                    <div class="col-12 col-md-6">
+                      <label for="clienteCorreo" class="form-label fw-semibold">Correo de tu cuenta</label>
+                      <input type="email" class="form-control" id="clienteCorreo" name="clienteCorreo"
+                        autocomplete="email" readonly aria-describedby="ayuda-correo-pedido" />
+                      <div class="form-text" id="ayuda-correo-pedido">El pedido quedará asociado a este correo.</div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="clienteTelefono" class="form-label fw-semibold">Teléfono de contacto <span
+                          class="text-danger" aria-hidden="true">*</span></label>
+                      <input type="tel" class="form-control" id="clienteTelefono" name="clienteTelefono"
+                        autocomplete="tel" inputmode="tel" placeholder="+51 999 888 777"
+                        pattern="(?:\+?51\s?)?9(?:[\s-]?\d){8}"
+                        title="Ingresa un celular peruano de 9 dígitos; puedes anteponer +51." required />
+                      <div class="form-text">Usaremos este número para coordinar la entrega.</div>
+                      <div class="invalid-feedback">Ingresa un celular peruano válido de 9 dígitos.</div>
+                    </div>
+                    <div class="col-12">
+                      <label for="modalidad-entrega" class="form-label fw-semibold">¿Cómo recibirás tu pedido? <span
+                          class="text-danger" aria-hidden="true">*</span></label>
+                      <select class="form-select" id="modalidad-entrega" name="modalidad" required>
+                        <option value="Delivery a domicilio">Delivery a domicilio</option>
+                        <option value="Recojo en tienda">Recojo en tienda</option>
+                      </select>
+                    </div>
+                    <div class="col-12" data-address-fields>
+                      <label for="clienteDireccion" class="form-label fw-semibold">Dirección completa <span
+                          class="text-danger" aria-hidden="true">*</span></label>
+                      <input type="text" class="form-control" id="clienteDireccion" name="clienteDireccion"
+                        autocomplete="street-address" placeholder="Av. / calle, número, urbanización y distrito"
+                        maxlength="180" required />
+                      <div class="invalid-feedback">Escribe la calle, número, urbanización y distrito.</div>
+                    </div>
+                    <div class="col-12" data-address-fields>
+                      <label for="clienteReferencia" class="form-label fw-semibold">Referencia <span
+                          class="text-body-secondary fw-normal">(opcional)</span></label>
+                      <input type="text" class="form-control" id="clienteReferencia" name="clienteReferencia"
+                        autocomplete="off" placeholder="Ej. Casa de dos pisos, portón negro" maxlength="180" />
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="fechaEntrega" class="form-label fw-semibold">Fecha de entrega <span
+                          class="text-danger" aria-hidden="true">*</span></label>
+                      <input type="date" class="form-control" id="fechaEntrega" name="fechaEntrega" required />
+                      <div class="form-text">Elige desde mañana.</div>
+                      <div class="invalid-feedback">Selecciona una fecha disponible a partir de mañana.</div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <label for="horaEntrega" class="form-label fw-semibold">Horario preferido <span
+                          class="text-danger" aria-hidden="true">*</span></label>
+                      <select class="form-select" id="horaEntrega" name="horaEntrega" required>
+                        <option value="" selected disabled>Selecciona un horario</option>
+                        <option value="09:00">Mañana · 9:00 a. m. – 12:00 p. m.</option>
+                        <option value="12:00">Mediodía · 12:00 p. m. – 3:00 p. m.</option>
+                        <option value="15:00">Tarde · 3:00 p. m. – 6:00 p. m.</option>
+                        <option value="18:00">Noche · 6:00 p. m. – 8:00 p. m.</option>
+                      </select>
+                      <div class="invalid-feedback">Selecciona una franja horaria para la entrega.</div>
+                    </div>
+                    <div class="col-12">
+                      <label for="mensaje" class="form-label fw-semibold">Mensaje para la tarjeta <span
+                          class="text-body-secondary fw-normal">(opcional)</span></label>
+                      <textarea class="form-control" id="mensaje" name="mensaje" rows="3" maxlength="300"
+                        placeholder="Escribe el mensaje que acompañará las flores"></textarea>
+                    </div>
+                    <div class="col-12">
+                      <label for="metodo-pago" class="form-label fw-semibold">Método de pago <span class="text-danger"
+                          aria-hidden="true">*</span></label>
+                      <select class="form-select" id="metodo-pago" name="metodoPago" required>
+                        <option value="Yape">Yape</option>
+                        <option value="Transferencia">Transferencia</option>
+                        <option value="Pago al recibir">Pago al recibir</option>
+                      </select>
+                      <div class="form-text">Te compartiremos las indicaciones de pago después de confirmar la
+                        disponibilidad.</div>
                     </div>
                   </div>
+                  <div class="checkout-actions mt-4">
+                    <button class="btn btn-outline-primary" type="button" data-checkout-back="1">← Volver al
+                      pedido</button>
+                    <button class="btn btn-primary" type="button" data-checkout-next="3">Revisar pedido <span
+                        aria-hidden="true">→</span></button>
+                  </div>
                 </div>
-              </div>
+              </section>
+
+              <section class="card checkout-card" data-checkout-panel="3" aria-labelledby="titulo-paso-confirmar"
+                hidden>
+                <div class="card-body p-4 p-lg-5">
+                  <div id="checkout-review">
+                    <p class="ceja mb-2">Paso 3 de 3</p>
+                    <h2 id="titulo-paso-confirmar" class="h1 mb-2" tabindex="-1">Confirma los datos</h2>
+                    <p class="text-body-secondary mb-4">Verifica que todo esté correcto antes de registrar tu pedido.
+                    </p>
+                    <div class="checkout-review-grid">
+                      <section class="checkout-review-section" aria-labelledby="checkout-review-contact-title">
+                        <h3 id="checkout-review-contact-title" class="h5">Contacto</h3>
+                        <p id="checkout-review-contact" class="mb-0"></p>
+                      </section>
+                      <section class="checkout-review-section" aria-labelledby="checkout-review-delivery-title">
+                        <h3 id="checkout-review-delivery-title" class="h5">Entrega</h3>
+                        <p id="checkout-review-delivery" class="mb-0"></p>
+                      </section>
+                      <section class="checkout-review-section" aria-labelledby="checkout-review-payment-title">
+                        <h3 id="checkout-review-payment-title" class="h5">Pago</h3>
+                        <p id="checkout-review-payment" class="mb-0"></p>
+                      </section>
+                    </div>
+                    <div class="form-check mt-4">
+                      <input class="form-check-input" type="checkbox" id="acepta-pedido" required />
+                      <label class="form-check-label" for="acepta-pedido">Confirmo que los datos de entrega y los
+                        productos son correctos. <span class="text-danger" aria-hidden="true">*</span></label>
+                      <div class="invalid-feedback">Confirma los datos para poder registrar el pedido.</div>
+                    </div>
+                    <div class="checkout-actions mt-4">
+                      <button class="btn btn-outline-primary" type="button" data-checkout-back="2">← Editar
+                        entrega</button>
+                      <button class="btn btn-primary" type="submit" data-confirm-order>Confirmar pedido</button>
+                    </div>
+                  </div>
+                  <div class="checkout-success text-center py-3" id="checkout-success" hidden role="status"
+                    aria-live="polite">
+                    <span class="checkout-success-icon" aria-hidden="true">✓</span>
+                    <p class="ceja mb-2">Pedido registrado</p>
+                    <h2 class="h1 mb-2">¡Gracias por elegir Opalina!</h2>
+                    <p class="text-body-secondary">Tu número de pedido es <strong id="checkout-order-number"></strong>.
+                      Puedes consultar su estado desde tu cuenta.</p>
+                    <a class="btn btn-primary mt-2" href="historial-pedidos.html">Ver mis pedidos</a>
+                    <a class="btn btn-outline-primary mt-2" href="../index.html">Volver al inicio</a>
+                  </div>
+                </div>
+              </section>
             </div>
-          </div>
+
+            <aside class="card checkout-summary" aria-labelledby="checkout-summary-title">
+              <div class="card-body p-4">
+                <p class="ceja mb-2">Resumen</p>
+                <h2 id="checkout-summary-title" class="h3 mb-4">Tu pedido</h2>
+                <div id="resumen-pedido" class="checkout-summary-items" aria-live="polite"></div>
+                <hr />
+                <div class="d-flex justify-content-between gap-3 mb-2"><span>Subtotal</span><span
+                    id="checkout-subtotal">S/ 0.00</span></div>
+                <div class="d-flex justify-content-between gap-3 mb-3"><span>Delivery</span><span
+                    id="checkout-delivery">S/ 0.00</span></div>
+                <div class="d-flex justify-content-between gap-3 fs-5 fw-bold"><span>Total</span><span
+                    id="checkout-total">S/ 0.00</span></div>
+              </div>
+            </aside>
+          </form>
         </div>
       </div>
     </section>
@@ -246,7 +325,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
-  <script src="../js/tienda.js"></script>
+  <script type="module" src="../js/app.js"></script>
 </body>
 
 </html>

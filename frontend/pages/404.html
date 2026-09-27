@@ -48,12 +48,12 @@
           <li class="nav-item">
             <a class="nav-link position-relative" href="carrito.html">Carrito
               <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
-                id="contador-carrito" aria-label="Artículos en el carrito">0<span
+                id="contador-carrito" aria-label="Artículos en el carrito" hidden>0<span
                   class="visually-hidden">artículos</span></span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="btn btn-primary btn-sm rounded-pill px-3" href="login.html">Iniciar sesión</a>
+            <a class="btn btn-primary btn-sm rounded-pill px-3" href="login.html" data-auth-link>Iniciar sesión</a>
           </li>
         </ul>
       </div>
@@ -68,7 +68,8 @@
             <p class="ceja mb-3">Te perdiste entre las flores</p>
             <p class="error-hero__codigo" aria-hidden="true">404</p>
             <h1 id="titulo-404">Esta página no floreció</h1>
-            <p class="error-hero__texto">El enlace puede estar vencido o la página se movió. Volvamos a un lugar conocido.</p>
+            <p class="error-hero__texto">El enlace puede estar vencido o la página se movió. Volvamos a un lugar
+              conocido.</p>
             <div class="d-flex flex-column flex-sm-row gap-3 mt-4">
               <a href="../index.html" class="btn btn-primary btn-lg">Ir al inicio <span aria-hidden="true">→</span></a>
               <a href="catalogo.html" class="btn btn-outline-primary btn-lg">Explorar el catálogo</a>
@@ -76,8 +77,10 @@
             <p class="error-hero__ayuda mb-0">¿Necesitas ayuda? <a href="contacto.html">Escríbenos</a></p>
           </div>
           <div class="error-hero__imagen">
-            <img src="../assets/imagenes/arreglos/hero-arreglo-elegante.jpg" alt="Ramo de flores blancas y verdes preparado en Opalina" />
-            <div class="error-hero__sello"><span aria-hidden="true">✿</span><span>Opalina<br /><small>Florería Piura</small></span></div>
+            <img src="../assets/imagenes/arreglos/hero-arreglo-elegante.jpg"
+              alt="Ramo de flores blancas y verdes preparado en Opalina" />
+            <div class="error-hero__sello"><span aria-hidden="true">✿</span><span>Opalina<br /><small>Florería
+                  Piura</small></span></div>
           </div>
         </div>
       </div>
@@ -86,13 +89,23 @@
     <section class="error-enlaces pb-5 pb-lg-6" aria-labelledby="titulo-rutas-404">
       <div class="container">
         <div class="d-flex flex-column flex-md-row align-items-md-end justify-content-between gap-2 mb-3">
-          <div><p class="ceja mb-1">Sigue explorando</p><h2 id="titulo-rutas-404" class="h3 mb-0">¿A dónde te gustaría ir?</h2></div>
+          <div>
+            <p class="ceja mb-1">Sigue explorando</p>
+            <h2 id="titulo-rutas-404" class="h3 mb-0">¿A dónde te gustaría ir?</h2>
+          </div>
           <a href="../index.html" class="enlace-opalina">Volver a Opalina <span aria-hidden="true">→</span></a>
         </div>
         <div class="row row-cols-1 row-cols-md-3 g-3">
-          <div class="col"><a class="error-ruta" href="catalogo.html"><span class="error-ruta__numero">01</span><span><strong>Catálogo</strong><small>Encuentra un arreglo para cada ocasión.</small></span><span class="error-ruta__flecha" aria-hidden="true">↗</span></a></div>
-          <div class="col"><a class="error-ruta" href="nosotros.html"><span class="error-ruta__numero">02</span><span><strong>Nuestra historia</strong><small>Conoce el cuidado detrás de cada ramo.</small></span><span class="error-ruta__flecha" aria-hidden="true">↗</span></a></div>
-          <div class="col"><a class="error-ruta" href="contacto.html"><span class="error-ruta__numero">03</span><span><strong>Contacto</strong><small>Estamos aquí para ayudarte.</small></span><span class="error-ruta__flecha" aria-hidden="true">↗</span></a></div>
+          <div class="col"><a class="error-ruta" href="catalogo.html"><span
+                class="error-ruta__numero">01</span><span><strong>Catálogo</strong><small>Encuentra un arreglo para cada
+                  ocasión.</small></span><span class="error-ruta__flecha" aria-hidden="true">↗</span></a></div>
+          <div class="col"><a class="error-ruta" href="nosotros.html"><span
+                class="error-ruta__numero">02</span><span><strong>Nuestra historia</strong><small>Conoce el cuidado
+                  detrás de cada ramo.</small></span><span class="error-ruta__flecha" aria-hidden="true">↗</span></a>
+          </div>
+          <div class="col"><a class="error-ruta" href="contacto.html"><span
+                class="error-ruta__numero">03</span><span><strong>Contacto</strong><small>Estamos aquí para
+                  ayudarte.</small></span><span class="error-ruta__flecha" aria-hidden="true">↗</span></a></div>
         </div>
       </div>
     </section>
@@ -163,7 +176,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
-  <script src="../js/tienda.js"></script>
+  <script type="module" src="../js/app.js"></script>
 </body>
 
 </html>

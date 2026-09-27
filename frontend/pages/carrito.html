@@ -41,11 +41,11 @@
             <a class="nav-link active position-relative" aria-current="page" href="carrito.html">Carrito
               <span id="contador-carrito"
                 class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-success"
-                id="contador-carrito" aria-label="Artículos en el carrito">0<span
-                  class="visually-hidden">artículos</span></span>
+                aria-label="Artículos en el carrito" hidden>0<span class="visually-hidden">artículos</span></span>
             </a>
           </li>
-          <li class="nav-item"><a class="btn btn-primary btn-sm rounded-pill px-3" href="login.html">Iniciar sesión</a>
+          <li class="nav-item"><a class="btn btn-primary btn-sm rounded-pill px-3" href="login.html"
+              data-auth-link>Iniciar sesión</a>
           </li>
         </ul>
       </div>
@@ -79,15 +79,19 @@
                   <div class="card-body p-4">
                     <h2 id="titulo-resumen" class="h4 mb-4">Resumen</h2>
                     <div class="d-flex justify-content-between gap-3 mb-2"><span>Subtotal</span><span
-                        id="subtotal-carrito">S/ 195.00</span></div>
+                        id="subtotal-carrito">S/ 0.00</span></div>
                     <div class="d-flex justify-content-between gap-3 mb-3"><span>Delivery <small
                           class="d-block text-body-secondary">Gratis desde S/ 200</small></span><span
                         id="delivery-carrito">S/ 15.00</span>
                     </div>
                     <hr />
                     <div class="d-flex justify-content-between gap-3 fs-5 fw-bold mb-4"><span>Total</span><span
-                        id="total-carrito">S/ 210.00</span></div>
-                    <a href="pedido.html" class="btn btn-primary w-100" data-ir-a-pedido>Proceder al pedido</a>
+                        id="total-carrito">S/ 0.00</span></div>
+                    <a href="pedido.html" class="btn btn-primary w-100" data-ir-a-pedido aria-disabled="true">Proceder
+                      al pedido</a>
+                    <p id="checkout-vacio-ayuda" class="form-text text-center mt-2 mb-0" hidden>
+                      Agrega un producto para continuar con tu pedido.
+                    </p>
                   </div>
                 </aside>
               </div>
@@ -155,7 +159,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
     crossorigin="anonymous"></script>
-  <script src="../js/tienda.js"></script>
+  <script type="module" src="../js/app.js"></script>
 </body>
 
 </html>
