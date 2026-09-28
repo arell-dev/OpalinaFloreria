@@ -1194,12 +1194,13 @@ h4,
   color: var(--rosa-suave);
 }
 
-.footer-opalina h6 {
+.footer-opalina h2 {
   color: var(--rosa-suave);
   font-family: var(--fuente-cuerpo);
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.12em;
+  margin: 0 0 0.5rem;
 }
 
 .footer-opalina .footer-brand strong {
