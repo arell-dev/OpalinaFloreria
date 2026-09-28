@@ -27,35 +27,39 @@
                 <div id="items-carrito" class="d-grid gap-3" th:unless="${#lists.isEmpty(items)}">
                   <article class="card shadow-sm carrito-item" th:each="item : ${items}">
                     <div class="card-body p-3 p-md-4">
-                      <div class="row g-3 align-items-center">
-                        <div class="col-4 col-sm-auto">
+                      <div class="carrito-item__contenido">
+                        <div class="carrito-item__producto">
                           <div class="ratio ratio-1x1 rounded overflow-hidden miniatura-carrito">
                             <img class="w-100 h-100 object-fit-cover" th:src="@{${item.producto.imagen}}" th:alt="${item.producto.nombre}">
                           </div>
+                          <div class="carrito-item__detalle">
+                            <h2 class="h5 mb-1" th:text="${item.producto.nombre}">Producto</h2>
+                            <p class="mb-0 fw-bold" th:text="|S/ ${#numbers.formatDecimal(item.producto.precio, 1, 2)} por unidad|">Precio por unidad</p>
+                          </div>
                         </div>
-                        <div class="col-8 col-sm">
-                          <h2 class="h5 mb-1" th:text="${item.producto.nombre}">Producto</h2>
-                          <p class="mb-0 fw-bold" th:text="|S/ ${#numbers.formatDecimal(item.producto.precio, 1, 2)} por unidad|">Precio</p>
-                        </div>
-                        <div class="col-7 col-sm-auto">
-                          <div class="carrito-cantidad" role="group" th:aria-label="|Cantidad de ${item.producto.nombre}|">
-                            <form th:action="@{/carrito/items/{id}/cantidad(id=${item.producto.id})}" method="post">
-                              <input type="hidden" name="ajuste" value="-1">
-                              <button class="btn-cantidad" type="submit" aria-label="Reducir una unidad" th:disabled="${item.cantidad <= 1}">−</button>
-                            </form>
-                            <output class="carrito-cantidad__valor" aria-live="polite" th:text="${item.cantidad}">1</output>
-                            <form th:action="@{/carrito/items/{id}/cantidad(id=${item.producto.id})}" method="post">
-                              <input type="hidden" name="ajuste" value="1">
-                              <button class="btn-cantidad" type="submit" aria-label="Aumentar una unidad" th:disabled="${item.cantidad >= item.producto.stock}">+</button>
+
+                        <div class="carrito-item__barra">
+                          <div class="carrito-item__cantidad">
+                            <div class="carrito-cantidad" role="group" th:aria-label="|Cantidad de ${item.producto.nombre}, ${item.producto.stock} disponibles|">
+                              <form th:action="@{/carrito/items/{id}/cantidad(id=${item.producto.id})}" method="post">
+                                <input type="hidden" name="ajuste" value="-1">
+                                <button class="btn-cantidad" type="submit" th:aria-label="|Reducir una unidad de ${item.producto.nombre}|" th:disabled="${item.cantidad <= 1}">−</button>
+                              </form>
+                              <output class="carrito-cantidad__valor" aria-live="polite" th:text="${item.cantidad}">1</output>
+                              <form th:action="@{/carrito/items/{id}/cantidad(id=${item.producto.id})}" method="post">
+                                <input type="hidden" name="ajuste" value="1">
+                                <button class="btn-cantidad" type="submit" th:aria-label="|Aumentar una unidad de ${item.producto.nombre}|" th:disabled="${item.cantidad >= item.producto.stock}">+</button>
+                              </form>
+                            </div>
+                            <small class="carrito-item__stock" th:text="|${item.producto.stock} disponibles|">Stock disponible</small>
+                          </div>
+
+                          <div class="carrito-item__acciones">
+                            <strong class="carrito-item__total" th:text="|S/ ${#numbers.formatDecimal(item.total, 1, 2)}|">Total</strong>
+                            <form th:action="@{/carrito/items/{id}/eliminar(id=${item.producto.id})}" method="post">
+                              <button class="btn btn-sm btn-carrito-quitar" type="submit">Quitar</button>
                             </form>
                           </div>
-                          <small class="text-body-secondary" th:text="|${item.producto.stock} disponibles|">Stock</small>
-                        </div>
-                        <div class="col-5 col-sm-auto text-end">
-                          <form th:action="@{/carrito/items/{id}/eliminar(id=${item.producto.id})}" method="post">
-                            <button class="btn btn-outline-primary btn-sm" type="submit">Quitar</button>
-                          </form>
-                          <strong class="d-block mt-2" th:text="|S/ ${#numbers.formatDecimal(item.total, 1, 2)}|">Total</strong>
                         </div>
                       </div>
                     </div>

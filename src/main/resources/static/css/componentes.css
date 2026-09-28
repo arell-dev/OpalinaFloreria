@@ -108,6 +108,19 @@ h4,
   --bs-btn-disabled-border-color: var(--ciruela);
 }
 
+.btn-carrito-quitar {
+  --bs-btn-color: #ffffff;
+  --bs-btn-bg: #b42332;
+  --bs-btn-border-color: #b42332;
+  --bs-btn-hover-color: #ffffff;
+  --bs-btn-hover-bg: #941d29;
+  --bs-btn-hover-border-color: #941d29;
+  --bs-btn-active-color: #ffffff;
+  --bs-btn-active-bg: #7f1924;
+  --bs-btn-active-border-color: #7f1924;
+  --bs-btn-focus-shadow-rgb: 180, 35, 50;
+}
+
 .btn-secondary {
   --bs-btn-bg: var(--salvia-oscuro);
   --bs-btn-border-color: var(--salvia-oscuro);
@@ -433,6 +446,57 @@ h4,
 /* Carrito: usa la grilla, controles y tarjetas de Bootstrap */
 .miniatura-carrito {
   width: 72px;
+}
+
+.carrito-item__contenido {
+  display: grid;
+  gap: 1rem;
+}
+
+.carrito-item__producto {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: 1rem;
+}
+
+.carrito-item__detalle {
+  min-width: 0;
+}
+
+.carrito-item__barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--linea);
+}
+
+.carrito-item__cantidad,
+.carrito-item__acciones {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.carrito-item__stock {
+  color: var(--apagado);
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.carrito-item__acciones {
+  flex-shrink: 0;
+}
+
+.carrito-item__acciones form {
+  margin: 0;
+}
+
+.carrito-item__total {
+  font-weight: 800;
+  white-space: nowrap;
 }
 
 .carrito-cantidad {
@@ -1361,12 +1425,32 @@ section .container {
   .heroe-opalina .row.g-5 {
     --bs-gutter-x: 0;
   }
+
+  .carrito-item__barra {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.75rem;
+  }
+
+  .carrito-item__cantidad {
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .carrito-item__acciones {
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
 }
 
 @media (min-width: 576px) {
   /* Carrito */
   .miniatura-carrito {
     width: 88px;
+  }
+
+  .carrito-item__producto {
+    grid-template-columns: 5.5rem minmax(0, 1fr);
   }
 
   /* Global: enlaces legales */
