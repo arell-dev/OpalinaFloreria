@@ -27,28 +27,32 @@
             <div class="h-100">
               <span class="insignia" th:text="${producto.categoria}">Categoría</span>
               <h1 id="nombre-producto" class="display-5 fw-bold mt-3 mb-2" th:text="${producto.nombre}">Producto</h1>
-              <p class="h3 text-success fw-bold my-4" th:text="|S/ ${#numbers.formatDecimal(producto.precio, 1, 2)}|">S/0.00</p>
+              <p class="h3 producto-precio fw-bold my-4" th:text="|S/ ${#numbers.formatDecimal(producto.precio, 1, 2)}|">S/0.00</p>
               <p class="text-body-secondary mb-4" th:text="${producto.descripcion}">Descripción del arreglo.</p>
 
               <div class="list-group list-group-flush mb-4">
                 <div class="list-group-item px-0 d-flex flex-wrap gap-2">
                   <strong class="text-primary">Disponibilidad</strong>
-                  <span class="text-body-secondary" th:text="${producto.stock > 0 ? producto.stock + ' en stock' : 'Agotado'}">Stock</span>
+                  <span class="text-body-secondary" th:text="${producto.comprable ? producto.stock + ' en stock' : (producto.stock > 0 ? 'No disponible' : 'Agotado')}">Stock</span>
                 </div>
               </div>
 
               <form th:action="@{/carrito/items}" method="post">
                 <input type="hidden" name="productoId" th:value="${producto.id}">
-                <div class="row align-items-center g-3 mb-4">
+                <div class="row align-items-center g-3 mb-4" th:if="${producto.comprable}">
                   <div class="col-auto">
                     <label for="cantidad" class="form-label fw-semibold mb-0">Cantidad:</label>
                   </div>
-                  <div class="col-4 col-sm-3">
-                    <input type="number" id="cantidad" name="cantidad" class="form-control text-center" min="1" th:max="${producto.stock}" value="1" required />
+                  <div class="col-auto">
+                    <div class="carrito-cantidad" role="group" data-cantidad-control th:aria-label="|Cantidad de ${producto.nombre}|">
+                      <button class="btn-cantidad" type="button" data-cantidad-decrease aria-label="Disminuir cantidad" disabled>−</button>
+                      <input type="text" id="cantidad" name="cantidad" class="carrito-cantidad__entrada" inputmode="numeric" pattern="[0-9]*" data-min="1" th:attr="data-max=${producto.stock}" value="1" required data-cantidad-input>
+                      <button class="btn-cantidad" type="button" data-cantidad-increase aria-label="Aumentar cantidad" th:disabled="${producto.stock <= 1}">+</button>
+                    </div>
                   </div>
                 </div>
 
-                <button id="btn-agregar" class="btn btn-primary btn-lg w-100" type="submit" th:disabled="${producto.stock < 1}">Agregar al carrito</button>
+                <button id="btn-agregar" class="btn btn-primary btn-lg w-100" type="submit" th:classappend="${!producto.comprable} ? 'btn-no-disponible' : ''" th:disabled="${!producto.comprable}" th:text="${producto.comprable ? 'Agregar al carrito' : 'No disponible para compra'}">Agregar al carrito</button>
               </form>
             </div>
           </div>

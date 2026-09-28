@@ -59,6 +59,29 @@ h4,
   --bs-btn-active-border-color: var(--salvia);
 }
 
+.btn-no-disponible.btn-primary:disabled,
+.btn-no-disponible.btn-primary:disabled:hover,
+.btn-no-disponible.btn-primary:disabled:focus-visible,
+.btn-no-disponible.btn-primary:disabled:active {
+  background-color: var(--rosa-claro);
+  border-color: var(--linea);
+  color: var(--apagado);
+  cursor: not-allowed;
+  pointer-events: auto;
+  opacity: 1;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Texto de éxito: la salvia clara se reserva para fondos y decoraciones. */
+.text-success {
+  --bs-success-rgb: 83, 107, 79;
+}
+
+.producto-precio {
+  color: var(--salvia-oscuro);
+}
+
 .btn-checkout-disabled,
 .btn-checkout-disabled:hover,
 .btn-checkout-disabled:focus-visible,
@@ -459,6 +482,25 @@ h4,
   font-weight: 800;
   text-align: center;
   font-variant-numeric: tabular-nums;
+}
+
+.carrito-cantidad__entrada {
+  width: 3rem;
+  min-width: 2rem;
+  padding: 0.35rem 0.15rem;
+  border: 0;
+  border-radius: var(--radio);
+  background: transparent;
+  color: var(--tinta);
+  font: inherit;
+  font-weight: 800;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.carrito-cantidad__entrada:focus-visible {
+  outline: 3px solid rgba(93, 70, 95, 0.3);
+  outline-offset: 2px;
 }
 
 /* Perfil */
