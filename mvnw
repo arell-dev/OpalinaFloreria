@@ -202,16 +202,22 @@ elif set_java_home; then
   javaSource="$TMP_DOWNLOAD_DIR/Downloader.java"
   targetZip="$TMP_DOWNLOAD_DIR/$distributionUrlName"
   cat >"$javaSource" <<-END
-	public class Downloader extends java.net.Authenticator
+	import java.net.Authenticator;
+	import java.net.PasswordAuthentication;
+	import java.net.URI;
+	import java.nio.file.Files;
+	import java.nio.file.Paths;
+
+	public class Downloader extends Authenticator
 	{
-	  protected java.net.PasswordAuthentication getPasswordAuthentication()
+	  protected PasswordAuthentication getPasswordAuthentication()
 	  {
-	    return new java.net.PasswordAuthentication( System.getenv( "MVNW_USERNAME" ), System.getenv( "MVNW_PASSWORD" ).toCharArray() );
+	    return new PasswordAuthentication( System.getenv( "MVNW_USERNAME" ), System.getenv( "MVNW_PASSWORD" ).toCharArray() );
 	  }
 	  public static void main( String[] args ) throws Exception
 	  {
 	    setDefault( new Downloader() );
-	    java.nio.file.Files.copy( java.net.URI.create( args[0] ).toURL().openStream(), java.nio.file.Paths.get( args[1] ).toAbsolutePath().normalize() );
+	    Files.copy( URI.create( args[0] ).toURL().openStream(), Paths.get( args[1] ).toAbsolutePath().normalize() );
 	  }
 	}
 	END
