@@ -1591,7 +1591,7 @@ section .container {
 
 .checkout-progress {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.75rem;
   padding: 0;
   margin: 0;
@@ -1652,6 +1652,12 @@ section .container {
   gap: 1.5rem;
 }
 
+.checkout-layout--success {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 52rem;
+  margin-inline: auto;
+}
+
 .checkout-main {
   min-width: 0;
 }
@@ -1660,6 +1666,11 @@ section .container {
 .checkout-summary {
   border-color: var(--linea);
   box-shadow: 0 0.25rem 0.8rem rgba(60, 42, 52, 0.07);
+}
+
+.checkout-card h2[tabindex="-1"]:focus {
+  outline: none;
+  box-shadow: none;
 }
 
 .checkout-summary {
@@ -1743,6 +1754,76 @@ section .container {
   overflow-wrap: anywhere;
 }
 
+.checkout-payment-fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.checkout-payment-fieldset legend {
+  float: none;
+  width: auto;
+  margin-bottom: 0.75rem;
+}
+
+.checkout-payment-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.checkout-payment-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  min-height: 5.25rem;
+  padding: 1rem;
+  border: 1px solid var(--linea);
+  border-radius: var(--radio);
+  background: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.checkout-payment-option:has(input:checked) {
+  border-color: var(--ciruela);
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(99, 69, 99, 0.14);
+}
+
+.checkout-payment-option:focus-within {
+  outline: 3px solid rgba(99, 69, 99, 0.28);
+  outline-offset: 2px;
+}
+
+.checkout-payment-option .form-check-input {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.checkout-payment-option-copy {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.checkout-payment-option-copy small {
+  color: var(--apagado);
+  font-size: 0.82rem;
+}
+
+.checkout-payment-simulation {
+  padding: 1rem;
+  border: 1px solid var(--linea);
+  border-left: 4px solid var(--salvia);
+  border-radius: var(--radio);
+  background: rgba(255, 255, 255, 0.55);
+}
+
 .checkout-success-icon {
   display: inline-grid;
   width: 4rem;
@@ -1789,6 +1870,7 @@ section .container {
 
   .checkout-progress {
     gap: 0.4rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .checkout-progress li {
@@ -1802,6 +1884,10 @@ section .container {
     flex-basis: 1.5rem;
     width: 1.5rem;
     height: 1.5rem;
+  }
+
+  .checkout-payment-options {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .checkout-item {

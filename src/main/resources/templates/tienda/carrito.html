@@ -78,8 +78,9 @@
                     </div>
                     <hr />
                     <div class="d-flex justify-content-between gap-3 fs-5 fw-bold mb-4"><span>Total</span><span id="total-carrito" th:text="|S/ ${#numbers.formatDecimal(total, 1, 2)}|">S/ 0.00</span></div>
-                    <a th:href="@{/pedido}" class="btn btn-primary w-100" data-ir-a-pedido>Proceder al pedido</a>
-                    <p id="checkout-vacio-ayuda" class="form-text text-center mt-2 mb-0" hidden> Agrega un producto para continuar con tu pedido.</p>
+                    <a th:if="${!#lists.isEmpty(items)}" th:href="@{/pedido}" class="btn btn-primary w-100" data-ir-a-pedido>Proceder al pedido</a>
+                    <button th:if="${#lists.isEmpty(items)}" class="btn btn-primary btn-no-disponible w-100" type="button" disabled>Proceder al pedido</button>
+                    <p id="checkout-vacio-ayuda" class="form-text text-center mt-2 mb-0" th:if="${#lists.isEmpty(items)}">Agrega un producto para continuar con tu pedido.</p>
                   </div>
                 </aside>
               </div>

@@ -26,9 +26,7 @@ function createPanelValidator(form, panels) {
     );
     if (!panel) return false;
 
-    const invalidControl = [
-      ...panel.querySelectorAll("input, select, textarea"),
-    ]
+    const invalidControl = [...panel.querySelectorAll("input, select, textarea")]
       .filter((control) => !control.disabled)
       .find((control) => !control.checkValidity());
 
@@ -60,6 +58,50 @@ function updateDeliveryFields(form) {
   });
 }
 
+function updateDeliverySummary(form) {
+  const summary = form.querySelector(".checkout-summary");
+  const mode = form.querySelector("#modalidad-entrega")?.value;
+  if (!summary || !mode) return;
+
+  const subtotal = Number(summary.dataset.subtotal) || 0;
+  const deliveryCost = Number(summary.dataset.deliveryCost) || 0;
+  const pickup = mode === "RECOJO";
+  const delivery = pickup ? 0 : deliveryCost;
+  const formatter = new Intl.NumberFormat("es-ES", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+  summary.querySelector("#checkout-delivery-label").textContent = pickup
+    ? "Recojo en tienda"
+    : "Delivery";
+  const dateLabel = form.querySelector("#fecha-entrega-label");
+  if (dateLabel) {
+    dateLabel.textContent = pickup ? "Fecha de recojo" : "Fecha de entrega";
+  }
+  summary.querySelector("#checkout-delivery").textContent = `S/ ${formatter.format(delivery)}`;
+  summary.querySelector("#checkout-total").textContent = `S/ ${formatter.format(subtotal + delivery)}`;
+}
+
+function updatePaymentSimulation(form) {
+  const simulation = form.querySelector("#checkout-payment-simulation");
+  const title = form.querySelector("#checkout-payment-title");
+  const selectedPayment = form.querySelector('input[name="metodoPago"]:checked');
+  if (!simulation || !title) return;
+
+  const paymentNames = {
+    YAPE: "Yape",
+    PLIN: "Plin",
+    TRANSFERENCIA: "transferencia bancaria",
+  };
+
+  simulation.hidden = !selectedPayment;
+  if (selectedPayment) {
+    const methodName = paymentNames[selectedPayment.value] ?? selectedPayment.value;
+    title.textContent = `Método seleccionado: ${methodName}.`;
+  }
+}
+
 function renderCheckoutStep(panels, steps, stepNumber) {
   panels.forEach((panel) => {
     panel.hidden = getStepNumber(panel, "checkoutPanel") !== stepNumber;
@@ -86,35 +128,27 @@ function renderCheckoutStep(panels, steps, stepNumber) {
 }
 
 function formatCheckoutReview(form) {
-  const review = form.querySelector("#checkout-review");
-  if (!review) return;
-
-  const getValue = (selector) =>
-    form.querySelector(selector)?.value.trim() ?? "";
+  const getValue = (selector) => form.querySelector(selector)?.value.trim() ?? "";
   const getSelectedLabel = (selector) =>
     form.querySelector(selector)?.selectedOptions[0]?.textContent.trim() ?? "";
-  const isPickup = getValue("#modalidad-entrega") === "RECOJO";
-  const address = isPickup ? "Recojo en tienda" : getValue("#clienteDireccion");
+  const pickup = getValue("#modalidad-entrega") === "RECOJO";
+  const address = pickup ? "" : getValue("#clienteDireccion");
   const date = getValue("#fechaEntrega");
   const delivery = [
-    getSelectedLabel("#modalidad-entrega"),
+    pickup ? "Recojo en tienda" : getSelectedLabel("#modalidad-entrega"),
     address,
     date,
     getSelectedLabel("#horaEntrega"),
   ]
     .filter(Boolean)
     .join(" · ");
-
-  review.querySelector("#checkout-review-contact").textContent = [
+  form.querySelector("#checkout-review-contact").textContent = [
     getValue("#clienteNombre"),
-    getValue("#clienteCorreo"),
     getValue("#clienteTelefono"),
   ]
     .filter(Boolean)
     .join(" · ");
-  review.querySelector("#checkout-review-delivery").textContent = delivery;
-  review.querySelector("#checkout-review-payment").textContent =
-    getSelectedLabel("#metodo-pago");
+  form.querySelector("#checkout-review-delivery").textContent = delivery;
 }
 
 export function initializeCheckoutWizard(root = document) {
@@ -123,25 +157,40 @@ export function initializeCheckoutWizard(root = document) {
 
   const panels = [...form.querySelectorAll(CHECKOUT_PANEL_SELECTOR)];
   const steps = [...root.querySelectorAll(CHECKOUT_STEP_SELECTOR)];
-  const isConfirmed = Boolean(form.querySelector("#checkout-success"));
-  const hasServerErrors = Boolean(form.querySelector(".is-invalid"));
+  const firstInvalidControl = form.querySelector(".is-invalid");
+  const errorPanel = firstInvalidControl?.closest(CHECKOUT_PANEL_SELECTOR);
+  const errorStep = errorPanel
+    ? getStepNumber(errorPanel, "checkoutPanel")
+    : null;
   if (panels.length === 0 || steps.length === 0) return;
 
   const validatePanel = createPanelValidator(form, panels);
-  const initialStep = isConfirmed ? 3 : hasServerErrors ? 2 : 1;
+  const initialStep = errorStep ?? 1;
   let currentStep = initialStep;
 
   initializeDeliveryDate(form);
   updateDeliveryFields(form);
-  if (hasServerErrors) {
+  updateDeliverySummary(form);
+  formatCheckoutReview(form);
+  updatePaymentSimulation(form);
+
+  if (errorStep) {
     form.classList.add("was-validated");
     const summary = form.querySelector(
-      '[data-checkout-panel="2"] [data-checkout-validation-summary]',
+      `[data-checkout-panel="${errorStep}"] [data-checkout-validation-summary]`,
     );
     if (summary) summary.hidden = false;
   }
-  form.querySelector("#modalidad-entrega")?.addEventListener("change", () => {
-    updateDeliveryFields(form);
+
+  form.addEventListener("change", (event) => {
+    if (event.target.matches("#modalidad-entrega")) {
+      updateDeliveryFields(form);
+      updateDeliverySummary(form);
+    }
+
+    if (event.target.matches('input[name="metodoPago"]')) {
+      updatePaymentSimulation(form);
+    }
   });
 
   form.addEventListener("click", (event) => {
@@ -166,24 +215,17 @@ export function initializeCheckoutWizard(root = document) {
   });
 
   form.addEventListener("submit", (event) => {
-    if (currentStep < 3) {
+    if (currentStep < 4) {
       event.preventDefault();
+      if (!validatePanel(currentStep)) return;
 
-      if (currentStep === 1) {
-        currentStep = 2;
-        renderCheckoutStep(panels, steps, currentStep);
-        return;
-      }
-
-      if (validatePanel(currentStep)) {
-        formatCheckoutReview(form);
-        currentStep = 3;
-        renderCheckoutStep(panels, steps, currentStep);
-      }
+      currentStep += 1;
+      if (currentStep === 3) formatCheckoutReview(form);
+      renderCheckoutStep(panels, steps, currentStep);
       return;
     }
 
-    if (!validatePanel(3)) event.preventDefault();
+    if (!validatePanel(4)) event.preventDefault();
   });
 
   renderCheckoutStep(panels, steps, currentStep);
