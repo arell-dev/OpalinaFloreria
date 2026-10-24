@@ -39,30 +39,31 @@
                   <div class="card-body p-4 p-lg-5">
                     <h2 id="encabezado-form-contacto" class="h3 mb-4">Envíanos un mensaje</h2>
                     <div th:replace="~{fragments/mensajes :: mensajes}"></div>
-                    <form th:action="@{/contacto}" th:object="${contactoForm}" method="post">
+                    <form th:action="@{/contacto}" th:object="${contactoForm}" method="post" autocomplete="off">
                       <div class="row g-3">
                         <div class="col-12 col-md-6">
                           <label for="nombre-contacto" class="form-label">Nombre</label>
-                          <input type="text" class="form-control" id="nombre-contacto" th:field="*{nombre}" placeholder="Tu nombre" required />
+                          <input type="text" class="form-control" id="nombre-contacto" th:field="*{nombre}" placeholder="Tu nombre" autocomplete="off" required />
                           <div class="form-text text-danger" th:errors="*{nombre}"></div>
                         </div>
                         <div class="col-12 col-md-6">
                           <label for="telefono-contacto" class="form-label">Teléfono</label>
-                          <input type="tel" class="form-control" id="telefono-contacto" name="telefono" placeholder="999 999 999" pattern="[0-9]{9}" title="Ingresa 9 dígitos" />
+                          <input type="tel" class="form-control" id="telefono-contacto" th:field="*{telefono}" placeholder="999 999 999" autocomplete="off" pattern="[0-9]{9}" title="Ingresa 9 dígitos" />
                         </div>
                         <div class="col-12">
                           <label for="email-contacto" class="form-label">Correo electrónico</label>
-                          <input type="email" class="form-control" id="email-contacto" th:field="*{email}" placeholder="tu@correo.com" required />
+                          <input type="email" class="form-control" id="email-contacto" th:field="*{email}" placeholder="tu@correo.com" autocomplete="off" required />
                           <div class="form-text text-danger" th:errors="*{email}"></div>
                         </div>
                         <div class="col-12">
                           <label for="asunto-contacto" class="form-label">Asunto</label>
-                          <select id="asunto-contacto" name="asunto" class="form-select">
-                            <option>Consulta general</option>
-                            <option>Pedido personalizado</option>
-                            <option>Evento especial</option>
-                            <option>Reclamo o sugerencia</option>
-                            <option>Alianzas comerciales</option>
+                          <select id="asunto-contacto" th:field="*{asunto}" class="form-select">
+                            <option value="">Selecciona un asunto</option>
+                            <option value="Consulta general">Consulta general</option>
+                            <option value="Pedido personalizado">Pedido personalizado</option>
+                            <option value="Evento especial">Evento especial</option>
+                            <option value="Reclamo o sugerencia">Reclamo o sugerencia</option>
+                            <option value="Alianzas comerciales">Alianzas comerciales</option>
                           </select>
                         </div>
                         <div class="col-12">
