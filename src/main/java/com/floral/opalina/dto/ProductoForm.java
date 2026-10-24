@@ -1,7 +1,7 @@
 package com.floral.opalina.dto;
 
 import jakarta.validation.constraints.*;
-import com.floral.opalina.model.Producto;
+import com.floral.opalina.domain.Producto;
 import java.math.BigDecimal;
 
 public class ProductoForm {

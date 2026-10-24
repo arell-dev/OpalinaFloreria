@@ -57,7 +57,7 @@
                     <span class="insignia" th:text="${#strings.replace(pedido.estado.name(), '_', ' ')}">Estado</span>
                   </div>
                   <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3">
-                    <span class="small text-body-secondary" th:text="${pedido.entrega.modalidad == T(com.floral.opalina.model.enums.ModalidadEntrega).RECOJO ? 'Recojo en tienda' : 'Delivery a domicilio'}">Entrega</span>
+                    <span class="small text-body-secondary" th:text="${pedido.entrega.modalidad.name() == 'RECOJO' ? 'Recojo en tienda' : 'Delivery a domicilio'}">Entrega</span>
                     <a class="btn btn-outline-primary btn-sm" th:href="@{/cuenta/pedidos/{id}(id=${pedido.id})}">Ver seguimiento</a>
                   </div>
                 </div>

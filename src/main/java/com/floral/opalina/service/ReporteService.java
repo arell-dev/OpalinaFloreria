@@ -1,8 +1,8 @@
 package com.floral.opalina.service;
 
-import com.floral.opalina.model.ItemPedido;
-import com.floral.opalina.model.Pedido;
-import com.floral.opalina.model.enums.EstadoPedido;
+import com.floral.opalina.domain.ItemPedido;
+import com.floral.opalina.domain.Pedido;
+import com.floral.opalina.domain.enums.EstadoPedido;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

@@ -1,7 +1,7 @@
 package com.floral.opalina.dto;
 
-import com.floral.opalina.model.enums.MetodoPago;
-import com.floral.opalina.model.enums.ModalidadEntrega;
+import com.floral.opalina.domain.enums.MetodoPago;
+import com.floral.opalina.domain.enums.ModalidadEntrega;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;

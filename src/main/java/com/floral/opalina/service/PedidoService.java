@@ -2,25 +2,28 @@ package com.floral.opalina.service;
 
 import com.floral.opalina.dto.CheckoutForm;
 import com.floral.opalina.dto.PedidoApiForm;
-import com.floral.opalina.model.CambioEstado;
-import com.floral.opalina.model.Cliente;
-import com.floral.opalina.model.Entrega;
-import com.floral.opalina.model.ItemPedido;
-import com.floral.opalina.model.Pedido;
-import com.floral.opalina.model.Producto;
-import com.floral.opalina.model.enums.EstadoPago;
-import com.floral.opalina.model.enums.EstadoPedido;
-import com.floral.opalina.model.enums.ModalidadEntrega;
+import com.floral.opalina.exception.RecursoNoEncontradoException;
+import com.floral.opalina.domain.CambioEstado;
+import com.floral.opalina.domain.Cliente;
+import com.floral.opalina.domain.Entrega;
+import com.floral.opalina.domain.ItemPedido;
+import com.floral.opalina.domain.Pedido;
+import com.floral.opalina.domain.Producto;
+import com.floral.opalina.domain.enums.EstadoPago;
+import com.floral.opalina.domain.enums.EstadoPedido;
+import com.floral.opalina.domain.enums.ModalidadEntrega;
 import com.floral.opalina.repository.PedidoRepository;
 import com.floral.opalina.session.UsuarioSession;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class PedidoService {
@@ -70,12 +73,16 @@ public class PedidoService {
         return pedidos.buscarPorId(id);
     }
 
-    public synchronized Pedido crear(CheckoutForm formulario) {
+    @Transactional
+    public Pedido crear(CheckoutForm formulario) {
         if (carrito.vacio()) {
             throw new IllegalArgumentException("Agrega al menos un producto antes de confirmar");
         }
 
-        if (formulario.getModalidad() == ModalidadEntrega.DELIVERY && (formulario.getDireccion() == null || formulario.getDireccion().isBlank())) {
+        boolean requiereDireccion = formulario.getModalidad() == ModalidadEntrega.DELIVERY;
+        boolean direccionVacia = formulario.getDireccion() == null || formulario.getDireccion().isBlank();
+
+        if (requiereDireccion && direccionVacia) {
             throw new IllegalArgumentException("La dirección es obligatoria para delivery");
         }
 
@@ -126,7 +133,7 @@ public class PedidoService {
                 id,
                 cliente.getId(),
                 formulario.getNombreReceptor(),
-                formulario.getEmail(),
+                cliente.getEmail(),
                 formulario.getTelefono(),
                 lineas,
                 entrega,
@@ -139,42 +146,52 @@ public class PedidoService {
                 List.of(new CambioEstado(EstadoPedido.PENDIENTE, ahora)));
 
         Map<String, Integer> cantidades = new HashMap<>();
-        for (var itemCarrito : itemsCarrito) {
-            cantidades.put(itemCarrito.producto().getId(), itemCarrito.cantidad());
-        }
+        itemsCarrito.forEach(itemCarrito -> cantidades.put(itemCarrito.producto().getId(), itemCarrito.cantidad()));
 
         productos.descontarStock(cantidades);
-        pedidos.guardar(pedido);
+        pedido = pedidos.guardar(pedido);
         carrito.vaciar();
+
         return pedido;
     }
 
-    public synchronized Pedido crearDesdeApi(PedidoApiForm formulario) {
+    @Transactional
+    public Pedido crearDesdeApi(PedidoApiForm formulario) {
         Cliente cliente = clientes.porId(formulario.getClienteId())
                                   .orElseThrow(() -> new IllegalArgumentException("Cliente no encontrado"));
 
-        if (formulario.getModalidad() == ModalidadEntrega.DELIVERY && (formulario.getDireccion() == null || formulario.getDireccion().isBlank())) {
+        boolean requiereDireccion = formulario.getModalidad() == ModalidadEntrega.DELIVERY;
+        boolean direccionVacia = formulario.getDireccion() == null || formulario.getDireccion().isBlank();
+        if (requiereDireccion && direccionVacia) {
             throw new IllegalArgumentException("La dirección es obligatoria para delivery");
+        }
+
+        Map<String, Integer> cantidades = new LinkedHashMap<>();
+        formulario.getItems().forEach(linea -> cantidades.merge(linea.getProductoId(), linea.getCantidad(), Math::addExact));
+
+        if (cantidades.values().stream().anyMatch(cantidad -> cantidad > 65535)) {
+            throw new IllegalArgumentException("La cantidad por producto no puede superar 65535 unidades");
         }
 
         List<ItemPedido> lineas = new ArrayList<>();
         BigDecimal subtotal = BigDecimal.ZERO;
 
-        for (PedidoApiForm.Linea linea : formulario.getItems()) {
-            Producto producto = productos.buscarPorId(linea.getProductoId())
-                                         .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado: " + linea.getProductoId()));
+        for (var linea : cantidades.entrySet()) {
+            Producto producto = productos.buscarPorId(linea.getKey())
+                                         .orElseThrow(() -> new RecursoNoEncontradoException("Producto no encontrado: " + linea.getKey()));
 
-            if (!producto.isComprable() || linea.getCantidad() > producto.getStock()) {
+            if (!producto.isComprable() || linea.getValue() > producto.getStock()) {
                 throw new IllegalArgumentException("El stock disponible de " + producto.getNombre() + " es " + producto.getStock());
             }
 
-            BigDecimal totalLinea = producto.getPrecio().multiply(BigDecimal.valueOf(linea.getCantidad()));
+            BigDecimal totalLinea = producto.getPrecio().multiply(BigDecimal.valueOf(linea.getValue()));
+
             lineas.add(new ItemPedido(
                     producto.getId(),
                     producto.getNombre(),
                     producto.getCategoria(),
                     producto.getImagen(),
-                    linea.getCantidad(),
+                    linea.getValue(),
                     producto.getPrecio(),
                     totalLinea));
             subtotal = subtotal.add(totalLinea);
@@ -182,6 +199,7 @@ public class PedidoService {
 
         boolean recojo = formulario.getModalidad() == ModalidadEntrega.RECOJO;
         BigDecimal delivery = carrito.calcularDelivery(subtotal, recojo);
+
         Entrega entrega = new Entrega(
                 formulario.getModalidad(),
                 recojo ? "" : formulario.getDireccion(),
@@ -192,6 +210,9 @@ public class PedidoService {
                 formulario.getMetodoPago());
 
         LocalDateTime ahora = LocalDateTime.now();
+        if (cliente.getNombre().isBlank() || cliente.getTelefono().isBlank()) {
+            throw new IllegalArgumentException("El cliente debe tener nombre y teléfono para registrar al destinatario");
+        }
         String id = pedidos.generarId();
         Pedido pedido = new Pedido(
                 id,
@@ -209,19 +230,16 @@ public class PedidoService {
                 ahora,
                 List.of(new CambioEstado(EstadoPedido.PENDIENTE, ahora)));
 
-        Map<String, Integer> cantidades = new HashMap<>();
-        for (PedidoApiForm.Linea linea : formulario.getItems()) {
-            cantidades.merge(linea.getProductoId(), linea.getCantidad(), Integer::sum);
-        }
-
         productos.descontarStock(cantidades);
-        pedidos.guardar(pedido);
+        pedido = pedidos.guardar(pedido);
+
         return pedido;
     }
 
-    public synchronized void cambiarEstado(String id, EstadoPedido nuevoEstado) {
-        Pedido pedido = pedidos.buscarPorId(id)
-                .orElseThrow(() -> new IllegalArgumentException("Pedido no encontrado"));
+    @Transactional
+    public void cambiarEstado(String id, EstadoPedido nuevoEstado) {
+        Pedido pedido = pedidos.buscarPorIdParaActualizar(id)
+                               .orElseThrow(() -> new RecursoNoEncontradoException("Pedido no encontrado"));
         EstadoPedido estadoActual = pedido.getEstado();
 
         boolean transicionPermitida = switch (estadoActual) {
@@ -233,6 +251,12 @@ public class PedidoService {
 
         if (!transicionPermitida) {
             throw new IllegalArgumentException("No se puede cambiar de " + estadoActual + " a " + nuevoEstado);
+        }
+
+        if (nuevoEstado == EstadoPedido.CANCELADO) {
+            Map<String, Integer> unidades = new HashMap<>();
+            pedido.getItems().forEach(item -> unidades.merge(item.productoId(), item.cantidad(), Integer::sum));
+            productos.reponerStock(unidades);
         }
 
         pedido.cambiarEstado(nuevoEstado);

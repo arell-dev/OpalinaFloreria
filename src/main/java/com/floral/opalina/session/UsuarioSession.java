@@ -1,6 +1,6 @@
 package com.floral.opalina.session;
 
-import com.floral.opalina.model.UsuarioActual;
+import com.floral.opalina.domain.UsuarioActual;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 

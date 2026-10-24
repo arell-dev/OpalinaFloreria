@@ -1,8 +1,7 @@
 package com.floral.opalina.controller;
 
+import com.floral.opalina.domain.enums.ModalidadEntrega;
 import com.floral.opalina.dto.CheckoutForm;
-import com.floral.opalina.model.enums.MetodoPago;
-import com.floral.opalina.model.enums.ModalidadEntrega;
 import com.floral.opalina.service.CarritoService;
 import com.floral.opalina.service.ClienteService;
 import com.floral.opalina.service.PedidoService;
@@ -29,39 +28,45 @@ public class PedidoController {
     }
 
     @GetMapping("/pedido")
-    public String checkout(@RequestParam(required = false) String confirmado, Model model) {
+    public String checkout(@RequestParam(required = false) String confirmado, Model model, RedirectAttributes redirect) {
+        var pedidoConfirmado = confirmado == null ? null : pedidoService.porId(confirmado)
+                .filter(pedido -> pedido.getClienteId().equals(usuario.getUsuario().id()))
+                .orElse(null);
+
+        if (pedidoConfirmado == null && carrito.vacio()) {
+            redirect.addFlashAttribute("error", "Tu carrito está vacío. Agrega al menos un producto para iniciar un pedido.");
+            return "redirect:/carrito";
+        }
+
         CheckoutForm form = new CheckoutForm();
         var cliente = clientes.porId(usuario.getUsuario().id()).orElseThrow();
 
         form.setNombreReceptor(cliente.getNombre());
-        form.setEmail(cliente.getEmail());
         form.setTelefono(cliente.getTelefono());
         form.setDireccion(cliente.getDireccion());
         form.setReferencia(cliente.getReferencia());
         model.addAttribute("checkoutForm", form);
-        model.addAttribute("items", carrito.items());
-        model.addAttribute("subtotal", carrito.subtotal());
-        model.addAttribute("delivery", carrito.delivery(false));
-        model.addAttribute("total", carrito.total(false));
-        model.addAttribute("modalidades", ModalidadEntrega.values());
-        model.addAttribute("metodosPago", MetodoPago.values());
+        cargarCheckout(model, form);
 
-        if (confirmado != null) {
-            pedidoService.porId(confirmado).filter(p -> p.getClienteId().equals(usuario.getUsuario().id()))
-                                           .ifPresent(p -> model.addAttribute("pedidoConfirmado", p));
+        if (pedidoConfirmado != null) {
+            model.addAttribute("pedidoConfirmado", pedidoConfirmado);
         }
         return "tienda/pedido";
     }
 
     @PostMapping("/pedido/confirmar")
     public String confirmar(@Valid @ModelAttribute("checkoutForm") CheckoutForm form, BindingResult result, Model model, RedirectAttributes redirect) {
+        if (carrito.vacio()) {
+            redirect.addFlashAttribute("error", "Tu carrito está vacío. Agrega al menos un producto para iniciar un pedido.");
+            return "redirect:/carrito";
+        }
 
         if (form.getModalidad() == ModalidadEntrega.DELIVERY && (form.getDireccion() == null || form.getDireccion().isBlank())) {
             result.rejectValue("direccion", "NotBlank", "Ingresa la dirección completa para el delivery.");
         }
 
         if (result.hasErrors()) {
-            cargarCheckout(model);
+            cargarCheckout(model, form);
             return "tienda/pedido";
         }
         
@@ -69,8 +74,13 @@ public class PedidoController {
             var pedido = pedidoService.crear(form);
             return "redirect:/pedido?confirmado=" + pedido.getId();
         } catch (IllegalArgumentException error) {
+            if (carrito.vacio()) {
+                redirect.addFlashAttribute("error", error.getMessage());
+                return "redirect:/carrito";
+            }
+
             model.addAttribute("error", error.getMessage());
-            cargarCheckout(model);
+            cargarCheckout(model, form);
             return "tienda/pedido";
         }
     }
@@ -80,12 +90,16 @@ public class PedidoController {
         return "redirect:/cuenta/pedidos";
     }
 
-    private void cargarCheckout(Model model) {
+    private void cargarCheckout(Model model, CheckoutForm form) {
+        boolean recojo = form.getModalidad() == ModalidadEntrega.RECOJO;
+        var subtotal = carrito.subtotal();
+        var delivery = carrito.delivery(recojo);
+
         model.addAttribute("items", carrito.items());
-        model.addAttribute("subtotal", carrito.subtotal());
-        model.addAttribute("delivery", carrito.delivery(false));
-        model.addAttribute("total", carrito.total(false));
-        model.addAttribute("modalidades", ModalidadEntrega.values());
-        model.addAttribute("metodosPago", MetodoPago.values());
+        model.addAttribute("subtotal", subtotal);
+        model.addAttribute("delivery", delivery);
+        model.addAttribute("deliveryCost", carrito.delivery(false));
+        model.addAttribute("total", subtotal.add(delivery));
+        model.addAttribute("pickup", recojo);
     }
 }

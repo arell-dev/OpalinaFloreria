@@ -131,7 +131,7 @@
         aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
-                <form th:action="@{/admin/productos}" th:object="${productoForm}" method="post">
+                <form th:action="@{/admin/productos}" th:object="${productoForm}" method="post" autocomplete="off">
                     <div class="modal-header">
                         <div>
                             <p class="admin-overline mb-1">Catálogo</p>
@@ -143,7 +143,7 @@
                         <div class="row g-3">
                             <div class="col-12 col-md-8">
                                 <label class="form-label" for="nombre">Nombre</label>
-                                <input class="form-control" id="nombre" th:field="*{nombre}" required>
+                                <input class="form-control" id="nombre" th:field="*{nombre}" autocomplete="off" required>
                             </div>
                             <div class="col-12 col-md-4">
                                 <label class="form-label" for="sku">SKU</label>

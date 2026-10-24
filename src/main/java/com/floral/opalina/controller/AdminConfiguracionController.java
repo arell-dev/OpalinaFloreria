@@ -1,6 +1,6 @@
 package com.floral.opalina.controller;
 
-import com.floral.opalina.model.ConfiguracionTienda;
+import com.floral.opalina.domain.ConfiguracionTienda;
 import com.floral.opalina.service.ConfiguracionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

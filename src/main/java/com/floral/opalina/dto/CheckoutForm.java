@@ -1,17 +1,20 @@
 package com.floral.opalina.dto;
 
-import com.floral.opalina.model.enums.*;
-import jakarta.validation.constraints.*;
-import java.time.*;
+import com.floral.opalina.domain.enums.MetodoPago;
+import com.floral.opalina.domain.enums.ModalidadEntrega;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class CheckoutForm {
     @NotBlank(message = "Ingresa el nombre de quien recibirá el pedido.")
     @Size(min = 3, max = 80, message = "El nombre debe tener entre 3 y 80 caracteres.")
     private String nombreReceptor;
-
-    @NotBlank(message = "El correo de tu cuenta es obligatorio.")
-    @Email(message = "El correo de tu cuenta no es válido.")
-    private String email;
 
     @NotBlank(message = "Ingresa un teléfono de contacto.")
     @Pattern(
@@ -33,20 +36,15 @@ public class CheckoutForm {
     @NotNull(message = "Selecciona un método de pago.")
     private MetodoPago metodoPago;
 
+    @AssertTrue(message = "Confirma los datos antes de continuar al pago.")
+    private boolean confirmarDatos;
+
     public String getNombreReceptor() {
         return nombreReceptor;
     }
 
     public void setNombreReceptor(String nombreReceptor) {
         this.nombreReceptor = nombreReceptor;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getTelefono() {
@@ -111,6 +109,14 @@ public class CheckoutForm {
 
     public void setMetodoPago(MetodoPago metodoPago) {
         this.metodoPago = metodoPago;
+    }
+
+    public boolean isConfirmarDatos() {
+        return confirmarDatos;
+    }
+
+    public void setConfirmarDatos(boolean confirmarDatos) {
+        this.confirmarDatos = confirmarDatos;
     }
 }
 

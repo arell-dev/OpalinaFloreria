@@ -1,7 +1,7 @@
 package com.floral.opalina.controller;
 
 import com.floral.opalina.service.ReporteService;
-import com.floral.opalina.model.enums.EstadoPedido;
+import com.floral.opalina.domain.enums.EstadoPedido;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

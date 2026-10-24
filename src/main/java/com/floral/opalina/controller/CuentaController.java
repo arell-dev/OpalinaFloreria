@@ -2,7 +2,8 @@ package com.floral.opalina.controller;
 
 import com.floral.opalina.dto.PerfilForm;
 import com.floral.opalina.exception.RecursoNoEncontradoException;
-import com.floral.opalina.model.enums.EstadoPedido;
+import com.floral.opalina.domain.UsuarioActual;
+import com.floral.opalina.domain.enums.EstadoPedido;
 import com.floral.opalina.service.ClienteService;
 import com.floral.opalina.service.PedidoService;
 import com.floral.opalina.session.UsuarioSession;
@@ -61,7 +62,7 @@ public class CuentaController {
 
         clientes.actualizar(cliente.getId(), nombreCompleto, form.getTelefono(), form.getDireccion(), form.getReferencia());
 
-        usuario.iniciar(new com.floral.opalina.model.UsuarioActual(cliente.getId(), nombreCompleto, usuario.getUsuario().rol()));
+        usuario.iniciar(new UsuarioActual(cliente.getId(), nombreCompleto, usuario.getUsuario().rol()));
 
         redirect.addFlashAttribute("mensaje", "Tus datos se actualizaron.");
 
@@ -93,7 +94,7 @@ public class CuentaController {
 
     private String[] separarNombre(String nombreCompleto) {
         String[] partes = nombreCompleto.trim().split("\\s+", 2);
-        return new String[] {partes[0], partes.length > 1 ? partes[1] : ""};
+        return new String[] { partes[0], partes.length > 1 ? partes[1] : "" };
     }
 
     private String unirNombre(String nombres, String apellidos) {

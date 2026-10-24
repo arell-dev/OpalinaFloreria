@@ -1,5 +1,6 @@
 package com.floral.opalina.controller;
 
+import com.floral.opalina.domain.Cliente;
 import com.floral.opalina.service.ClienteService;
 import com.floral.opalina.service.PedidoService;
 import org.springframework.stereotype.Controller;
@@ -25,15 +26,14 @@ public class AdminClienteController {
 
     @GetMapping
     public String listar(@RequestParam(required = false) String q, @RequestParam(required = false, defaultValue = "nombre") String ordenar, Model model) {
-
         var resumenes = clientes.listar().stream()
                                          .filter(cliente -> !cliente.getId().equals("admin-opalina"))
                                          .map(cliente -> {
 
-            var compras = pedidos.delCliente(cliente.getId());
-            var gastado = compras.stream().map(p -> p.getTotal()).reduce(BigDecimal.ZERO, BigDecimal::add);
+        var compras = pedidos.delCliente(cliente.getId());
+        var gastado = compras.stream().map(p -> p.getTotal()).reduce(BigDecimal.ZERO, BigDecimal::add);
 
-            return new ResumenCliente(cliente, compras.size(), gastado);
+        return new ResumenCliente(cliente, compras.size(), gastado);
 
         }).toList();
 
@@ -41,7 +41,6 @@ public class AdminClienteController {
 
         var visibles = resumenes.stream()
                                 .filter(resumen -> consulta.isEmpty() || resumen.cliente().getNombre().toLowerCase(Locale.ROOT).contains(consulta) || resumen.cliente().getEmail().toLowerCase(Locale.ROOT).contains(consulta) || resumen.cliente().getTelefono().toLowerCase(Locale.ROOT).contains(consulta))
-                                
                                 .sorted(comparador(ordenar))
                                 .toList();
                 
@@ -73,5 +72,5 @@ public class AdminClienteController {
         };
     }
 
-    public record ResumenCliente(com.floral.opalina.model.Cliente cliente, int pedidos, BigDecimal totalGastado) { }
+    public record ResumenCliente(Cliente cliente, int pedidos, BigDecimal totalGastado) { }
 }

@@ -1,12 +1,15 @@
 package com.floral.opalina.service;
 
-import com.floral.opalina.model.Producto;
+import com.floral.opalina.domain.Producto;
 import com.floral.opalina.repository.ProductoRepository;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import com.floral.opalina.exception.ConflictoNegocioException;
+import com.floral.opalina.exception.RecursoNoEncontradoException;
 
 @Service
 public class ProductoService {
@@ -64,9 +67,10 @@ public class ProductoService {
         return productoRepository.contarDestacados();
     }
 
-    public synchronized Producto crear(Producto producto) {
+    @Transactional
+    public Producto crear(Producto producto) {
         if (productoRepository.existeSku(producto.getSku())) {
-            throw new IllegalArgumentException("Ya existe un producto con el SKU " + producto.getSku());
+            throw new ConflictoNegocioException("Ya existe un producto con el SKU " + producto.getSku());
         }
 
         Producto nuevoProducto = new Producto(
@@ -85,12 +89,13 @@ public class ProductoService {
         return nuevoProducto;
     }
 
-    public synchronized Producto actualizar(String id, Producto cambios) {
+    @Transactional
+    public Producto actualizar(String id, Producto cambios) {
         Producto producto = productoRepository.buscarPorId(id)
-                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
+                                              .orElseThrow(() -> new RecursoNoEncontradoException("Producto no encontrado"));
 
         if (productoRepository.existeSkuEnOtroProducto(cambios.getSku(), id)) {
-            throw new IllegalArgumentException("Ya existe un producto con el SKU " + cambios.getSku());
+            throw new ConflictoNegocioException("Ya existe un producto con el SKU " + cambios.getSku());
         }
 
         producto.actualizar(
@@ -107,9 +112,10 @@ public class ProductoService {
         return producto;
     }
 
-    public synchronized void cambiarDisponibilidad(String id, boolean disponible) {
+    @Transactional
+    public void cambiarDisponibilidad(String id, boolean disponible) {
         Producto producto = productoRepository.buscarPorId(id)
-                .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
+                                              .orElseThrow(() -> new RecursoNoEncontradoException("Producto no encontrado"));
 
         producto.actualizar(
                 producto.getNombre(),
@@ -121,17 +127,23 @@ public class ProductoService {
                 producto.isDestacado(),
                 producto.getSku(),
                 producto.getImagen());
+
         productoRepository.guardar(producto);
     }
 
+    @Transactional
     public void eliminar(String id) {
         if (productoRepository.buscarPorId(id).isEmpty()) {
-            throw new IllegalArgumentException("Producto no encontrado");
+            throw new RecursoNoEncontradoException("Producto no encontrado");
         }
         productoRepository.eliminar(id);
     }
 
     public void descontarStock(Map<String, Integer> cantidades) {
         productoRepository.descontarStock(cantidades);
+    }
+
+    public void reponerStock(Map<String, Integer> cantidades) {
+        productoRepository.reponerStock(cantidades);
     }
 }

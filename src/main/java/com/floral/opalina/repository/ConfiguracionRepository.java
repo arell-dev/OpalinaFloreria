@@ -1,6 +1,6 @@
 package com.floral.opalina.repository;
 
-import com.floral.opalina.model.ConfiguracionTienda;
+import com.floral.opalina.domain.ConfiguracionTienda;
 
 public interface ConfiguracionRepository {
     ConfiguracionTienda obtener();

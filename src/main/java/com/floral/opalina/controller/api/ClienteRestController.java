@@ -1,7 +1,7 @@
 package com.floral.opalina.controller.api;
 
 import com.floral.opalina.exception.RecursoNoEncontradoException;
-import com.floral.opalina.model.Cliente;
+import com.floral.opalina.domain.Cliente;
 import com.floral.opalina.service.ClienteService;
 import com.floral.opalina.service.PedidoService;
 import org.springframework.web.bind.annotation.*;

@@ -2,8 +2,8 @@ package com.floral.opalina.controller.api;
 
 import com.floral.opalina.dto.EstadoPedidoForm;
 import com.floral.opalina.dto.PedidoApiForm;
-import com.floral.opalina.model.Pedido;
-import com.floral.opalina.model.enums.EstadoPedido;
+import com.floral.opalina.domain.Pedido;
+import com.floral.opalina.domain.enums.EstadoPedido;
 import com.floral.opalina.service.PedidoService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

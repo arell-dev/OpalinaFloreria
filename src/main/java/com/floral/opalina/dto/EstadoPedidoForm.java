@@ -1,6 +1,6 @@
 package com.floral.opalina.dto;
 
-import com.floral.opalina.model.enums.EstadoPedido;
+import com.floral.opalina.domain.enums.EstadoPedido;
 import jakarta.validation.constraints.NotNull;
 
 public class EstadoPedidoForm {

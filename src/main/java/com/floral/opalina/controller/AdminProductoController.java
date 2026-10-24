@@ -1,6 +1,7 @@
 package com.floral.opalina.controller;
 
 import com.floral.opalina.dto.ProductoForm;
+import com.floral.opalina.domain.Producto;
 import com.floral.opalina.service.ProductoService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
@@ -79,7 +80,7 @@ public class AdminProductoController {
         return "redirect:/admin/productos";
     }
 
-    private ProductoForm fromProducto(com.floral.opalina.model.Producto producto) {
+    private ProductoForm fromProducto(Producto producto) {
         ProductoForm form = new ProductoForm();
         form.setNombre(producto.getNombre());
         form.setDescripcion(producto.getDescripcion());

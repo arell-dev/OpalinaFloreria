@@ -1,14 +1,13 @@
 package com.floral.opalina.controller;
 
 import com.floral.opalina.exception.RecursoNoEncontradoException;
-import com.floral.opalina.model.enums.EstadoPedido;
+import com.floral.opalina.domain.enums.EstadoPedido;
 import com.floral.opalina.service.ClienteService;
 import com.floral.opalina.service.PedidoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 
 @Controller
 @RequestMapping("/admin")

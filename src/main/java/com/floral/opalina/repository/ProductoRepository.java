@@ -1,6 +1,6 @@
 package com.floral.opalina.repository;
 
-import com.floral.opalina.model.Producto;
+import com.floral.opalina.domain.Producto;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,4 +37,8 @@ public interface ProductoRepository {
     void eliminar(String id);
 
     void descontarStock(Map<String, Integer> cantidades);
+
+    void reponerStock(Map<String, Integer> cantidades);
+
+    boolean apareceEnPedidos(String productoId);
 }

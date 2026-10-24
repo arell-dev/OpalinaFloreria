@@ -1,6 +1,6 @@
 package com.floral.opalina.service;
 
-import com.floral.opalina.model.Producto;
+import com.floral.opalina.domain.Producto;
 import com.floral.opalina.session.CarritoSession;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
@@ -62,7 +62,7 @@ public class CarritoService {
     }
 
     public boolean vacio() {
-        return carrito.vacio();
+        return items().isEmpty();
     }
 
     public List<ItemVista> items() {

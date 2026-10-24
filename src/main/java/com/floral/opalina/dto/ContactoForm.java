@@ -11,7 +11,14 @@ public class ContactoForm {
 
     @NotBlank
     @Email
+    @Size(max = 254)
     private String email;
+
+    @Size(max = 20)
+    private String telefono;
+
+    @Size(max = 120)
+    private String asunto;
     
     @NotBlank
     @Size(max = 1500)
@@ -35,6 +42,22 @@ public class ContactoForm {
 
     public String getMensaje() {
         return mensaje;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
+    }
+
+    public String getAsunto() {
+        return asunto;
+    }
+
+    public void setAsunto(String asunto) {
+        this.asunto = asunto;
     }
 
     public void setMensaje(String mensaje) {

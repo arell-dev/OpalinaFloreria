@@ -1,6 +1,6 @@
 package com.floral.opalina.config;
 
-import com.floral.opalina.model.enums.Rol;
+import com.floral.opalina.domain.enums.Rol;
 import com.floral.opalina.session.UsuarioSession;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
