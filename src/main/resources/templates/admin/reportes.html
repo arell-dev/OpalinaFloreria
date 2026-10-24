@@ -15,85 +15,196 @@
                 <div>
                     <p class="admin-overline">Administración / Reportes</p>
                     <h1>Reportes</h1>
-                    <p class="admin-page-description">Revisa el movimiento de pedidos y los productos más solicitados.</p>
+                    <p class="admin-page-description">Analiza pedidos, productos solicitados y actividad por periodo.</p>
                 </div>
                 <div class="admin-heading-actions">
-                    <button class="btn btn-outline-primary d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarAdmin" aria-controls="sidebarAdmin">☰ Menú</button>
+                    <a class="btn btn-primary" th:unless="${rangoInvalido}"
+                        th:href="@{/admin/reportes/exportar.pdf(estado=${estadoSeleccionado},desde=${desde},hasta=${hasta})}">
+                        Descargar PDF
+                    </a>
+                    <button class="btn btn-primary" type="button" disabled th:if="${rangoInvalido}"
+                        title="Corrige el rango de fechas para exportar">
+                        Descargar PDF
+                    </button>
+                    <button class="btn btn-outline-primary d-lg-none" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#sidebarAdmin" aria-controls="sidebarAdmin">
+                        ☰ Menú
+                    </button>
                 </div>
             </div>
 
             <div class="admin-contenido">
-                <section class="card admin-toolbar-card mb-4" aria-label="Filtrar reporte por estado">
+                <section class="card admin-toolbar-card reportes-filtros mb-4" aria-label="Filtros del reporte">
                     <form class="card-body" method="get" th:action="@{/admin/reportes}">
                         <div class="row align-items-end g-3">
-                            <div class="col-12 col-md-8">
-                                <label class="form-label" for="estado-reporte">Estado de los pedidos</label>
+                            <div class="col-12 col-lg-4">
+                                <label class="form-label" for="estado-reporte">Estado del pedido</label>
                                 <select class="form-select" id="estado-reporte" name="estado">
-                                    <option value="" th:selected="${estadoSeleccionado == null}">Todos los estados
+                                    <option value="" th:selected="${estadoSeleccionado == null}">Todos los estados</option>
+                                    <option th:each="estado : ${estados}" th:value="${estado}"
+                                        th:selected="${estado == estadoSeleccionado}"
+                                        th:text="${estado.name() == 'EN_PROCESO' ? 'En proceso' : #strings.capitalize(#strings.toLowerCase(estado.name()))}">
+                                        Estado
                                     </option>
-                                    <option th:each="estado : ${estados}" th:value="${estado}" th:selected="${estado == estadoSeleccionado}" th:text="${estado.name() == 'EN_PROCESO' ? 'En proceso' : #strings.capitalize(#strings.toLowerCase(estado.name()))}">Estado</option>
                                 </select>
                             </div>
-                            <div class="col-12 col-md-4">
-                                <button class="btn btn-primary" type="submit">Actualizar reporte</button>
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <label class="form-label" for="fecha-desde">Desde</label>
+                                <input class="form-control" type="date" id="fecha-desde" name="desde"
+                                    th:value="${desde}">
+                            </div>
+                            <div class="col-12 col-sm-6 col-lg-3">
+                                <label class="form-label" for="fecha-hasta">Hasta</label>
+                                <input class="form-control" type="date" id="fecha-hasta" name="hasta"
+                                    th:value="${hasta}">
+                            </div>
+                            <div class="col-12 col-lg-2 reportes-filtros-acciones">
+                                <button class="btn btn-primary" type="submit">Aplicar</button>
+                                <a class="btn btn-outline-primary" th:href="@{/admin/reportes}">Limpiar</a>
                             </div>
                         </div>
+                        <p class="form-text mt-3 mb-0">Filtra por fecha de registro del pedido. Deja las fechas vacías para incluir todo el historial.</p>
                     </form>
                 </section>
 
-                <section class="admin-metrics" aria-label="Resumen del reporte">
+                <div class="alert alert-danger mb-4" role="alert" th:if="${rangoInvalido}">
+                    La fecha inicial no puede ser posterior a la fecha final. Corrige el rango para ver o exportar el reporte.
+                </div>
+
+                <section class="admin-metrics reportes-metricas" aria-label="Resumen del reporte">
                     <article class="card">
                         <div class="card-body">
-                            <p class="admin-metric-label">Pedidos</p>
-                            <strong class="admin-metric-value" th:text="${resumen.totalPedidos}">0</strong>
+                            <p class="admin-metric-label">Pedidos registrados</p>
+                            <strong class="admin-metric-value" th:text="${reporte.resumen.totalPedidos}">0</strong>
                         </div>
                     </article>
                     <article class="card">
                         <div class="card-body">
-                            <p class="admin-metric-label">Valor de pedidos</p>
-                            <strong class="admin-metric-value" th:text="|S/ ${#numbers.formatDecimal(resumen.ventas, 1, 2)}|">S/ 0.00</strong>
+                            <p class="admin-metric-label">Pendientes</p>
+                            <strong class="admin-metric-value" th:text="${reporte.resumen.pedidosPendientes}">0</strong>
                         </div>
                     </article>
                     <article class="card">
                         <div class="card-body">
-                            <p class="admin-metric-label">Promedio por pedido</p>
-                            <strong class="admin-metric-value" th:text="|S/ ${#numbers.formatDecimal(resumen.promedio, 1, 2)}|">S/ 0.00</strong>
+                            <p class="admin-metric-label">Valor de pedidos no cancelados</p>
+                            <strong class="admin-metric-value"
+                                th:text="|S/ ${#numbers.formatDecimal(reporte.resumen.valorPedidos, 1, 2)}|">
+                                S/ 0.00
+                            </strong>
                         </div>
                     </article>
                     <article class="card">
                         <div class="card-body">
                             <p class="admin-metric-label">Unidades solicitadas</p>
-                            <strong class="admin-metric-value" th:text="${resumen.unidades}">0</strong>
+                            <strong class="admin-metric-value" th:text="${reporte.resumen.unidadesSolicitadas}">0</strong>
                         </div>
                     </article>
                 </section>
 
-                <section class="card admin-results mt-4" aria-label="Productos solicitados">
+                <section class="reportes-graficas" aria-label="Gráficas del reporte">
+                    <article class="card reportes-grafica">
+                        <div class="reportes-seccion-heading">
+                            <div>
+                                <h2>Actividad mensual</h2>
+                                <p>Pedidos y valor registrado por mes</p>
+                            </div>
+                        </div>
+                        <div class="reportes-grafica-vacia" th:if="${#lists.isEmpty(reporte.ventasPorMes)}">
+                            No hay pedidos no cancelados en este periodo.
+                        </div>
+                        <div class="reportes-barras-mensuales" th:unless="${#lists.isEmpty(reporte.ventasPorMes)}">
+                            <div class="reportes-barra-mes" th:each="mes : ${reporte.ventasPorMes}">
+                                <div class="reportes-barra-mes-info">
+                                    <strong th:text="${mes.etiqueta}">Mes</strong>
+                                    <span th:text="|${mes.cantidad} pedidos · S/ ${#numbers.formatDecimal(mes.importe, 1, 2)}|">
+                                        0 pedidos · S/ 0.00
+                                    </span>
+                                </div>
+                                <div class="reportes-barra-fondo" role="img"
+                                    th:aria-label="|Valor de pedidos: ${#numbers.formatDecimal(mes.importe, 1, 2)} soles|">
+                                    <span class="reportes-barra-valor"
+                                        th:style="|width: ${mes.porcentaje}%|"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="reportes-nota">Los importes excluyen pedidos cancelados y no equivalen a pagos confirmados.</p>
+                    </article>
+
+                    <article class="card reportes-grafica">
+                        <div class="reportes-seccion-heading">
+                            <div>
+                                <h2>Pedidos por estado</h2>
+                                <p>Distribución dentro de los filtros aplicados</p>
+                            </div>
+                        </div>
+                        <div class="reportes-distribucion" th:if="${reporte.resumen.totalPedidos > 0}">
+                            <div class="reportes-grafica-circular" role="img"
+                                th:style="|background: ${graficoEstados}|"
+                                th:aria-label="|Distribución circular de ${reporte.resumen.totalPedidos} pedidos por estado|">
+                                <div class="reportes-grafica-centro" aria-hidden="true">
+                                    <strong th:text="${reporte.resumen.totalPedidos}">0</strong>
+                                    <span>pedidos</span>
+                                </div>
+                            </div>
+                            <ul class="reportes-leyenda" aria-label="Detalle de pedidos por estado">
+                                <li class="reportes-leyenda-item" th:each="estado : ${reporte.pedidosPorEstado}">
+                                    <span class="reportes-indicador"
+                                        th:classappend="|reportes-indicador--${estado.claseCss}|"
+                                        aria-hidden="true"></span>
+                                    <span class="reportes-leyenda-nombre" th:text="${estado.etiqueta}">Estado</span>
+                                    <strong th:text="${estado.cantidad}">0</strong>
+                                    <small th:text="|${estado.porcentaje}%|">0%</small>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="reportes-grafica-vacia" th:if="${reporte.resumen.totalPedidos == 0}">
+                            No hay pedidos para representar con estos filtros.
+                        </div>
+                    </article>
+                </section>
+
+                <section class="card admin-results mt-4" aria-label="Productos más solicitados">
                     <div class="admin-results-heading">
-                        <h2>Productos solicitados</h2>
-                        <span role="status" aria-live="polite" th:text="|${#lists.size(productosVendidos)} productos|">Productos</span>
+                        <h2>Productos más solicitados</h2>
+                        <span role="status" aria-live="polite"
+                            th:text="|${#lists.size(reporte.productosSolicitados)} productos|">
+                            Productos
+                        </span>
                     </div>
                     <div class="admin-table-viewport" tabindex="0" role="region"
-                        aria-label="Tabla de productos solicitados">
+                        aria-label="Tabla de productos más solicitados">
                         <table class="table align-middle mb-0">
                             <thead>
                                 <tr>
                                     <th scope="col">Producto</th>
                                     <th scope="col">Unidades</th>
+                                    <th scope="col">Participación</th>
                                     <th scope="col">Valor en pedidos</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="venta : ${productosVendidos}">
-                                    <td class="fw-semibold" th:text="${venta.nombre}">Producto</td>
-                                    <td th:text="${venta.cantidad}">0</td>
-                                    <td class="text-nowrap fw-semibold" th:text="|S/ ${#numbers.formatDecimal(venta.total, 1, 2)}|">S/ 0.00</td>
+                                <tr th:each="producto : ${reporte.productosSolicitados}">
+                                    <td class="fw-semibold" th:text="${producto.nombre}">Producto</td>
+                                    <td th:text="${producto.unidades}">0</td>
+                                    <td>
+                                        <div class="reportes-participacion" role="img"
+                                            th:aria-label="|${producto.porcentaje}% del total de unidades solicitadas|">
+                                            <span class="reportes-participacion-fondo">
+                                                <span th:style="|width: ${producto.porcentaje}%|"></span>
+                                            </span>
+                                            <small th:text="|${producto.porcentaje}%|">0%</small>
+                                        </div>
+                                    </td>
+                                    <td class="text-nowrap fw-semibold"
+                                        th:text="|S/ ${#numbers.formatDecimal(producto.importe, 1, 2)}|">
+                                        S/ 0.00
+                                    </td>
                                 </tr>
-                                <tr th:if="${#lists.isEmpty(productosVendidos)}">
-                                    <td colspan="3">
+                                <tr th:if="${#lists.isEmpty(reporte.productosSolicitados)}">
+                                    <td colspan="4">
                                         <div class="admin-empty">
-                                            <strong>No hay pedidos con este estado</strong>
-                                            <span>Selecciona otro estado para consultar el resumen.</span>
+                                            <strong>No hay productos que mostrar</strong>
+                                            <span>Prueba con otro estado o periodo.</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -101,7 +212,88 @@
                         </table>
                     </div>
                 </section>
-                <p class="form-text mt-3">El valor corresponde a los importes registrados en pedidos y no representa pagos confirmados.</p>
+
+                <section class="card admin-results mt-4" aria-label="Pedidos del reporte">
+                    <div class="admin-results-heading">
+                        <h2>Pedidos incluidos</h2>
+                        <span role="status" aria-live="polite"
+                            th:text="|${#lists.size(reporte.pedidos)} pedidos|">Pedidos</span>
+                    </div>
+                    <div class="admin-table-viewport" tabindex="0" role="region"
+                        aria-label="Tabla de pedidos incluidos en el reporte">
+                        <table class="table align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Pedido</th>
+                                    <th scope="col">Cliente</th>
+                                    <th scope="col">Unidades</th>
+                                    <th scope="col">Estado</th>
+                                    <th scope="col">Total registrado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="pedido : ${pedidosPagina}">
+                                    <td>
+                                        <a class="admin-table-primary"
+                                            th:href="@{/admin/pedidos/{id}(id=${pedido.codigo})}"
+                                            th:text="${pedido.codigo}">OP-0000</a>
+                                        <small class="d-block text-body-secondary"
+                                            th:text="${#temporals.format(pedido.fecha, 'dd/MM/yyyy HH:mm')}">
+                                            Fecha
+                                        </small>
+                                    </td>
+                                    <td>
+                                        <span class="d-block" th:text="${pedido.cliente}">Cliente</span>
+                                        <small class="text-body-secondary" th:text="${pedido.correo}">Correo</small>
+                                    </td>
+                                    <td th:text="${pedido.unidades}">0</td>
+                                    <td>
+                                        <span class="admin-status"
+                                            th:classappend="|admin-status--${pedido.estadoCss}|"
+                                            th:text="${pedido.estadoEtiqueta}">Estado</span>
+                                    </td>
+                                    <td class="text-nowrap fw-semibold"
+                                        th:text="|S/ ${#numbers.formatDecimal(pedido.importe, 1, 2)}|">
+                                        S/ 0.00
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(reporte.pedidos)}">
+                                    <td colspan="5">
+                                        <div class="admin-empty">
+                                            <strong>No hay pedidos para mostrar</strong>
+                                            <span>Prueba con otro estado o periodo.</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="reportes-tabla-pie" th:if="${!#lists.isEmpty(reporte.pedidos)}">
+                        <span th:text="|Página ${paginaActual + 1} de ${totalPaginas}|">Página 1 de 1</span>
+                        <nav class="reportes-paginacion" aria-label="Páginas del reporte">
+                            <a class="btn btn-sm btn-outline-primary" th:if="${paginaActual > 0}"
+                                th:href="@{/admin/reportes(estado=${estadoSeleccionado},desde=${desde},hasta=${hasta},pagina=${paginaActual - 1})}">
+                                Anterior
+                            </a>
+                            <span class="btn btn-sm btn-outline-primary disabled" aria-disabled="true"
+                                th:unless="${paginaActual > 0}">
+                                Anterior
+                            </span>
+                            <a class="btn btn-sm btn-outline-primary" th:if="${paginaActual + 1 < totalPaginas}"
+                                th:href="@{/admin/reportes(estado=${estadoSeleccionado},desde=${desde},hasta=${hasta},pagina=${paginaActual + 1})}">
+                                Siguiente
+                            </a>
+                            <span class="btn btn-sm btn-outline-primary disabled" aria-disabled="true"
+                                th:unless="${paginaActual + 1 < totalPaginas}">
+                                Siguiente
+                            </span>
+                        </nav>
+                    </div>
+                </section>
+
+                <p class="form-text mt-3 mb-0">
+                    Las tarjetas y gráficas de valor excluyen pedidos cancelados. La tabla conserva el total registrado de cada pedido; ninguna cifra representa pagos confirmados.
+                </p>
             </div>
         </main>
     </div>
