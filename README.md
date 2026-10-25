@@ -24,6 +24,8 @@ Java 21 · Spring Boot 4.1.2 · Spring MVC · Thymeleaf · Spring Data JPA · Hi
 
 ## Ejecutar en local
 
+Si es la primera vez que ejecutas el proyecto o todavía no configuraste Docker, empieza por la [guía de base de datos local con Docker Desktop](docs/Guia-base-de-datos.md). Explica la instalación, la activación de WSL y la configuración necesaria. Estos son los comandos rápidos para iniciar Opalina una vez preparado el equipo.
+
 Desde la carpeta raíz del proyecto, crea el archivo de configuración local una sola vez:
 
 ~~~powershell
@@ -123,5 +125,6 @@ Ejecuta las pruebas automatizadas con Docker disponible:
 .\mvnw.cmd test
 ~~~
 
-- [Guía de ejecución y pruebas](docs/Guia-de-pruebas.md)
+- [Guía de base de datos y configuración local](docs/Guia-base-de-datos.md)
+- [Guía de ejecución, pruebas y API](docs/Guia-de-pruebas.md)
 - [Migraciones Flyway](src/main/resources/db/migration/)

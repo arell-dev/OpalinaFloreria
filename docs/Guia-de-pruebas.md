@@ -2,6 +2,8 @@
 
 Esta guía reúne el arranque local y las comprobaciones principales de Opalina. Los pasos manuales de Postman solo se consideran realizados después de enviar las solicitudes.
 
+Si aún no instalaste Docker Desktop o no preparaste WSL y MySQL, comienza por la [guía de base de datos local con Docker Desktop](Guia-base-de-datos.md). Después vuelve aquí para iniciar Opalina y seguir las pruebas.
+
 ## Requisitos
 
 - Java 21.
@@ -25,8 +27,6 @@ Espera a que MySQL figure como `healthy`. En una segunda terminal, ejecuta:
 ~~~
 
 Flyway aplica las migraciones V1 y V2. Hibernate valida el mapeo JPA al iniciar la aplicación. Abre [http://localhost:8080](http://localhost:8080).
-
-El [README](../README.md#ejecutar-en-local) explica cómo iniciar MySQL con Docker y configurar la conexión.
 
 ## 2. Pruebas automatizadas
 
