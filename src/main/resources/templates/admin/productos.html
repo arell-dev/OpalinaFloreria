@@ -128,10 +128,10 @@
     </div>
 
     <div class="modal fade" id="modal-nuevo-producto" tabindex="-1" aria-labelledby="titulo-nuevo-producto"
-        aria-hidden="true">
+        aria-hidden="true" th:attr="data-open-modal-on-load=${abrirModalProducto}">
         <div class="modal-dialog modal-lg modal-dialog-scrollable">
             <div class="modal-content">
-                <form th:action="@{/admin/productos}" th:object="${productoForm}" method="post" autocomplete="off">
+                <form th:action="@{/admin/productos}" th:object="${productoForm}" method="post" enctype="multipart/form-data" autocomplete="off">
                     <div class="modal-header">
                         <div>
                             <p class="admin-overline mb-1">Catálogo</p>
@@ -165,9 +165,15 @@
                                 <label class="form-label" for="descripcion">Descripción</label>
                                 <textarea class="form-control" id="descripcion" rows="3" th:field="*{descripcion}" required></textarea>
                             </div>
-                            <div class="col-12">
-                                <label class="form-label" for="imagen">Ruta web de la imagen</label>
-                                <input class="form-control" id="imagen" th:field="*{imagen}" placeholder="/assets/imagenes/productos/archivo.jpg" required>
+                            <div class="col-12 admin-image-upload">
+                                <label class="form-label" for="imagen">Imagen del producto</label>
+                                <input class="form-control" id="imagen" type="file" th:field="*{imagen}" accept="image/jpeg,image/png,image/webp" data-product-image-input required>
+                                <div class="form-text">JPG, PNG o WebP · Máximo 5 MB</div>
+                                <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('imagen')}" th:errors="*{imagen}"></div>
+                                <div class="admin-image-upload__preview" data-product-image-preview-container hidden>
+                                    <img data-product-image-preview alt="Vista previa de la imagen del producto">
+                                </div>
+                                <p class="admin-image-upload__message" data-product-image-message role="status" aria-live="polite"></p>
                             </div>
                             <div class="col-auto form-check ms-3">
                                 <input class="form-check-input" id="disponible" type="checkbox" th:field="*{disponible}">

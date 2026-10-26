@@ -329,6 +329,40 @@ html:has(.admin-app) {
   font-size: 0.77rem;
 }
 
+.admin-app .admin-image-upload {
+  display: grid;
+  gap: 8px;
+}
+
+.admin-app .admin-image-upload__preview {
+  display: grid;
+  place-items: center;
+  min-height: 150px;
+  padding: 12px;
+  border: 1px solid #e3d8df;
+  border-radius: 12px;
+  background: #fffaf8;
+}
+
+.admin-app .admin-image-upload__preview[hidden] {
+  display: none;
+}
+
+.admin-app .admin-image-upload__preview img {
+  display: block;
+  max-width: min(100%, 420px);
+  max-height: 240px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.admin-app .admin-image-upload__message {
+  min-height: 1.2em;
+  margin: 0;
+  color: #726d79;
+  font-size: 0.77rem;
+}
+
 .admin-metrics {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -848,12 +882,27 @@ html:has(.admin-app) {
   box-shadow: 0 24px 80px #28203030;
 }
 
+.admin-app .modal-dialog-scrollable .modal-content {
+  height: 100%;
+}
+
+.admin-app .modal-content > form {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+}
+
 .admin-app .modal-header,
 .admin-app .modal-footer {
+  flex: 0 0 auto;
   padding: 18px 24px;
 }
 
 .admin-app .modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
   padding: 24px;
 }
 

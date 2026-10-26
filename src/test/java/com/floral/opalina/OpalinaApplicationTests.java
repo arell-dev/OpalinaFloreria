@@ -12,13 +12,21 @@ import com.floral.opalina.domain.enums.MetodoPago;
 import com.floral.opalina.domain.enums.ModalidadEntrega;
 import com.floral.opalina.service.ClienteService;
 import com.floral.opalina.service.ContactoService;
+import com.floral.opalina.service.AlmacenamientoImagenProductoService;
 import com.floral.opalina.service.PedidoService;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
@@ -31,6 +39,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.junit.jupiter.Container;
@@ -68,6 +78,12 @@ class OpalinaApplicationTests {
 
     @Autowired
     private PedidoService pedidos;
+
+    @Autowired
+    private AlmacenamientoImagenProductoService almacenamientoImagen;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Test
     void migracionCreaLasDieciseisTablasYElContextoArranca() {
@@ -111,6 +127,92 @@ class OpalinaApplicationTests {
 
         HttpResponse<String> eliminado = enviar("DELETE", "/api/productos/" + id, null);
         assertThat(eliminado.statusCode()).isEqualTo(204);
+    }
+
+    @Test
+    void imagenSubidaSePuedeSolicitarDesdeSuUrlPublica() {
+        byte[] png = Base64.getDecoder().decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/7ugAAAAASUVORK5CYII=");
+        String url = almacenamientoImagen.guardar(new MockMultipartFile("imagen", "producto.png", "image/png", png));
+
+        try {
+            HttpResponse<String> respuesta = enviar("GET", url, null);
+            assertThat(respuesta.statusCode()).isEqualTo(200);
+            assertThat(respuesta.headers().firstValue("content-type")).hasValueSatisfying(tipo -> assertThat(tipo).startsWith("image/png"));
+        } finally {
+            almacenamientoImagen.eliminarSiFueSubida(url);
+        }
+    }
+
+    @Test
+    void formularioAdminCreaProductoConUnaImagenSubida() throws Exception {
+        String adminId = "ADMIN-" + UUID.randomUUID();
+        String email = "admin-" + UUID.randomUUID() + "@opalina.test";
+        String clave = "Clave-Prueba-123";
+        String sku = "IMG-" + UUID.randomUUID().toString().substring(0, 8);
+        String imagenUrl = null;
+        jdbc.update("INSERT INTO cliente (cliente_id, nombre, email, creado_en) VALUES (?, ?, ?, CURRENT_TIMESTAMP)", adminId, "Admin de prueba", email);
+        jdbc.update("INSERT INTO credencial (cliente_id, clave_hash, rol, creado_en) VALUES (?, ?, 'ADMIN', CURRENT_TIMESTAMP)", adminId, passwordEncoder.encode(clave));
+
+        try {
+            CookieManager cookies = new CookieManager(null, CookiePolicy.ACCEPT_ALL);
+            HttpClient clienteHttp = HttpClient.newBuilder().cookieHandler(cookies).build();
+            String formularioLogin = "email=" + URLEncoder.encode(email, StandardCharsets.UTF_8) + "&clave=" + URLEncoder.encode(clave, StandardCharsets.UTF_8);
+            HttpRequest solicitudLogin = HttpRequest.newBuilder(URI.create("http://localhost:" + port + "/login"))
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .POST(HttpRequest.BodyPublishers.ofString(formularioLogin))
+                    .build();
+            assertThat(clienteHttp.send(solicitudLogin, HttpResponse.BodyHandlers.ofString()).statusCode()).isEqualTo(302);
+
+            HttpRequest solicitudAdmin = HttpRequest.newBuilder(URI.create("http://localhost:" + port + "/admin/productos")).GET().build();
+            HttpResponse<String> paginaAdmin = clienteHttp.send(solicitudAdmin, HttpResponse.BodyHandlers.ofString());
+            assertThat(paginaAdmin.statusCode()).isEqualTo(200);
+            assertThat(paginaAdmin.body()).contains("type=\"file\"").doesNotContain("Ruta web de la imagen");
+
+            String boundaryGrande = "----OpalinaUpload" + UUID.randomUUID();
+            byte[] imagenGrande = new byte[5 * 1024 * 1024 + 1];
+            byte[] firmaPng = Base64.getDecoder().decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/7ugAAAAASUVORK5CYII=");
+            System.arraycopy(firmaPng, 0, imagenGrande, 0, firmaPng.length);
+            HttpRequest solicitudGrande = HttpRequest.newBuilder(URI.create("http://localhost:" + port + "/admin/productos"))
+                    .header("Content-Type", "multipart/form-data; boundary=" + boundaryGrande)
+                    .POST(HttpRequest.BodyPublishers.ofByteArray(formularioProductoMultipart(boundaryGrande, sku, imagenGrande)))
+                    .build();
+            HttpResponse<String> respuestaGrande = clienteHttp.send(solicitudGrande, HttpResponse.BodyHandlers.ofString());
+            assertThat(respuestaGrande.statusCode()).isEqualTo(200);
+            assertThat(respuestaGrande.body()).contains("La imagen no puede superar los 5 MB.");
+
+            String boundary = "----OpalinaUpload" + UUID.randomUUID();
+            HttpRequest solicitudProducto = HttpRequest.newBuilder(URI.create("http://localhost:" + port + "/admin/productos"))
+                    .header("Content-Type", "multipart/form-data; boundary=" + boundary)
+                    .POST(HttpRequest.BodyPublishers.ofByteArray(formularioProductoMultipart(boundary, sku, firmaPng)))
+                    .build();
+            assertThat(clienteHttp.send(solicitudProducto, HttpResponse.BodyHandlers.ofString()).statusCode()).isEqualTo(302);
+
+            imagenUrl = jdbc.queryForObject("SELECT imagen_url FROM producto WHERE sku = ?", String.class, sku);
+            assertThat(imagenUrl).startsWith(AlmacenamientoImagenProductoService.URL_BASE);
+            String productoId = jdbc.queryForObject("SELECT producto_id FROM producto WHERE sku = ?", String.class, sku);
+            HttpRequest solicitudDetalle = HttpRequest.newBuilder(URI.create("http://localhost:" + port + "/admin/productos/" + productoId)).GET().build();
+            HttpResponse<String> paginaDetalle = clienteHttp.send(solicitudDetalle, HttpResponse.BodyHandlers.ofString());
+            assertThat(paginaDetalle.statusCode()).isEqualTo(200);
+            assertThat(paginaDetalle.body()).contains("src=\"" + imagenUrl + "\"").contains("Deja el campo vacío para conservar la imagen actual.");
+
+            String boundaryEdicion = "----OpalinaUpdate" + UUID.randomUUID();
+            HttpRequest solicitudEdicion = HttpRequest.newBuilder(URI.create("http://localhost:" + port + "/admin/productos/" + productoId))
+                    .header("Content-Type", "multipart/form-data; boundary=" + boundaryEdicion)
+                    .POST(HttpRequest.BodyPublishers.ofByteArray(formularioProductoMultipart(boundaryEdicion, sku, null)))
+                    .build();
+            assertThat(clienteHttp.send(solicitudEdicion, HttpResponse.BodyHandlers.ofString()).statusCode()).isEqualTo(302);
+            assertThat(jdbc.queryForObject("SELECT imagen_url FROM producto WHERE sku = ?", String.class, sku)).isEqualTo(imagenUrl);
+
+            HttpRequest solicitudImagen = HttpRequest.newBuilder(URI.create("http://localhost:" + port + imagenUrl)).GET().build();
+            HttpResponse<String> respuestaImagen = clienteHttp.send(solicitudImagen, HttpResponse.BodyHandlers.ofString());
+            assertThat(respuestaImagen.statusCode()).isEqualTo(200);
+            assertThat(respuestaImagen.headers().firstValue("content-type")).hasValueSatisfying(tipo -> assertThat(tipo).startsWith("image/png"));
+        } finally {
+            almacenamientoImagen.eliminarSiFueSubida(imagenUrl);
+            jdbc.update("DELETE FROM producto WHERE sku = ?", sku);
+            jdbc.update("DELETE FROM credencial WHERE cliente_id = ?", adminId);
+            jdbc.update("DELETE FROM cliente WHERE cliente_id = ?", adminId);
+        }
     }
 
     @Test
@@ -278,6 +380,27 @@ class OpalinaApplicationTests {
         } catch (Exception error) {
             throw new IllegalStateException("No se pudo invocar la API de prueba", error);
         }
+    }
+
+    private void agregarCampoMultipart(ByteArrayOutputStream cuerpo, String boundary, String nombre, String valor) throws IOException {
+        cuerpo.write(("--" + boundary + "\r\nContent-Disposition: form-data; name=\"" + nombre + "\"\r\n\r\n" + valor + "\r\n").getBytes(StandardCharsets.UTF_8));
+    }
+
+    private byte[] formularioProductoMultipart(String boundary, String sku, byte[] imagen) throws IOException {
+        ByteArrayOutputStream cuerpo = new ByteArrayOutputStream();
+        agregarCampoMultipart(cuerpo, boundary, "nombre", "Ramo subido en prueba");
+        agregarCampoMultipart(cuerpo, boundary, "sku", sku);
+        agregarCampoMultipart(cuerpo, boundary, "categoria", "Pruebas");
+        agregarCampoMultipart(cuerpo, boundary, "precio", "20.00");
+        agregarCampoMultipart(cuerpo, boundary, "stock", "3");
+        agregarCampoMultipart(cuerpo, boundary, "descripcion", "Imagen multipart de integración");
+        agregarCampoMultipart(cuerpo, boundary, "disponible", "true");
+        if (imagen != null) {
+            cuerpo.write(("--" + boundary + "\r\nContent-Disposition: form-data; name=\"imagen\"; filename=\"ramo.png\"\r\nContent-Type: image/png\r\n\r\n").getBytes(StandardCharsets.UTF_8));
+            cuerpo.write(imagen);
+        }
+        cuerpo.write(("\r\n--" + boundary + "--\r\n").getBytes(StandardCharsets.UTF_8));
+        return cuerpo.toByteArray();
     }
 
     private String extraerId(String body) {
