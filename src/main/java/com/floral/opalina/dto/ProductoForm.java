@@ -102,7 +102,7 @@ public class ProductoForm {
     }
 
     public Producto toProducto() {
-        return new Producto("", nombre, descripcion, categoria, precio, stock, disponible, destacado, sku, imagen);
+        return new Producto(null, nombre, descripcion, categoria, precio, stock, disponible, destacado, sku, imagen);
     }
 }
 

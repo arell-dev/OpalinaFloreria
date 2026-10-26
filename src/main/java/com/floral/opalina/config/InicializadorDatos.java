@@ -53,7 +53,6 @@ public class InicializadorDatos implements CommandLineRunner {
 
         List.of(
                 productoInicial(
-                        "8-MiniRamoCotidiano",
                         "Mini Ramo Cotidiano",
                         "1-3 tallos con follaje y tarjeta corta para detalles de oficina.",
                         "Temporada",
@@ -63,7 +62,6 @@ public class InicializadorDatos implements CommandLineRunner {
                         "OPA-001",
                         "8-MiniRamoCotidiano.png"),
                 productoInicial(
-                        "12-RamoOpalinaMorado",
                         "Ramo Opalina Morado",
                         "Gerberas, hortensias y margaritas en paleta lila y morado.",
                         "Romántico",
@@ -73,7 +71,6 @@ public class InicializadorDatos implements CommandLineRunner {
                         "OPA-002",
                         "12-RamoOpalinaMorado.png"),
                 productoInicial(
-                        "9-RamoAmarillo21Marzo",
                         "Ramo Amarillo 21 de Marzo",
                         "Girasoles y flores amarillas de tendencia con lazo amarillo.",
                         "Temporada",
@@ -83,7 +80,6 @@ public class InicializadorDatos implements CommandLineRunner {
                         "OPA-003",
                         "9-RamoAmarillo21Marzo.png"),
                 productoInicial(
-                        "3-Buchon12Rosas",
                         "Buchón 12 Rosas",
                         "Bouquet grande con 12 rosas en papel coreano rojo y negro.",
                         "Romántico",
@@ -93,7 +89,6 @@ public class InicializadorDatos implements CommandLineRunner {
                         "OPA-004",
                         "3-Buchon12Rosas.jpg"),
                 productoInicial(
-                        "2-BoxFloralConChocolates",
                         "Box Floral con Chocolates",
                         "Ramo corto en box cilíndrica con rosas y chocolates.",
                         "Cumpleaños",
@@ -103,7 +98,6 @@ public class InicializadorDatos implements CommandLineRunner {
                         "OPA-005",
                         "2-BoxFloralConChocolates.jpg"),
                 productoInicial(
-                        "11-RamoLiriosPremium",
                         "Ramo de Lirios Premium",
                         "Lirios claros con flores de apoyo y follaje fresco.",
                         "Premium",
@@ -113,7 +107,6 @@ public class InicializadorDatos implements CommandLineRunner {
                         "OPA-006",
                         "11-RamoLiriosPremium.png"),
                 productoInicial(
-                        "6-JardinOpalinaGrande",
                         "Jardín de Opalina Grande",
                         "Bouquet firma grande, multivarietal con tarjeta impresa.",
                         "Premium",
@@ -123,7 +116,6 @@ public class InicializadorDatos implements CommandLineRunner {
                         "OPA-007",
                         "6-JardinOpalinaGrande.png"),
                 productoInicial(
-                        "10-RamoGraduacion",
                         "Ramo de Graduación",
                         "Rosas o gerberas con lazo y mini topper personalizable.",
                         "Cumpleaños",
@@ -133,7 +125,6 @@ public class InicializadorDatos implements CommandLineRunner {
                         "OPA-008",
                         "10-RamoGraduación.png"),
                 productoInicial(
-                        "7-LagrimaCondolencias",
                         "Lágrima Condolencias",
                         "Arreglo sobrio de condolencia con faja.",
                         "Condolencias",
@@ -143,7 +134,6 @@ public class InicializadorDatos implements CommandLineRunner {
                         "OPA-009",
                         "7-LagrimaCondolencias.png"),
                 productoInicial(
-                        "4-CoronaPremium",
                         "Corona Premium",
                         "Corona ceremonial con flores mixtas y mensaje.",
                         "Condolencias",
@@ -153,7 +143,6 @@ public class InicializadorDatos implements CommandLineRunner {
                         "OPA-010",
                         "4-CoronaPremium.jpg"),
                 productoInicial(
-                        "5-DuoBobaFlor",
                         "Dúo Boba + Flor",
                         "Detalle colaborativo con Boba Pop, flores y tarjeta.",
                         "Temporada",
@@ -163,7 +152,6 @@ public class InicializadorDatos implements CommandLineRunner {
                         "OPA-011",
                         "5-DuoBobaFlor.png"),
                 productoInicial(
-                        "1-arregloPersonalizado",
                         "Arreglo Personalizado",
                         "Diseño según ocasión, colores preferidos y presupuesto.",
                         "Personalizado",
@@ -174,48 +162,46 @@ public class InicializadorDatos implements CommandLineRunner {
                         "1-arregloPersonalizado.jpg"))
                 .forEach(this::guardarProductoSiNoExiste);
 
-        Cliente maria = new Cliente(
-                "cliente-maria",
+        Cliente maria = guardarClienteSiNoExiste(new Cliente(
+                null,
                 "María López",
                 "maria.lopez@opalina.test",
                 "+51 999 888 777",
                 "Av. Grau 123, Urb. San Eduardo, Piura",
                 "Casa de 2 pisos, portón gris",
-                fecha("2024-01-01"));
-        Cliente carlos = new Cliente(
-                "cliente-carlos",
+                fecha("2024-01-01")));
+        Cliente carlos = guardarClienteSiNoExiste(new Cliente(
+                null,
                 "Carlos Ramírez",
                 "carlos.ramirez@opalina.test",
                 "+51 987 654 321",
                 "",
                 "",
-                fecha("2025-01-01"));
-        Cliente ana = new Cliente(
-                "cliente-ana",
+                fecha("2025-01-01")));
+        Cliente ana = guardarClienteSiNoExiste(new Cliente(
+                null,
                 "Ana Torres",
                 "ana.torres@opalina.test",
                 "+51 912 345 678",
                 "",
                 "",
-                fecha("2025-02-01"));
-        Cliente luis = new Cliente(
-                "cliente-luis",
+                fecha("2025-02-01")));
+        Cliente luis = guardarClienteSiNoExiste(new Cliente(
+                null,
                 "Luis Fernández",
                 "luis.fernandez@opalina.test",
                 "+51 955 667 788",
                 "",
                 "",
-                fecha("2025-03-01"));
-        Cliente admin = new Cliente(
-                "admin-opalina",
+                fecha("2025-03-01")));
+        Cliente admin = guardarClienteSiNoExiste(new Cliente(
+                null,
                 "Administración Opalina",
                 "admin@opalina.test",
                 "",
                 "",
                 "",
-                LocalDateTime.now());
-
-        List.of(maria, carlos, ana, luis, admin).forEach(this::guardarClienteSiNoExiste);
+                LocalDateTime.now()));
 
         guardarCredencialSiNoExiste(maria, "Cliente2026!", Rol.CLIENTE);
         guardarCredencialSiNoExiste(admin, "Admin2026!", Rol.ADMIN);
@@ -235,8 +221,8 @@ public class InicializadorDatos implements CommandLineRunner {
                         "Por favor llamar al llegar."),
                 "0.00",
                 List.of(
-                        item("6-JardinOpalinaGrande", 1),
-                        item("12-RamoOpalinaMorado", 2)),
+                        item("OPA-007", 1),
+                        item("OPA-002", 2)),
                 List.of(cambio(EstadoPedido.PENDIENTE, "2026-08-28T12:00:00"))));
 
         guardarPedidoSiNoExiste(pedido(
@@ -248,8 +234,8 @@ public class InicializadorDatos implements CommandLineRunner {
                 entrega(ModalidadEntrega.DELIVERY, "Piura", "", "2026-08-22", "15:00", ""),
                 "0.00",
                 List.of(
-                        item("3-Buchon12Rosas", 1),
-                        item("2-BoxFloralConChocolates", 1)),
+                        item("OPA-004", 1),
+                        item("OPA-005", 1)),
                 List.of(cambio(EstadoPedido.PENDIENTE, "2026-08-21T12:00:00"))));
 
         guardarPedidoSiNoExiste(pedido(
@@ -266,7 +252,7 @@ public class InicializadorDatos implements CommandLineRunner {
                         "12:00",
                         ""),
                 "0.00",
-                List.of(item("6-JardinOpalinaGrande", 1)),
+                List.of(item("OPA-007", 1)),
                 List.of(
                         cambio(EstadoPedido.PENDIENTE, "2026-08-14T12:00:00"),
                         cambio(EstadoPedido.EN_PROCESO, "2026-08-15T09:00:00"))));
@@ -279,7 +265,7 @@ public class InicializadorDatos implements CommandLineRunner {
                 fechaHora("2026-08-09T12:00:00"),
                 entrega(ModalidadEntrega.RECOJO, "", "", "2026-08-10", "11:00", ""),
                 "0.00",
-                List.of(item("4-CoronaPremium", 1)),
+                List.of(item("OPA-010", 1)),
                 List.of(
                         cambio(EstadoPedido.PENDIENTE, "2026-08-09T12:00:00"),
                         cambio(EstadoPedido.EN_PROCESO, "2026-08-10T08:00:00"))));
@@ -293,8 +279,8 @@ public class InicializadorDatos implements CommandLineRunner {
                 entrega(ModalidadEntrega.DELIVERY, "Piura", "", "2026-08-02", "09:00", ""),
                 "15.00",
                 List.of(
-                        item("9-RamoAmarillo21Marzo", 2),
-                        item("5-DuoBobaFlor", 1)),
+                        item("OPA-003", 2),
+                        item("OPA-011", 1)),
                 List.of(
                         cambio(EstadoPedido.PENDIENTE, "2026-08-01T12:00:00"),
                         cambio(EstadoPedido.EN_PROCESO, "2026-08-01T15:00:00"),
@@ -303,15 +289,14 @@ public class InicializadorDatos implements CommandLineRunner {
     }
 
     private void guardarProductoSiNoExiste(Producto producto) {
-        if (productos.buscarPorId(producto.getId()).isEmpty()) {
+        if (productos.buscarPorSku(producto.getSku()).isEmpty()) {
             productos.guardar(producto);
         }
     }
 
-    private void guardarClienteSiNoExiste(Cliente cliente) {
-        if (clientes.buscarPorId(cliente.getId()).isEmpty()) {
-            clientes.guardar(cliente);
-        }
+    private Cliente guardarClienteSiNoExiste(Cliente cliente) {
+        return clientes.buscarPorEmail(cliente.getEmail())
+                       .orElseGet(() -> clientes.guardar(cliente));
     }
 
     private void guardarCredencialSiNoExiste(Cliente cliente, String clave, Rol rol) {
@@ -325,12 +310,12 @@ public class InicializadorDatos implements CommandLineRunner {
     }
 
     private void guardarPedidoSiNoExiste(Pedido pedido) {
-        if (pedidos.buscarPorId(pedido.getId()).isEmpty()) {
+        if (pedidos.buscarPorCodigo(pedido.getCodigo()).isEmpty()) {
             pedidos.guardar(pedido);
         }
     }
 
-    private Pedido pedido(String id, Cliente cliente, EstadoPedido estado, EstadoPago estadoPago, LocalDateTime creadoEn, Entrega entrega, String costoDelivery, List<ItemPedido> items, List<CambioEstado> historial) {
+    private Pedido pedido(String codigo, Cliente cliente, EstadoPedido estado, EstadoPago estadoPago, LocalDateTime creadoEn, Entrega entrega, String costoDelivery, List<ItemPedido> items, List<CambioEstado> historial) {
 
         BigDecimal subtotal = items.stream()
                                    .map(ItemPedido::totalLinea)
@@ -338,7 +323,8 @@ public class InicializadorDatos implements CommandLineRunner {
         BigDecimal delivery = new BigDecimal(costoDelivery);
 
         return new Pedido(
-                id,
+                null,
+                codigo,
                 cliente.getId(),
                 cliente.getNombre(),
                 cliente.getEmail(),
@@ -354,8 +340,8 @@ public class InicializadorDatos implements CommandLineRunner {
                 historial);
     }
 
-    private ItemPedido item(String productoId, int cantidad) {
-        Producto producto = productos.buscarPorId(productoId).orElseThrow();
+    private ItemPedido item(String sku, int cantidad) {
+        Producto producto = productos.buscarPorSku(sku).orElseThrow();
         BigDecimal totalLinea = producto.getPrecio().multiply(BigDecimal.valueOf(cantidad));
 
         return new ItemPedido(
@@ -391,11 +377,11 @@ public class InicializadorDatos implements CommandLineRunner {
         return LocalDateTime.parse(fechaHora);
     }
 
-    private Producto productoInicial(String id, String nombre, String descripcion, String categoria, String precio, int stock, boolean destacado, String sku, String archivo) {
+    private Producto productoInicial(String nombre, String descripcion, String categoria, String precio, int stock, boolean destacado, String sku, String archivo) {
         String rutaImagen = "/assets/imagenes/productos/" + archivo;
 
         return new Producto(
-                id,
+                null,
                 nombre,
                 descripcion,
                 categoria,

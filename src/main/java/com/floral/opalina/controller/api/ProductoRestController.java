@@ -32,7 +32,7 @@ public class ProductoRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Producto> buscar(@PathVariable String id) {
+    public ResponseEntity<Producto> buscar(@PathVariable Long id) {
         return productoService.buscarPorId(id).map(ResponseEntity::ok)
                                               .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -50,12 +50,12 @@ public class ProductoRestController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Producto> actualizar(@PathVariable String id, @Valid @RequestBody ProductoForm formulario) {
+    public ResponseEntity<Producto> actualizar(@PathVariable Long id, @Valid @RequestBody ProductoForm formulario) {
         return ResponseEntity.ok(productoService.actualizar(id, formulario.toProducto()));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable String id) {
+    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
         productoService.eliminar(id);
         return ResponseEntity.noContent().build();
     }

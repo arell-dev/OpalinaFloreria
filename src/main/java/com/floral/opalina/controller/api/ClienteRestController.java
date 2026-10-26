@@ -21,11 +21,11 @@ public class ClienteRestController {
 
     @GetMapping
     public List<Cliente> listar() {
-        return clientes.listar().stream().filter(c -> !c.getId().equals("admin-opalina")).toList();
+        return clientes.listar().stream().filter(c -> !clientes.esAdministrador(c.getId())).toList();
     }
 
     @GetMapping("/{id}")
-    public ResumenCliente buscar(@PathVariable String id) {
+    public ResumenCliente buscar(@PathVariable Long id) {
         Cliente cliente = clientes.porId(id)
                                   .orElseThrow(() -> new RecursoNoEncontradoException("No se encontró el cliente"));
                                   

@@ -9,8 +9,9 @@ import java.time.LocalTime;
 import java.util.List;
 
 public class PedidoApiForm {
-    @NotBlank
-    private String clienteId;
+    @NotNull
+    @Positive
+    private Long clienteId;
 
     @NotNull
     private ModalidadEntrega modalidad;
@@ -31,11 +32,11 @@ public class PedidoApiForm {
     @Valid
     private List<Linea> items;
 
-    public String getClienteId() {
+    public Long getClienteId() {
         return clienteId;
     }
 
-    public void setClienteId(String clienteId) {
+    public void setClienteId(Long clienteId) {
         this.clienteId = clienteId;
     }
 
@@ -96,17 +97,18 @@ public class PedidoApiForm {
     }
 
     public static class Linea {
-        @NotBlank
-        private String productoId;
+        @NotNull
+        @Positive
+        private Long productoId;
         
         @Min(1)
         private int cantidad;
 
-        public String getProductoId() {
+        public Long getProductoId() {
             return productoId;
         }
 
-        public void setProductoId(String productoId) {
+        public void setProductoId(Long productoId) {
             this.productoId = productoId;
         }
 

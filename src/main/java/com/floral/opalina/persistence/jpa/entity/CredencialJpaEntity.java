@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
 @Table(name = "credencial")
 public class CredencialJpaEntity {
     @Id
-    @Column(name = "cliente_id", length = 64)
-    private String clienteId;
+    @Column(name = "cliente_id")
+    private Long clienteId;
 
     @MapsId
     @OneToOne(optional = false)
@@ -37,11 +37,11 @@ public class CredencialJpaEntity {
     @Column(name = "actualizado_en")
     private LocalDateTime actualizadoEn;
 
-    public String getClienteId() {
+    public Long getClienteId() {
         return clienteId;
     }
 
-    public void setClienteId(String clienteId) {
+    public void setClienteId(Long clienteId) {
         this.clienteId = clienteId;
     }
 

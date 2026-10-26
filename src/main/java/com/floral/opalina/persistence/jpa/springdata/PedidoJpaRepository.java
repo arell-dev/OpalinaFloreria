@@ -15,6 +15,6 @@ public interface PedidoJpaRepository extends JpaRepository<PedidoJpaEntity, Long
     Optional<PedidoJpaEntity> findByCodigo(String codigo);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("select p from PedidoJpaEntity p where p.codigo = :codigo")
-    Optional<PedidoJpaEntity> buscarPorCodigoParaActualizar(@Param("codigo") String codigo);
+    @Query("select p from PedidoJpaEntity p where p.id = :id")
+    Optional<PedidoJpaEntity> buscarPorIdParaActualizar(@Param("id") Long id);
 }

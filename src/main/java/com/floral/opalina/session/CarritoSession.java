@@ -7,24 +7,24 @@ import java.util.*;
 @Component
 @SessionScope
 public class CarritoSession {
-    private final Map<String, Integer> cantidades = new LinkedHashMap<>();
+    private final Map<Long, Integer> cantidades = new LinkedHashMap<>();
 
-    public synchronized Map<String, Integer> cantidades() {
+    public synchronized Map<Long, Integer> cantidades() {
         return Map.copyOf(cantidades);
     }
 
-    public synchronized void agregar(String id, int cantidad) {
+    public synchronized void agregar(Long id, int cantidad) {
         cantidades.merge(id, cantidad, Integer::sum);
     }
 
-    public synchronized void cantidad(String id, int cantidad) {
+    public synchronized void cantidad(Long id, int cantidad) {
         if (cantidad <= 0)
             cantidades.remove(id);
         else
             cantidades.put(id, cantidad);
     }
 
-    public synchronized void quitar(String id) {
+    public synchronized void quitar(Long id) {
         cantidades.remove(id);
     }
 

@@ -209,7 +209,7 @@
                   <span class="checkout-success-icon" aria-hidden="true">✓</span>
                   <p class="ceja mb-2">Pedido registrado</p>
                   <h2 class="h1 mb-2">¡Gracias por elegir Opalina!</h2>
-                  <p class="text-body-secondary">Tu número de pedido es <strong id="checkout-order-number" th:text="${pedidoConfirmado.id}"></strong>. El pago está pendiente; esta demostración no realizó ningún cobro.</p>
+                  <p class="text-body-secondary">Tu número de pedido es <strong id="checkout-order-number" th:text="${pedidoConfirmado.codigo}"></strong>. El pago está pendiente; esta demostración no realizó ningún cobro.</p>
                   <a class="btn btn-primary mt-2" th:href="@{/cuenta/pedidos}">Ver mis pedidos</a>
                   <a class="btn btn-outline-primary mt-2" th:href="@{/}">Volver al inicio</a>
                 </div>

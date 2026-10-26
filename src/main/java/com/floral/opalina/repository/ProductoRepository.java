@@ -26,19 +26,21 @@ public interface ProductoRepository {
 
     long contarDestacados();
 
-    Optional<Producto> buscarPorId(String id);
+    Optional<Producto> buscarPorId(Long id);
+
+    Optional<Producto> buscarPorSku(String sku);
 
     boolean existeSku(String sku);
 
-    boolean existeSkuEnOtroProducto(String sku, String productoId);
+    boolean existeSkuEnOtroProducto(String sku, Long productoId);
 
-    void guardar(Producto producto);
+    Producto guardar(Producto producto);
 
-    void eliminar(String id);
+    void eliminar(Long id);
 
-    void descontarStock(Map<String, Integer> cantidades);
+    void descontarStock(Map<Long, Integer> cantidades);
 
-    void reponerStock(Map<String, Integer> cantidades);
+    void reponerStock(Map<Long, Integer> cantidades);
 
-    boolean apareceEnPedidos(String productoId);
+    boolean apareceEnPedidos(Long productoId);
 }

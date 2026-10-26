@@ -53,11 +53,11 @@ public class PedidoService {
         return pedidos.buscarParaAdministracion(estado, busqueda);
     }
 
-    public List<Pedido> delCliente(String clienteId) {
+    public List<Pedido> delCliente(Long clienteId) {
         return delCliente(clienteId, null);
     }
 
-    public List<Pedido> delCliente(String clienteId, EstadoPedido estado) {
+    public List<Pedido> delCliente(Long clienteId, EstadoPedido estado) {
         return pedidos.buscarPorCliente(clienteId, estado);
     }
 
@@ -69,7 +69,7 @@ public class PedidoService {
         return pedidos.totalVentas(estado);
     }
 
-    public Optional<Pedido> porId(String id) {
+    public Optional<Pedido> porId(Long id) {
         return pedidos.buscarPorId(id);
     }
 
@@ -128,9 +128,10 @@ public class PedidoService {
                 formulario.getMetodoPago());
 
         LocalDateTime ahora = LocalDateTime.now();
-        String id = pedidos.generarId();
+        String codigo = pedidos.generarCodigo();
         Pedido pedido = new Pedido(
-                id,
+                null,
+                codigo,
                 cliente.getId(),
                 formulario.getNombreReceptor(),
                 cliente.getEmail(),
@@ -145,7 +146,7 @@ public class PedidoService {
                 ahora,
                 List.of(new CambioEstado(EstadoPedido.PENDIENTE, ahora)));
 
-        Map<String, Integer> cantidades = new HashMap<>();
+        Map<Long, Integer> cantidades = new HashMap<>();
         itemsCarrito.forEach(itemCarrito -> cantidades.put(itemCarrito.producto().getId(), itemCarrito.cantidad()));
 
         productos.descontarStock(cantidades);
@@ -166,7 +167,7 @@ public class PedidoService {
             throw new IllegalArgumentException("La dirección es obligatoria para delivery");
         }
 
-        Map<String, Integer> cantidades = new LinkedHashMap<>();
+        Map<Long, Integer> cantidades = new LinkedHashMap<>();
         formulario.getItems().forEach(linea -> cantidades.merge(linea.getProductoId(), linea.getCantidad(), Math::addExact));
 
         if (cantidades.values().stream().anyMatch(cantidad -> cantidad > 65535)) {
@@ -213,9 +214,10 @@ public class PedidoService {
         if (cliente.getNombre().isBlank() || cliente.getTelefono().isBlank()) {
             throw new IllegalArgumentException("El cliente debe tener nombre y teléfono para registrar al destinatario");
         }
-        String id = pedidos.generarId();
+        String codigo = pedidos.generarCodigo();
         Pedido pedido = new Pedido(
-                id,
+                null,
+                codigo,
                 cliente.getId(),
                 cliente.getNombre(),
                 cliente.getEmail(),
@@ -237,7 +239,7 @@ public class PedidoService {
     }
 
     @Transactional
-    public void cambiarEstado(String id, EstadoPedido nuevoEstado) {
+    public void cambiarEstado(Long id, EstadoPedido nuevoEstado) {
         Pedido pedido = pedidos.buscarPorIdParaActualizar(id)
                                .orElseThrow(() -> new RecursoNoEncontradoException("Pedido no encontrado"));
         EstadoPedido estadoActual = pedido.getEstado();
@@ -254,7 +256,7 @@ public class PedidoService {
         }
 
         if (nuevoEstado == EstadoPedido.CANCELADO) {
-            Map<String, Integer> unidades = new HashMap<>();
+            Map<Long, Integer> unidades = new HashMap<>();
             pedido.getItems().forEach(item -> unidades.merge(item.productoId(), item.cantidad(), Integer::sum));
             productos.reponerStock(unidades);
         }

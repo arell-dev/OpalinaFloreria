@@ -2,6 +2,8 @@ package com.floral.opalina.persistence.jpa.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
@@ -10,8 +12,9 @@ import java.time.LocalDateTime;
 @Table(name = "cliente")
 public class ClienteJpaEntity {
     @Id
-    @Column(name = "cliente_id", length = 64)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cliente_id")
+    private Long id;
 
     @Column(nullable = false, length = 161)
     private String nombre;
@@ -31,11 +34,11 @@ public class ClienteJpaEntity {
     @Column(name = "creado_en", nullable = false)
     private LocalDateTime creadoEn;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

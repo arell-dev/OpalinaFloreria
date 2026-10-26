@@ -28,7 +28,7 @@ public class PedidoController {
     }
 
     @GetMapping("/pedido")
-    public String checkout(@RequestParam(required = false) String confirmado, Model model, RedirectAttributes redirect) {
+    public String checkout(@RequestParam(required = false) Long confirmado, Model model, RedirectAttributes redirect) {
         var pedidoConfirmado = confirmado == null ? null : pedidoService.porId(confirmado)
                 .filter(pedido -> pedido.getClienteId().equals(usuario.getUsuario().id()))
                 .orElse(null);

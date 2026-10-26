@@ -34,8 +34,8 @@ public class ItemPedidoJpaEntity {
     @JoinColumn(name = "producto_id", nullable = false)
     private ProductoJpaEntity producto;
 
-    @Column(name = "producto_id", insertable = false, updatable = false, length = 100)
-    private String productoId;
+    @Column(name = "producto_id", insertable = false, updatable = false)
+    private Long productoId;
 
     @Column(name = "nombre_producto", nullable = false, length = 120)
     private String nombreProducto;
@@ -76,11 +76,11 @@ public class ItemPedidoJpaEntity {
         this.producto = producto;
     }
 
-    public String getProductoId() {
+    public Long getProductoId() {
         return productoId;
     }
 
-    public void setProductoId(String productoId) {
+    public void setProductoId(Long productoId) {
         this.productoId = productoId;
     }
 

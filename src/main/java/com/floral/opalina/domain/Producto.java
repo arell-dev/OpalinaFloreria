@@ -3,7 +3,7 @@ package com.floral.opalina.domain;
 import java.math.BigDecimal;
 
 public class Producto {
-    private final String id;
+    private final Long id;
     private String nombre;
     private String descripcion;
     private String categoria;
@@ -14,7 +14,7 @@ public class Producto {
     private boolean disponible;
     private boolean destacado;
 
-    public Producto(String id, String nombre, String descripcion, String categoria, BigDecimal precio, int stock, boolean disponible, boolean destacado, String sku, String imagen) {
+    public Producto(Long id, String nombre, String descripcion, String categoria, BigDecimal precio, int stock, boolean disponible, boolean destacado, String sku, String imagen) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -27,7 +27,7 @@ public class Producto {
         this.imagen = imagen;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 

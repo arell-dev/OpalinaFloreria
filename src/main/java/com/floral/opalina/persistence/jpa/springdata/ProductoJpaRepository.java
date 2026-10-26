@@ -10,23 +10,25 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface ProductoJpaRepository extends JpaRepository<ProductoJpaEntity, String> {
+public interface ProductoJpaRepository extends JpaRepository<ProductoJpaEntity, Long> {
     List<ProductoJpaEntity> findAllByOrderByNombreAsc();
 
     boolean existsBySkuIgnoreCase(String sku);
 
-    boolean existsBySkuIgnoreCaseAndIdNot(String sku, String id);
+    Optional<ProductoJpaEntity> findBySkuIgnoreCase(String sku);
+
+    boolean existsBySkuIgnoreCaseAndIdNot(String sku, Long id);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select p from ProductoJpaEntity p where p.id = :id")
-    Optional<ProductoJpaEntity> buscarPorIdParaActualizar(@Param("id") String id);
+    Optional<ProductoJpaEntity> buscarPorIdParaActualizar(@Param("id") Long id);
 
     @Modifying(flushAutomatically = true)
     @Query("update ProductoJpaEntity p set p.stock = p.stock + :cantidad where p.id = :id")
-    int incrementarStock(@Param("id") String id, @Param("cantidad") int cantidad);
+    int incrementarStock(@Param("id") Long id, @Param("cantidad") int cantidad);
 
     @Modifying(flushAutomatically = true)
     @Query("update ProductoJpaEntity p set p.stock = p.stock - :cantidad "
          + "where p.id = :id and p.disponible = true and p.stock >= :cantidad")
-    int descontarStockDisponible(@Param("id") String id, @Param("cantidad") int cantidad);
+    int descontarStockDisponible(@Param("id") Long id, @Param("cantidad") int cantidad);
 }

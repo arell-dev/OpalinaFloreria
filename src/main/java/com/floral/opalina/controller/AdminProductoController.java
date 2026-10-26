@@ -68,7 +68,7 @@ public class AdminProductoController {
     }
 
     @GetMapping("/{id}")
-    public String detalle(@PathVariable String id, Model model) {
+    public String detalle(@PathVariable Long id, Model model) {
         Producto producto = productos.buscarPorId(id).orElseThrow();
         model.addAttribute("producto", producto);
         model.addAttribute("productoForm", fromProducto(producto));
@@ -76,7 +76,7 @@ public class AdminProductoController {
     }
 
     @PostMapping("/{id}")
-    public String actualizar(@PathVariable String id, @Valid @ModelAttribute("productoForm") AdminProductoForm form, BindingResult result, Model model, RedirectAttributes redirect) {
+    public String actualizar(@PathVariable Long id, @Valid @ModelAttribute("productoForm") AdminProductoForm form, BindingResult result, Model model, RedirectAttributes redirect) {
         Producto productoActual = productos.buscarPorId(id).orElseThrow();
         if (result.hasErrors()) {
             model.addAttribute("producto", productoActual);
@@ -121,7 +121,7 @@ public class AdminProductoController {
             return "admin/productos";
         }
 
-        String id = uri.substring(uri.lastIndexOf('/') + 1);
+        Long id = Long.valueOf(uri.substring(uri.lastIndexOf('/') + 1));
         Producto producto = productos.buscarPorId(id).orElseThrow();
         model.addAttribute("producto", producto);
         model.addAttribute("productoForm", fromProducto(producto));
@@ -130,7 +130,7 @@ public class AdminProductoController {
     }
 
     @PostMapping("/{id}/disponibilidad")
-    public String cambiarDisponibilidad(@PathVariable String id, @RequestParam boolean disponible, RedirectAttributes redirect) {
+    public String cambiarDisponibilidad(@PathVariable Long id, @RequestParam boolean disponible, RedirectAttributes redirect) {
         productos.cambiarDisponibilidad(id, disponible);
         redirect.addFlashAttribute("mensaje", "Disponibilidad actualizada.");
         return "redirect:/admin/productos";

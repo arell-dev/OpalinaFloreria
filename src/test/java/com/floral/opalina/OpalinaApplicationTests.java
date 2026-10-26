@@ -94,6 +94,12 @@ class OpalinaApplicationTests {
                         + "and table_name <> 'flyway_schema_history'",
                 Integer.class);
         assertThat(tablas).isEqualTo(16);
+
+        assertThat(jdbc.queryForObject(
+                "select count(*) from information_schema.columns where table_schema = database() "
+                        + "and ((table_name = 'cliente' and column_name = 'cliente_id' and data_type = 'bigint' and extra like '%auto_increment%') "
+                        + "or (table_name = 'producto' and column_name = 'producto_id' and data_type = 'bigint' and extra like '%auto_increment%'))",
+                Integer.class)).isEqualTo(2);
     }
 
     @Test
@@ -105,7 +111,7 @@ class OpalinaApplicationTests {
         String json = productoJson(sku, 1);
         HttpResponse<String> creado = enviar("POST", "/api/productos", json);
         assertThat(creado.statusCode()).isEqualTo(201);
-        String id = extraerId(creado.body());
+        Long id = extraerId(creado.body());
 
         HttpResponse<String> detalle = enviar("GET", "/api/productos/" + id, null);
         assertThat(detalle.statusCode()).isEqualTo(200);
@@ -122,11 +128,44 @@ class OpalinaApplicationTests {
         HttpResponse<String> duplicado = enviar("POST", "/api/productos", json);
         assertThat(duplicado.statusCode()).isEqualTo(409);
 
-        HttpResponse<String> noEncontrado = enviar("GET", "/api/productos/no-existe", null);
+        HttpResponse<String> noEncontrado = enviar("GET", "/api/productos/999999999", null);
         assertThat(noEncontrado.statusCode()).isEqualTo(404);
 
         HttpResponse<String> eliminado = enviar("DELETE", "/api/productos/" + id, null);
         assertThat(eliminado.statusCode()).isEqualTo(204);
+    }
+
+    @Test
+    void apiPedidoUsaIdsNumericosYDevuelveCodigoLegible() {
+        String prefijo = UUID.randomUUID().toString().substring(0, 8);
+        var cliente = clientes.registrar("Cliente API", prefijo + "@opalina.test", "+51 999 888 777", "ClavePrueba2026!");
+        Long productoId = crearProducto("API-" + prefijo, 2);
+
+        HttpResponse<String> clienteApi = enviar("GET", "/api/clientes/" + cliente.getId(), null);
+        assertThat(clienteApi.statusCode()).isEqualTo(200);
+        assertThat(clienteApi.body()).contains("\"id\":" + cliente.getId());
+
+        String solicitudPedido = """
+                {
+                  "clienteId": %d,
+                  "modalidad": "RECOJO",
+                  "direccion": "",
+                  "referencia": "",
+                  "fecha": "%s",
+                  "hora": "12:00:00",
+                  "metodoPago": "YAPE",
+                  "items": [{"productoId": %d, "cantidad": 1}]
+                }
+                """.formatted(cliente.getId(), LocalDate.now().plusDays(2), productoId);
+        HttpResponse<String> pedidoCreado = enviar("POST", "/api/pedidos", solicitudPedido);
+
+        assertThat(pedidoCreado.statusCode()).isEqualTo(201);
+        Long pedidoId = extraerId(pedidoCreado.body());
+        assertThat(pedidoCreado.body()).containsPattern("\\\"codigo\\\":\\\"OP-\\d{4}-\\d+\\\"");
+
+        HttpResponse<String> pedidoApi = enviar("GET", "/api/pedidos/" + pedidoId, null);
+        assertThat(pedidoApi.statusCode()).isEqualTo(200);
+        assertThat(pedidoApi.body()).contains("\"id\":" + pedidoId).contains("\"codigo\":\"");
     }
 
     @Test
@@ -145,12 +184,12 @@ class OpalinaApplicationTests {
 
     @Test
     void formularioAdminCreaProductoConUnaImagenSubida() throws Exception {
-        String adminId = "ADMIN-" + UUID.randomUUID();
         String email = "admin-" + UUID.randomUUID() + "@opalina.test";
         String clave = "Clave-Prueba-123";
         String sku = "IMG-" + UUID.randomUUID().toString().substring(0, 8);
         String imagenUrl = null;
-        jdbc.update("INSERT INTO cliente (cliente_id, nombre, email, creado_en) VALUES (?, ?, ?, CURRENT_TIMESTAMP)", adminId, "Admin de prueba", email);
+        jdbc.update("INSERT INTO cliente (nombre, email, creado_en) VALUES (?, ?, CURRENT_TIMESTAMP)", "Admin de prueba", email);
+        Long adminId = jdbc.queryForObject("SELECT cliente_id FROM cliente WHERE email = ?", Long.class, email);
         jdbc.update("INSERT INTO credencial (cliente_id, clave_hash, rol, creado_en) VALUES (?, ?, 'ADMIN', CURRENT_TIMESTAMP)", adminId, passwordEncoder.encode(clave));
 
         try {
@@ -189,7 +228,7 @@ class OpalinaApplicationTests {
 
             imagenUrl = jdbc.queryForObject("SELECT imagen_url FROM producto WHERE sku = ?", String.class, sku);
             assertThat(imagenUrl).startsWith(AlmacenamientoImagenProductoService.URL_BASE);
-            String productoId = jdbc.queryForObject("SELECT producto_id FROM producto WHERE sku = ?", String.class, sku);
+            Long productoId = jdbc.queryForObject("SELECT producto_id FROM producto WHERE sku = ?", Long.class, sku);
             HttpRequest solicitudDetalle = HttpRequest.newBuilder(URI.create("http://localhost:" + port + "/admin/productos/" + productoId)).GET().build();
             HttpResponse<String> paginaDetalle = clienteHttp.send(solicitudDetalle, HttpResponse.BodyHandlers.ofString());
             assertThat(paginaDetalle.statusCode()).isEqualTo(200);
@@ -252,17 +291,18 @@ class OpalinaApplicationTests {
                 cliente.getId());
         assertThat(claveHash).startsWith("$2");
 
-        String productoId = crearProducto("SKU-" + prefijo, 3);
+        Long productoId = crearProducto("SKU-" + prefijo, 3);
         Pedido pedido = pedidos.crearDesdeApi(formulario(cliente.getId(), productoId, 2));
-        assertThat(pedido.getId()).matches("OP-\\d{4}-\\d+");
-        assertThat(jdbc.queryForObject("select count(*) from pedido where codigo = ?", Integer.class, pedido.getId())).isEqualTo(1);
+        assertThat(pedido.getId()).isPositive();
+        assertThat(pedido.getCodigo()).matches("OP-\\d{4}-\\d+");
+        assertThat(jdbc.queryForObject("select count(*) from pedido where codigo = ?", Integer.class, pedido.getCodigo())).isEqualTo(1);
         assertThat(jdbc.queryForObject("select stock from producto where producto_id = ?", Integer.class, productoId)).isEqualTo(1);
-        String productoGuardado = jdbc.queryForObject(
+        Long productoGuardado = jdbc.queryForObject(
                 "select i.producto_id from item_pedido i "
                         + "join pedido p on p.pedido_id = i.pedido_id "
                         + "where p.codigo = ?",
-                String.class,
-                pedido.getId());
+                Long.class,
+                pedido.getCodigo());
         assertThat(productoGuardado).isEqualTo(productoId);
 
         Integer cantidadGuardada = jdbc.queryForObject(
@@ -270,14 +310,14 @@ class OpalinaApplicationTests {
                         + "join pedido p on p.pedido_id = i.pedido_id "
                         + "where p.codigo = ?",
                 Integer.class,
-                pedido.getId());
+                pedido.getCodigo());
         assertThat(cantidadGuardada).isEqualTo(2);
 
         HttpResponse<String> productoConHistorial = enviar("DELETE", "/api/productos/" + productoId, null);
         assertThat(productoConHistorial.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
 
         pedidos.cambiarEstado(pedido.getId(), EstadoPedido.CANCELADO);
-        assertThat(jdbc.queryForObject("select estado from pedido where codigo = ?", String.class, pedido.getId())).isEqualTo("CANCELADO");
+        assertThat(jdbc.queryForObject("select estado from pedido where codigo = ?", String.class, pedido.getCodigo())).isEqualTo("CANCELADO");
         assertThat(jdbc.queryForObject("select stock from producto where producto_id = ?", Integer.class, productoId)).isEqualTo(3);
         assertThatThrownBy(() -> pedidos.cambiarEstado(pedido.getId(), EstadoPedido.CANCELADO))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -288,7 +328,7 @@ class OpalinaApplicationTests {
                 "c" + prefijo + "@opalina.test",
                 "+51 999 888 777",
                 "ClavePrueba2026!");
-        String productoConUnaUnidad = crearProducto("SKU-C" + prefijo, 1);
+        Long productoConUnaUnidad = crearProducto("SKU-C" + prefijo, 1);
         var executor = Executors.newFixedThreadPool(2);
         try {
             List<Callable<Boolean>> compras = List.of(
@@ -319,7 +359,7 @@ class OpalinaApplicationTests {
         }
     }
 
-    private String crearProducto(String sku, int stock) {
+    private Long crearProducto(String sku, int stock) {
         try {
             HttpResponse<String> creado = enviar("POST", "/api/productos", productoJson(sku, stock));
             assertThat(creado.statusCode()).isEqualTo(201);
@@ -345,7 +385,7 @@ class OpalinaApplicationTests {
                 """.formatted(stock, sku);
     }
 
-    private PedidoApiForm formulario(String clienteId, String productoId, int cantidad) {
+    private PedidoApiForm formulario(Long clienteId, Long productoId, int cantidad) {
         PedidoApiForm form = new PedidoApiForm();
         form.setClienteId(clienteId);
         form.setModalidad(ModalidadEntrega.RECOJO);
@@ -359,7 +399,7 @@ class OpalinaApplicationTests {
         return form;
     }
 
-    private boolean intentarCompra(String clienteId, String productoId) {
+    private boolean intentarCompra(Long clienteId, Long productoId) {
         try {
             pedidos.crearDesdeApi(formulario(clienteId, productoId, 1));
             return true;
@@ -403,11 +443,11 @@ class OpalinaApplicationTests {
         return cuerpo.toByteArray();
     }
 
-    private String extraerId(String body) {
-        Matcher matcher = Pattern.compile("\\\"id\\\":\\\"([^\\\"]+)\\\"").matcher(body);
+    private Long extraerId(String body) {
+        Matcher matcher = Pattern.compile("\\\"id\\\":(\\d+)").matcher(body);
         if (!matcher.find()) {
             throw new IllegalStateException("La respuesta no incluyó el identificador del producto: " + body);
         }
-        return matcher.group(1);
+        return Long.valueOf(matcher.group(1));
     }
 }

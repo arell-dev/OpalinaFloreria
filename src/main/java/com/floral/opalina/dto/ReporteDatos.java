@@ -25,7 +25,7 @@ public record ReporteDatos( Resumen resumen, List<VentasMes> ventasPorMes, List<
 
     public record EstadoCantidad( EstadoPedido estado, String etiqueta, long cantidad, int porcentaje, String claseCss) { }
 
-    public record ProductoSolicitado( String productoId, String nombre, long unidades, BigDecimal importe, int porcentaje) { }
+    public record ProductoSolicitado( Long productoId, String nombre, long unidades, BigDecimal importe, int porcentaje) { }
 
-    public record PedidoFila( String codigo, LocalDateTime fecha, String cliente, String correo, EstadoPedido estado, String estadoEtiqueta, String estadoCss, long unidades, BigDecimal importe) { }
+    public record PedidoFila( Long id, String codigo, LocalDateTime fecha, String cliente, String correo, EstadoPedido estado, String estadoEtiqueta, String estadoCss, long unidades, BigDecimal importe) { }
 }

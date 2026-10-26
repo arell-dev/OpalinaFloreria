@@ -18,17 +18,19 @@ public interface PedidoRepository {
 
     List<Pedido> buscarParaAdministracion(EstadoPedido estado, String busqueda);
 
-    List<Pedido> buscarPorCliente(String clienteId, EstadoPedido estado);
+    List<Pedido> buscarPorCliente(Long clienteId, EstadoPedido estado);
 
     long contar(EstadoPedido estado);
 
     BigDecimal totalVentas(EstadoPedido estado);
 
-    Optional<Pedido> buscarPorId(String id);
+    Optional<Pedido> buscarPorId(Long id);
 
-    Optional<Pedido> buscarPorIdParaActualizar(String id);
+    Optional<Pedido> buscarPorIdParaActualizar(Long id);
 
-    String generarId();
+    Optional<Pedido> buscarPorCodigo(String codigo);
+
+    String generarCodigo();
 
     Pedido guardar(Pedido pedido);
 }

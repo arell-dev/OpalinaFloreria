@@ -5,7 +5,6 @@ import com.floral.opalina.repository.ProductoRepository;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.floral.opalina.exception.ConflictoNegocioException;
@@ -43,8 +42,12 @@ public class ProductoService {
         return productoRepository.buscarCategorias();
     }
 
-    public Optional<Producto> buscarPorId(String id) {
+    public Optional<Producto> buscarPorId(Long id) {
         return productoRepository.buscarPorId(id);
+    }
+
+    public Optional<Producto> buscarPorSku(String sku) {
+        return productoRepository.buscarPorSku(sku);
     }
 
     public List<Producto> listarTodos() {
@@ -74,7 +77,7 @@ public class ProductoService {
         }
 
         Producto nuevoProducto = new Producto(
-                UUID.randomUUID().toString(),
+                null,
                 producto.getNombre(),
                 producto.getDescripcion(),
                 producto.getCategoria(),
@@ -85,12 +88,11 @@ public class ProductoService {
                 producto.getSku(),
                 producto.getImagen());
 
-        productoRepository.guardar(nuevoProducto);
-        return nuevoProducto;
+        return productoRepository.guardar(nuevoProducto);
     }
 
     @Transactional
-    public Producto actualizar(String id, Producto cambios) {
+    public Producto actualizar(Long id, Producto cambios) {
         Producto producto = productoRepository.buscarPorId(id)
                                               .orElseThrow(() -> new RecursoNoEncontradoException("Producto no encontrado"));
 
@@ -113,7 +115,7 @@ public class ProductoService {
     }
 
     @Transactional
-    public void cambiarDisponibilidad(String id, boolean disponible) {
+    public void cambiarDisponibilidad(Long id, boolean disponible) {
         Producto producto = productoRepository.buscarPorId(id)
                                               .orElseThrow(() -> new RecursoNoEncontradoException("Producto no encontrado"));
 
@@ -132,18 +134,18 @@ public class ProductoService {
     }
 
     @Transactional
-    public void eliminar(String id) {
+    public void eliminar(Long id) {
         if (productoRepository.buscarPorId(id).isEmpty()) {
             throw new RecursoNoEncontradoException("Producto no encontrado");
         }
         productoRepository.eliminar(id);
     }
 
-    public void descontarStock(Map<String, Integer> cantidades) {
+    public void descontarStock(Map<Long, Integer> cantidades) {
         productoRepository.descontarStock(cantidades);
     }
 
-    public void reponerStock(Map<String, Integer> cantidades) {
+    public void reponerStock(Map<Long, Integer> cantidades) {
         productoRepository.reponerStock(cantidades);
     }
 }

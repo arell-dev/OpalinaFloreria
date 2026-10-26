@@ -14,7 +14,7 @@
             <div class="admin-page-heading">
                 <div>
                     <p class="admin-overline">Administración / Pedidos</p>
-                    <h1 id="titulo-detalle-pedido" th:text="|Pedido ${pedido.id}|">Detalle del pedido</h1>
+                    <h1 id="titulo-detalle-pedido" th:text="|Pedido ${pedido.codigo}|">Detalle del pedido</h1>
                     <p class="admin-page-description">Registrado el <span th:text="${#temporals.format(pedido.creadoEn, 'dd/MM/yyyy · HH:mm')}">Fecha</span></p>
                 </div>
                 <div class="admin-heading-actions">

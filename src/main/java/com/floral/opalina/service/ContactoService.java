@@ -17,7 +17,7 @@ public class ContactoService {
     }
 
     @Transactional
-    public void enviar(ContactoForm formulario, String clienteId) {
+    public void enviar(ContactoForm formulario, Long clienteId) {
         contactos.guardar(new ConsultaContacto(
                         clienteId,
                         formulario.getNombre().trim(),

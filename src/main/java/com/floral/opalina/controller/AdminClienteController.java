@@ -27,7 +27,7 @@ public class AdminClienteController {
     @GetMapping
     public String listar(@RequestParam(required = false) String q, @RequestParam(required = false, defaultValue = "nombre") String ordenar, Model model) {
         var resumenes = clientes.listar().stream()
-                                         .filter(cliente -> !cliente.getId().equals("admin-opalina"))
+                                         .filter(cliente -> !clientes.esAdministrador(cliente.getId()))
                                          .map(cliente -> {
 
         var compras = pedidos.delCliente(cliente.getId());

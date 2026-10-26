@@ -18,7 +18,7 @@ public class CarritoService {
         this.configuracion = configuracion;
     }
 
-    public void agregar(String id, int cantidad) {
+    public void agregar(Long id, int cantidad) {
         if (cantidad < 1) {
             throw new IllegalArgumentException("La cantidad mínima es uno");
         }
@@ -31,7 +31,7 @@ public class CarritoService {
         carrito.agregar(id, cantidad);
     }
 
-    public void cambiar(String id, int cantidad) {
+    public void cambiar(Long id, int cantidad) {
         if (cantidad < 1) {
             quitar(id);
             return;
@@ -44,7 +44,7 @@ public class CarritoService {
         carrito.cantidad(id, cantidad);
     }
 
-    public void ajustar(String id, int ajuste) {
+    public void ajustar(Long id, int ajuste) {
         if (ajuste != -1 && ajuste != 1) {
             throw new IllegalArgumentException("El ajuste debe aumentar o reducir una unidad.");
         }
@@ -53,7 +53,7 @@ public class CarritoService {
         cambiar(id, cantidadActual + ajuste);
     }
 
-    public void quitar(String id) {
+    public void quitar(Long id) {
         carrito.quitar(id);
     }
 
@@ -95,7 +95,7 @@ public class CarritoService {
         return subtotal().add(delivery(recojo));
     }
 
-    private Producto buscarProducto(String id) {
+    private Producto buscarProducto(Long id) {
         return productos.buscarPorId(id)
                         .orElseThrow(() -> new IllegalArgumentException("Producto no encontrado"));
     }

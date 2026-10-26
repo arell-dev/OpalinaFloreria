@@ -43,7 +43,7 @@ public class AdminPedidoController {
     }
 
     @GetMapping("/pedidos/{id}")
-    public String detalle(@PathVariable String id, Model model) {
+    public String detalle(@PathVariable Long id, Model model) {
         var pedido = pedidos.porId(id)
                             .orElseThrow(() -> new RecursoNoEncontradoException("No se encontró el pedido"));
                             
@@ -54,7 +54,7 @@ public class AdminPedidoController {
     }
 
     @PostMapping("/pedidos/{id}/estado")
-    public String cambiarEstado(@PathVariable String id, @RequestParam EstadoPedido estado, RedirectAttributes redirect) {
+    public String cambiarEstado(@PathVariable Long id, @RequestParam EstadoPedido estado, RedirectAttributes redirect) {
         try {
             pedidos.cambiarEstado(id, estado);
             redirect.addFlashAttribute("mensaje", "Estado del pedido actualizado.");

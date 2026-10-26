@@ -27,7 +27,7 @@ public class CatalogoController {
     }
 
     @GetMapping("/productos/{id}")
-    public String detalle(@PathVariable String id, Model model) {
+    public String detalle(@PathVariable Long id, Model model) {
         var producto = productoService.buscarPorId(id)
                                       .orElseThrow(() -> new RecursoNoEncontradoException("No se encontró el producto " + id));
                                       

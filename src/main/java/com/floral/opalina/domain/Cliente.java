@@ -3,7 +3,7 @@ package com.floral.opalina.domain;
 import java.time.LocalDateTime;
 
 public class Cliente {
-    private final String id;
+    private final Long id;
     private final String nombre;
     private final String email;
     private final String telefono;
@@ -11,7 +11,7 @@ public class Cliente {
     private final String referencia;
     private final LocalDateTime creadoEn;
 
-    public Cliente(String id, String nombre, String email, String telefono, String direccion, String referencia, LocalDateTime creadoEn) {
+    public Cliente(Long id, String nombre, String email, String telefono, String direccion, String referencia, LocalDateTime creadoEn) {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
@@ -21,7 +21,7 @@ public class Cliente {
         this.creadoEn = creadoEn;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 

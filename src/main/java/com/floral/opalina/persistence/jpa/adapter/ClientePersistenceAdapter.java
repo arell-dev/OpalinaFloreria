@@ -8,6 +8,7 @@ import com.floral.opalina.persistence.jpa.springdata.CredencialJpaRepository;
 import com.floral.opalina.exception.RecursoNoEncontradoException;
 import com.floral.opalina.domain.Cliente;
 import com.floral.opalina.domain.Credencial;
+import com.floral.opalina.domain.enums.Rol;
 import com.floral.opalina.repository.ClienteRepository;
 import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
@@ -36,7 +37,7 @@ public class ClientePersistenceAdapter implements ClienteRepository {
     }
 
     @Override
-    public Optional<Cliente> buscarPorId(String id) {
+    public Optional<Cliente> buscarPorId(Long id) {
         return clientesJpa.findById(id).map(this::toDomain);
     }
 
@@ -46,11 +47,10 @@ public class ClientePersistenceAdapter implements ClienteRepository {
     }
 
     @Override
-    public void guardar(Cliente cliente) {
-        ClienteJpaEntity entity = entityManager.find(ClienteJpaEntity.class, cliente.getId());
+    public Cliente guardar(Cliente cliente) {
+        ClienteJpaEntity entity = cliente.getId() == null ? null : entityManager.find(ClienteJpaEntity.class, cliente.getId());
         if (entity == null) {
             entity = new ClienteJpaEntity();
-            entity.setId(cliente.getId());
         }
         entity.setNombre(cliente.getNombre());
         entity.setEmail(cliente.getEmail().trim().toLowerCase(Locale.ROOT));
@@ -58,8 +58,16 @@ public class ClientePersistenceAdapter implements ClienteRepository {
         entity.setDireccion(cliente.getDireccion());
         entity.setReferencia(cliente.getReferencia());
         entity.setCreadoEn(cliente.getCreadoEn());
-        clientesJpa.save(entity);
+        entity = clientesJpa.saveAndFlush(entity);
         ManejoErroresJpa.comprobarIntegridad(entityManager, "Ya existe una cuenta con ese correo");
+        return toDomain(entity);
+    }
+
+    @Override
+    public boolean esAdministrador(Long id) {
+        return credencialesJpa.findById(id)
+                              .map(credencial -> credencial.getRol() == Rol.ADMIN)
+                              .orElse(false);
     }
 
     @Override

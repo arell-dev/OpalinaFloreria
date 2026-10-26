@@ -62,7 +62,7 @@ public class HomeController {
         if (result.hasErrors()) {
             return "public/contacto";
         }
-        String clienteId = usuarioSession.autenticado() ? usuarioSession.getUsuario().id() : null;
+        Long clienteId = usuarioSession.autenticado() ? usuarioSession.getUsuario().id() : null;
         contactoService.enviar(formulario, clienteId);
         redirect.addFlashAttribute("mensaje", "Gracias por escribirnos. Te responderemos pronto.");
         return "redirect:/contacto";

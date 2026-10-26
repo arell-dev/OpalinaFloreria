@@ -128,8 +128,13 @@ public class ProductoPersistenceAdapter implements ProductoRepository {
     }
 
     @Override
-    public Optional<Producto> buscarPorId(String id) {
+    public Optional<Producto> buscarPorId(Long id) {
         return productosJpa.findById(id).map(this::toDomain);
+    }
+
+    @Override
+    public Optional<Producto> buscarPorSku(String sku) {
+        return productosJpa.findBySkuIgnoreCase(sku.trim()).map(this::toDomain);
     }
 
     @Override
@@ -138,17 +143,16 @@ public class ProductoPersistenceAdapter implements ProductoRepository {
     }
 
     @Override
-    public boolean existeSkuEnOtroProducto(String sku, String productoId) {
+    public boolean existeSkuEnOtroProducto(String sku, Long productoId) {
         return productosJpa.existsBySkuIgnoreCaseAndIdNot(sku, productoId);
     }
 
     @Override
-    public void guardar(Producto producto) {
-        ProductoJpaEntity entity = entityManager.find(ProductoJpaEntity.class, producto.getId());
+    public Producto guardar(Producto producto) {
+        ProductoJpaEntity entity = producto.getId() == null ? null : entityManager.find(ProductoJpaEntity.class, producto.getId());
 
         if (entity == null) {
             entity = new ProductoJpaEntity();
-            entity.setId(producto.getId());
         }
 
         entity.setNombre(producto.getNombre());
@@ -160,13 +164,14 @@ public class ProductoPersistenceAdapter implements ProductoRepository {
         entity.setStock(producto.getStock());
         entity.setDisponible(producto.isDisponible());
         entity.setDestacado(producto.isDestacado());
-        productosJpa.save(entity);
+        entity = productosJpa.saveAndFlush(entity);
 
         ManejoErroresJpa.comprobarIntegridad(entityManager, "El SKU ya está registrado por otro producto");
+        return toDomain(entity);
     }
 
     @Override
-    public void eliminar(String id) {
+    public void eliminar(Long id) {
         String mensaje = "No se puede eliminar un producto que aparece en pedidos. Desactívalo para conservar el historial.";
 
         if (apareceEnPedidos(id)) {
@@ -186,9 +191,9 @@ public class ProductoPersistenceAdapter implements ProductoRepository {
     }
 
     @Override
-    public void descontarStock(Map<String, Integer> cantidades) {
-        for (Map.Entry<String, Integer> linea : cantidades.entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
-            String productoId = linea.getKey();
+    public void descontarStock(Map<Long, Integer> cantidades) {
+        for (Map.Entry<Long, Integer> linea : cantidades.entrySet().stream().sorted(Map.Entry.comparingByKey()).toList()) {
+            Long productoId = linea.getKey();
             int cantidad = linea.getValue();
 
             if (cantidad < 1) {
@@ -206,8 +211,8 @@ public class ProductoPersistenceAdapter implements ProductoRepository {
     }
 
     @Override
-    public void reponerStock(Map<String, Integer> cantidades) {
-        for (String id : cantidades.keySet().stream().sorted().toList()) {
+    public void reponerStock(Map<Long, Integer> cantidades) {
+        for (Long id : cantidades.keySet().stream().sorted().toList()) {
             ProductoJpaEntity producto = productosJpa.buscarPorIdParaActualizar(id).orElseThrow(() -> new RecursoNoEncontradoException("Producto no encontrado: " + id));
 
             int cantidad = cantidades.get(id);
@@ -219,7 +224,7 @@ public class ProductoPersistenceAdapter implements ProductoRepository {
     }
 
     @Override
-    public boolean apareceEnPedidos(String productoId) {
+    public boolean apareceEnPedidos(Long productoId) {
         return entityManager.createQuery("select count(i) from ItemPedidoJpaEntity i where i.producto.id = :id", Long.class).setParameter("id", productoId).getSingleResult() > 0;
     }
 

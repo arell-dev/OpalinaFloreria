@@ -6,7 +6,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class Pedido {
-    private final String id, clienteId, nombreCliente, email, telefono;
+    private final Long id, clienteId;
+    private final String codigo, nombreCliente, email, telefono;
     private final List<ItemPedido> items;
     private final Entrega entrega;
     private final BigDecimal subtotal, costoDelivery, total;
@@ -15,8 +16,9 @@ public class Pedido {
     private final LocalDateTime creadoEn;
     private final List<CambioEstado> historial;
 
-    public Pedido(String id, String clienteId, String nombreCliente, String email, String telefono, List<ItemPedido> items, Entrega entrega, BigDecimal subtotal, BigDecimal costoDelivery, BigDecimal total, EstadoPedido estado, EstadoPago estadoPago, LocalDateTime creadoEn, List<CambioEstado> historial) {
+    public Pedido(Long id, String codigo, Long clienteId, String nombreCliente, String email, String telefono, List<ItemPedido> items, Entrega entrega, BigDecimal subtotal, BigDecimal costoDelivery, BigDecimal total, EstadoPedido estado, EstadoPago estadoPago, LocalDateTime creadoEn, List<CambioEstado> historial) {
         this.id = id;
+        this.codigo = codigo;
         this.clienteId = clienteId;
         this.nombreCliente = nombreCliente;
         this.email = email;
@@ -32,11 +34,15 @@ public class Pedido {
         this.historial = new ArrayList<>(historial);
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public String getClienteId() {
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public Long getClienteId() {
         return clienteId;
     }
 

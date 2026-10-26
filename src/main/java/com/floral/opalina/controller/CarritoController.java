@@ -21,7 +21,7 @@ public class CarritoController {
     }
 
     @PostMapping("/carrito/items")
-    public String agregar(@RequestParam String productoId, @RequestParam(defaultValue = "1") int cantidad, RedirectAttributes redirect) {
+    public String agregar(@RequestParam Long productoId, @RequestParam(defaultValue = "1") int cantidad, RedirectAttributes redirect) {
         try {
             carrito.agregar(productoId, cantidad);
             redirect.addFlashAttribute("mensaje", "Producto agregado al carrito.");
@@ -32,7 +32,7 @@ public class CarritoController {
     }
 
     @PostMapping("/carrito/items/{productoId}/cantidad")
-    public String cambiarCantidad(@PathVariable String productoId, @RequestParam(required = false) Integer cantidad, @RequestParam(required = false) Integer ajuste, RedirectAttributes redirect) {
+    public String cambiarCantidad(@PathVariable Long productoId, @RequestParam(required = false) Integer cantidad, @RequestParam(required = false) Integer ajuste, RedirectAttributes redirect) {
         
         try {
             if (ajuste != null) {
@@ -49,7 +49,7 @@ public class CarritoController {
     }
 
     @PostMapping("/carrito/items/{productoId}/eliminar")
-    public String quitar(@PathVariable String productoId) {
+    public String quitar(@PathVariable Long productoId) {
         carrito.quitar(productoId);
         return "redirect:/carrito";
     }

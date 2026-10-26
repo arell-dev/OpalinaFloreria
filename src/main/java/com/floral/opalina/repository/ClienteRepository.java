@@ -8,11 +8,13 @@ import java.util.Optional;
 public interface ClienteRepository {
     List<Cliente> buscarTodos();
 
-    Optional<Cliente> buscarPorId(String id);
+    Optional<Cliente> buscarPorId(Long id);
 
     Optional<Cliente> buscarPorEmail(String email);
 
-    void guardar(Cliente cliente);
+    Cliente guardar(Cliente cliente);
+
+    boolean esAdministrador(Long id);
 
     void guardarCredencial(Credencial credencial);
 

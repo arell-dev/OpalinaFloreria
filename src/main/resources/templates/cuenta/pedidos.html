@@ -50,7 +50,7 @@
                 <div class="card-body p-4">
                   <div class="d-flex flex-wrap justify-content-between gap-3 align-items-start">
                     <div>
-                      <p class="small text-body-secondary mb-1" th:text="|Pedido ${pedido.id} · ${#temporals.format(pedido.creadoEn, 'dd/MM/yyyy')}|">Pedido</p>
+                      <p class="small text-body-secondary mb-1" th:text="|Pedido ${pedido.codigo} · ${#temporals.format(pedido.creadoEn, 'dd/MM/yyyy')}|">Pedido</p>
                       <h2 class="h5 mb-2" th:text="${pedido.items[0].nombreProducto}">Arreglo floral</h2>
                       <p class="mb-0 text-body-secondary" th:text="|${#lists.size(pedido.items)} artículo(s) · S/ ${#numbers.formatDecimal(pedido.total, 1, 2)}|">Resumen</p>
                     </div>

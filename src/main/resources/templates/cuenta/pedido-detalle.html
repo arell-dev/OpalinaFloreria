@@ -14,7 +14,7 @@
 
         <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
           <div>
-            <p class="ceja mb-2" id="ceja-orden" th:text="|Pedido ${pedido.id}|">Pedido</p>
+            <p class="ceja mb-2" id="ceja-orden" th:text="|Pedido ${pedido.codigo}|">Pedido</p>
             <h1 id="titulo-detalle-pedido" class="display-6 fw-bold mb-2">Detalle del pedido</h1>
             <p class="text-body-secondary mb-0" id="fecha-orden" th:text="|Realizado el ${#temporals.format(pedido.creadoEn, 'dd/MM/yyyy')}|">Fecha del pedido</p>
           </div>

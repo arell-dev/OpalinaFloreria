@@ -99,7 +99,7 @@
                             <tbody>
                                 <tr th:each="pedido : ${pedidos}">
                                     <td>
-                                        <a class="admin-table-primary" th:href="@{/admin/pedidos/{id}(id=${pedido.id})}" th:text="${pedido.id}">OP-0000</a>
+                                        <a class="admin-table-primary" th:href="@{/admin/pedidos/{id}(id=${pedido.id})}" th:text="${pedido.codigo}">OP-0000</a>
                                         <small class="d-block text-body-secondary" th:text="${#temporals.format(pedido.creadoEn, 'dd/MM/yyyy')}">Fecha</small>
                                     </td>
                                     <td>

@@ -83,7 +83,7 @@ public class CuentaController {
     }
 
     @GetMapping("/pedidos/{id}")
-    public String detalle(@PathVariable String id, Model model) {
+    public String detalle(@PathVariable Long id, Model model) {
         var pedido = pedidos.porId(id).filter(p -> p.getClienteId().equals(usuario.getUsuario().id()))
                                       .orElseThrow(() -> new RecursoNoEncontradoException("No se encontró el pedido"));
 

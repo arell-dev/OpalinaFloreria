@@ -2,6 +2,8 @@ package com.floral.opalina.persistence.jpa.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -14,8 +16,9 @@ import java.math.BigDecimal;
 )
 public class ProductoJpaEntity {
     @Id
-    @Column(name = "producto_id", length = 100)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "producto_id")
+    private Long id;
 
     @Column(nullable = false, length = 30)
     private String sku;
@@ -44,11 +47,11 @@ public class ProductoJpaEntity {
     @Column(nullable = false)
     private boolean destacado;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

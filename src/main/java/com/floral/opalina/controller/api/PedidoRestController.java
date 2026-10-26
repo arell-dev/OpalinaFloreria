@@ -26,7 +26,7 @@ public class PedidoRestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Pedido> buscar(@PathVariable String id) {
+    public ResponseEntity<Pedido> buscar(@PathVariable Long id) {
         return pedidos.porId(id).map(ResponseEntity::ok)
                                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -42,7 +42,7 @@ public class PedidoRestController {
     }
 
     @PatchMapping("/{id}/estado")
-    public ResponseEntity<Pedido> cambiarEstado(@PathVariable String id, @Valid @RequestBody EstadoPedidoForm formulario) {
+    public ResponseEntity<Pedido> cambiarEstado(@PathVariable Long id, @Valid @RequestBody EstadoPedidoForm formulario) {
         pedidos.cambiarEstado(id, formulario.getEstado());
         
         return pedidos.porId(id).map(ResponseEntity::ok)

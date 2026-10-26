@@ -106,6 +106,6 @@ public class AdminProductoForm {
     }
 
     public Producto toProducto(String imagenUrl) {
-        return new Producto("", nombre, descripcion, categoria, precio, stock, disponible, destacado, sku, imagenUrl);
+        return new Producto(null, nombre, descripcion, categoria, precio, stock, disponible, destacado, sku, imagenUrl);
     }
 }

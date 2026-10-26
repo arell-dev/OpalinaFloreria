@@ -99,7 +99,7 @@ public class PedidoPersistenceAdapter implements PedidoRepository {
     }
 
     @Override
-    public List<Pedido> buscarPorCliente(String clienteId, EstadoPedido estado) {
+    public List<Pedido> buscarPorCliente(Long clienteId, EstadoPedido estado) {
         String consulta = "select p from PedidoJpaEntity p "
                         + "where p.cliente.id = :clienteId "
                         + "and (:estado is null or p.estado = :estado) "
@@ -131,17 +131,22 @@ public class PedidoPersistenceAdapter implements PedidoRepository {
     }
 
     @Override
-    public Optional<Pedido> buscarPorId(String id) {
-        return pedidosJpa.findByCodigo(id).map(this::toDomain);
+    public Optional<Pedido> buscarPorId(Long id) {
+        return pedidosJpa.findById(id).map(this::toDomain);
     }
 
     @Override
-    public Optional<Pedido> buscarPorIdParaActualizar(String id) {
-        return pedidosJpa.buscarPorCodigoParaActualizar(id).map(this::toDomain);
+    public Optional<Pedido> buscarPorIdParaActualizar(Long id) {
+        return pedidosJpa.buscarPorIdParaActualizar(id).map(this::toDomain);
     }
 
     @Override
-    public String generarId() {
+    public Optional<Pedido> buscarPorCodigo(String codigo) {
+        return pedidosJpa.findByCodigo(codigo).map(this::toDomain);
+    }
+
+    @Override
+    public String generarCodigo() {
         ConfiguracionTiendaJpaEntity config = configuracionJpaAcceso.obtenerParaActualizar();
         config.setUltimoNumeroPedido(config.getUltimoNumeroPedido() + 1);
         return "OP-" + Year.now() + "-" + String.format(Locale.ROOT, "%04d", config.getUltimoNumeroPedido());
@@ -150,14 +155,13 @@ public class PedidoPersistenceAdapter implements PedidoRepository {
     @Override
     public Pedido guardar(Pedido pedido) {
         PedidoJpaEntity entity = null;
-        if (pedido.getId() != null && !pedido.getId().isBlank()) {
-            entity = pedidosJpa.findByCodigo(pedido.getId()).orElse(null);
+        if (pedido.getId() != null) {
+            entity = pedidosJpa.findById(pedido.getId()).orElse(null);
         }
 
         if (entity == null) {
             entity = crearPedido(pedido);
-            pedidosJpa.save(entity);
-            return pedido;
+            return toDomain(pedidosJpa.saveAndFlush(entity));
         }
 
         entity.setEstado(pedido.getEstado());
@@ -185,7 +189,7 @@ public class PedidoPersistenceAdapter implements PedidoRepository {
         }
 
         PedidoJpaEntity entity = new PedidoJpaEntity();
-        entity.setCodigo(pedido.getId());
+        entity.setCodigo(pedido.getCodigo());
         entity.setCliente(cliente);
         entity.setEmailContacto(pedido.getEmail());
         entity.setEstado(pedido.getEstado());
@@ -240,7 +244,7 @@ public class PedidoPersistenceAdapter implements PedidoRepository {
 
         List<ItemPedido> items = entity.getItems().stream().map(item -> {
             BigDecimal totalLinea = item.getPrecioUnitario().multiply(BigDecimal.valueOf(item.getCantidad()));
-            String productoId = item.getProductoId();
+            Long productoId = item.getProductoId();
             return new ItemPedido(
                     productoId,
                     item.getNombreProducto(),
@@ -264,7 +268,7 @@ public class PedidoPersistenceAdapter implements PedidoRepository {
 
         List<CambioEstado> historial = entity.getHistorial().stream()
                                              .map(cambio -> new CambioEstado(cambio.getEstado(), cambio.getFecha())).toList();
-        return new Pedido(entity.getCodigo(), entity.getCliente().getId(), destinatario.getNombre(), entity.getEmailContacto(), destinatario.getTelefono(),
+        return new Pedido(entity.getId(), entity.getCodigo(), entity.getCliente().getId(), destinatario.getNombre(), entity.getEmailContacto(), destinatario.getTelefono(),
                 items, entrega, subtotal, entity.getCostoDelivery(), subtotal.add(entity.getCostoDelivery()), entity.getEstado(),
                 entity.getEstadoPago(), entity.getCreadoEn(), historial);
     }

@@ -115,7 +115,7 @@ public class ReporteService {
     }
 
     private List<ReporteDatos.ProductoSolicitado> productosSolicitados(List<Pedido> pedidosActivos) {
-        Map<String, AcumuladoProducto> importes = new HashMap<>();
+        Map<Long, AcumuladoProducto> importes = new HashMap<>();
         pedidosActivos.stream()
                       .flatMap(pedido -> pedido.getItems().stream())
                       .forEach(item -> importes.merge(item.productoId(),
@@ -142,6 +142,7 @@ public class ReporteService {
         long unidades = pedido.getItems().stream().mapToLong(ItemPedido::cantidad).sum();
         return new ReporteDatos.PedidoFila(
                 pedido.getId(),
+                pedido.getCodigo(),
                 pedido.getCreadoEn(),
                 pedido.getNombreCliente(),
                 pedido.getEmail(),
