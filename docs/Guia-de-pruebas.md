@@ -26,7 +26,7 @@ Espera a que MySQL figure como `healthy`. En una segunda terminal, ejecuta:
 .\mvnw.cmd spring-boot:run
 ~~~
 
-Flyway aplica las migraciones V1 y V2. Hibernate valida el mapeo JPA al iniciar la aplicación. Abre [http://localhost:8080](http://localhost:8080).
+Flyway aplica las migraciones V1, V2 y V3. La V3 convierte los IDs de clientes y productos a números, conserva los datos y actualiza sus referencias; no elimina ni reinicia el volumen. Hibernate valida el mapeo JPA al iniciar la aplicación. Abre [http://localhost:8080](http://localhost:8080).
 
 ## 2. Pruebas automatizadas
 
@@ -38,9 +38,9 @@ Ejecuta desde la raíz:
 
 La suite usa Testcontainers para iniciar un MySQL 8.4 temporal. Docker debe estar activo; si no está disponible, la clase de integración queda deshabilitada y las pruebas de persistencia no se ejecutan.
 
-La ejecución registrada el 24/10/2026 terminó con 4 pruebas aprobadas. La suite cubre:
+La suite cubre:
 
-- Aplicación de migraciones y arranque del contexto.
+- Aplicación de migraciones, IDs numéricos autoincrementales y arranque del contexto.
 - CRUD de productos y respuestas HTTP de validación.
 - Persistencia de clientes y consultas de contacto, correo duplicado y hash de contraseña.
 - Creación y cancelación de pedidos, descuento de stock y compras concurrentes.
@@ -55,7 +55,7 @@ Crea una variable de colección llamada `baseUrl` con el valor `http://localhost
 | --- | --- | --- |
 | `GET` | `{{baseUrl}}/api/productos` | Responde `200 OK`; admite `q`, `categoria` y `disponible`. |
 | `POST` | `{{baseUrl}}/api/productos` | Responde `201 Created`; guarda el `id` para las siguientes solicitudes. |
-| `GET` | `{{baseUrl}}/api/productos/{{productoId}}` | Responde `200 OK`; un ID inexistente responde `404`. |
+| `GET` | `{{baseUrl}}/api/productos/{{productoId}}` | Responde `200 OK`; un ID numérico inexistente responde `404`. |
 | `PUT` | `{{baseUrl}}/api/productos/{{productoId}}` | Responde `200 OK`; envía el formulario completo. |
 | `DELETE` | `{{baseUrl}}/api/productos/{{productoId}}` | Responde `204 No Content` si no tiene pedidos; con historial responde `409 Conflict`. |
 
@@ -75,7 +75,7 @@ Para crear un producto, usa `Content-Type: application/json` y un cuerpo como es
 }
 ~~~
 
-Usa un SKU nuevo en cada ejecución. Guarda el `id` de la respuesta como `productoId`. El endpoint de clientes solo ofrece consultas; usa el id de un cliente existente como `clienteId`:
+Usa un SKU nuevo en cada ejecución. La respuesta contiene un `id` numérico y un `sku` comercial distinto; guarda el `id` como `productoId`. El endpoint de clientes solo ofrece consultas y devuelve también IDs numéricos; usa el id de un cliente existente como `clienteId`:
 
 - `GET {{baseUrl}}/api/clientes`
 - `GET {{baseUrl}}/api/clientes/{{clienteId}}`
@@ -88,7 +88,7 @@ Envía un pedido con `POST {{baseUrl}}/api/pedidos`. Usa un cliente registrado, 
 
 ~~~json
 {
-  "clienteId": "{{clienteId}}",
+  "clienteId": {{clienteId}},
   "modalidad": "RECOJO",
   "direccion": "",
   "referencia": "",
@@ -97,14 +97,14 @@ Envía un pedido con `POST {{baseUrl}}/api/pedidos`. Usa un cliente registrado, 
   "metodoPago": "YAPE",
   "items": [
     {
-      "productoId": "{{productoId}}",
+      "productoId": {{productoId}},
       "cantidad": 1
     }
   ]
 }
 ~~~
 
-La respuesta esperada es `201 Created`. Guarda el id devuelto como `pedidoId`. Después puedes consultar el pedido con `GET {{baseUrl}}/api/pedidos/{{pedidoId}}` y cambiar su estado con `PATCH {{baseUrl}}/api/pedidos/{{pedidoId}}/estado`:
+La respuesta esperada es `201 Created`. Guarda el `id` numérico devuelto como `pedidoId`; el campo `codigo` mantiene el código legible `OP-…`. Después puedes consultar el pedido con `GET {{baseUrl}}/api/pedidos/{{pedidoId}}` y cambiar su estado con `PATCH {{baseUrl}}/api/pedidos/{{pedidoId}}/estado`:
 
 ~~~json
 {

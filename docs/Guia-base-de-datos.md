@@ -147,7 +147,7 @@ Con MySQL en estado `healthy`, inicia la aplicación en otra terminal:
 .\mvnw.cmd spring-boot:run
 ~~~
 
-Al arrancar, Spring Boot lee la conexión de `.env` y Flyway aplica las migraciones ubicadas en `src/main/resources/db/migration/` (actualmente V1 y V2). Después, Hibernate valida que las entidades correspondan con las tablas. Docker crea la base vacía; las tablas se crean cuando arranca la aplicación y Flyway ejecuta esas migraciones.
+Al arrancar, Spring Boot lee la conexión de `.env` y Flyway aplica las migraciones ubicadas en `src/main/resources/db/migration/` (actualmente V1, V2 y V3). La V3 cambia los IDs de clientes y productos a claves numéricas autoincrementales y actualiza las referencias conservando los registros. Después, Hibernate valida que las entidades correspondan con las tablas. Docker crea la base vacía; las tablas se crean cuando arranca la aplicación y Flyway ejecuta esas migraciones.
 
 Abre [http://localhost:8080](http://localhost:8080) para entrar a Opalina.
 

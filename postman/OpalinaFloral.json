@@ -1,0 +1,915 @@
+{
+  "info": {
+    "_postman_id": "178e8f75-121d-4469-aff2-f678ea8a36b8",
+    "name": "Opalina Floral API",
+    "description": "Colección importable para probar la API REST de Opalina en Postman. La aplicación debe estar iniciada y baseUrl apunta por defecto a http://localhost:8080. Los IDs de clientes, productos y pedidos son numéricos; los pedidos también incluyen un codigo OP-… para mostrarlo. Las rutas REST actuales no requieren sesión. El formulario /admin/productos pertenece a MVC; la solicitud POST /api/productos usa JSON y comparte las validaciones del servicio. Para demostrar validaciones, envía las solicitudes que terminan en (400): Postman mostrará el estado HTTP y el cuerpo {status, errores}; sus scripts también validan y registran los errores en la consola. La solicitud de SKU duplicado muestra un conflicto 409. Ejecuta primero GET - Listar clientes; si hay clientes, la colección guarda el primer id numérico en clienteId. Las solicitudes válidas de producto y pedido escriben en la base de datos; el pedido descuenta stock. La limpieza solo elimina el producto de demostración y puede responder 409 si ya tiene un pedido.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "busqueda",
+      "value": "Ramo",
+      "type": "string"
+    },
+    {
+      "key": "categoriaFiltro",
+      "value": "Romántico",
+      "type": "string"
+    },
+    {
+      "key": "disponibleFiltro",
+      "value": "true",
+      "type": "string"
+    },
+    {
+      "key": "estadoPedido",
+      "value": "PENDIENTE",
+      "type": "string"
+    },
+    {
+      "key": "clienteId",
+      "value": "",
+      "type": "string",
+      "description": "ID numérico; se guarda automáticamente con el primer id devuelto por GET - Listar clientes."
+    },
+    {
+      "key": "productoId",
+      "value": "",
+      "type": "string",
+      "description": "ID numérico del producto; se establece al crear el producto de demostración."
+    },
+    {
+      "key": "pedidoId",
+      "value": "",
+      "type": "string",
+      "description": "ID numérico del pedido; el código OP-… se devuelve aparte como codigo."
+    },
+    {
+      "key": "skuDemo",
+      "value": "",
+      "type": "string",
+      "description": "Se genera automáticamente al crear el producto."
+    },
+    {
+      "key": "fechaPedido",
+      "value": "",
+      "type": "string",
+      "description": "Se genera como una fecha futura al crear el pedido."
+    }
+  ],
+  "item": [
+    {
+      "name": "Productos",
+      "item": [
+        {
+          "name": "GET - Listar productos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "description": "Lista los productos disponibles en el catálogo REST.",
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"La respuesta es una lista JSON\", function () {",
+                  "    pm.expect(pm.response.json()).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET - Filtrar productos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "description": "Filtra por texto, categoría y disponibilidad. Cambia las variables de colección para probar otros valores.",
+            "url": {
+              "raw": "{{baseUrl}}/api/productos?q={{busqueda}}&categoria={{categoriaFiltro}}&disponible={{disponibleFiltro}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "{{busqueda}}",
+                  "description": "Texto de búsqueda"
+                },
+                {
+                  "key": "categoria",
+                  "value": "{{categoriaFiltro}}",
+                  "description": "Categoría"
+                },
+                {
+                  "key": "disponible",
+                  "value": "{{disponibleFiltro}}",
+                  "description": "true o false"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"La respuesta filtrada es una lista JSON\", function () {",
+                  "    pm.expect(pm.response.json()).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST - Crear producto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Crea un producto de demostración por REST. Genera un SKU único y guarda el id en la variable productoId para las siguientes solicitudes. Esta operación persiste en la base de datos.",
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Ramo de demostración Postman\",\n  \"descripcion\": \"Producto de prueba creado mediante la API REST.\",\n  \"categoria\": \"Demostración\",\n  \"precio\": 65.5,\n  \"stock\": 5,\n  \"disponible\": true,\n  \"destacado\": false,\n  \"sku\": \"{{skuDemo}}\",\n  \"imagen\": \"/assets/imagenes/productos/12-RamoOpalinaMorado.png\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set(\"skuDemo\", \"POSTMAN-DEMO-\" + Date.now());",
+                  "pm.collectionVariables.set(\"productoId\", \"\");"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "var respuesta = pm.response.json();",
+                  "pm.test(\"La respuesta contiene el id y SKU creados\", function () {",
+                  "    pm.expect(respuesta.id).to.be.a(\"number\").and.to.be.above(0);",
+                  "    pm.expect(respuesta.sku).to.eql(pm.collectionVariables.get(\"skuDemo\"));",
+                  "    pm.collectionVariables.set(\"productoId\", respuesta.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST - Validar producto inválido (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Demuestra @Valid y el GlobalExceptionHandler. Espera HTTP 400 Bad Request y un JSON con status y la lista de errores por campo. También puedes abrir la consola de Postman para ver el objeto que registra el script.",
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \" \",\n  \"descripcion\": \"\",\n  \"categoria\": \"\",\n  \"precio\": -12,\n  \"stock\": -1,\n  \"disponible\": true,\n  \"destacado\": false,\n  \"sku\": \"\",\n  \"imagen\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "var respuesta = pm.response.json();",
+                  "console.log(\"HTTP \" + pm.response.code + \" - errores de validación:\", respuesta.errores);",
+                  "pm.test(\"El cuerpo incluye status 400 y errores por campo\", function () {",
+                  "    pm.expect(respuesta.status).to.eql(400);",
+                  "    pm.expect(respuesta.errores).to.be.an(\"object\");",
+                  "    [\"nombre\", \"descripcion\", \"categoria\", \"precio\", \"stock\", \"sku\", \"imagen\"].forEach(function (campo) {",
+                  "        pm.expect(respuesta.errores).to.have.property(campo);",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST - Validar SKU duplicado (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Ejecútala después de POST - Crear producto. Reutiliza su SKU y demuestra el conflicto de negocio: HTTP 409, status 409 y el mensaje dentro de error.",
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Ramo duplicado\",\n  \"descripcion\": \"Este SKU ya se registró en la solicitud anterior.\",\n  \"categoria\": \"Demostración\",\n  \"precio\": 65.5,\n  \"stock\": 1,\n  \"disponible\": true,\n  \"destacado\": false,\n  \"sku\": \"{{skuDemo}}\",\n  \"imagen\": \"/assets/imagenes/productos/12-RamoOpalinaMorado.png\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 409\", function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});",
+                  "",
+                  "var respuesta = pm.response.json();",
+                  "console.log(\"HTTP \" + pm.response.code + \" - conflicto:\", respuesta.error);",
+                  "pm.test(\"La respuesta incluye status 409 y error\", function () {",
+                  "    pm.expect(respuesta.status).to.eql(409);",
+                  "    pm.expect(respuesta.error).to.include(pm.collectionVariables.get(\"skuDemo\"));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET - Buscar producto por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "description": "Consulta el producto creado con la solicitud de demostración. Ejecuta primero POST - Crear producto.",
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/{{productoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "{{productoId}}"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"La respuesta corresponde al producto creado\", function () {",
+                  "    pm.expect(pm.response.json().id).to.eql(Number(pm.collectionVariables.get(\"productoId\")));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PUT - Actualizar producto",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Actualiza el producto de demostración. Envía todos los campos del formulario. Ejecuta primero POST - Crear producto.",
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/{{productoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "{{productoId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Ramo de demostración Postman actualizado\",\n  \"descripcion\": \"Producto de prueba actualizado mediante la API REST.\",\n  \"categoria\": \"Demostración\",\n  \"precio\": 67.0,\n  \"stock\": 5,\n  \"disponible\": true,\n  \"destacado\": false,\n  \"sku\": \"{{skuDemo}}\",\n  \"imagen\": \"/assets/imagenes/productos/12-RamoOpalinaMorado.png\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"El producto quedó actualizado\", function () {",
+                  "    pm.expect(pm.response.json().nombre).to.eql(\"Ramo de demostración Postman actualizado\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Clientes",
+      "item": [
+        {
+          "name": "GET - Listar clientes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "description": "Consulta los clientes registrados. Si hay al menos uno, guarda automáticamente el id del primer cliente en clienteId para que POST - Crear pedido pueda usarlo.",
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var clientes = pm.response.json();",
+                  "pm.test(\"La respuesta es una lista JSON\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(clientes).to.be.an(\"array\");",
+                  "});",
+                  "if (pm.response.code === 200 && clientes.length > 0 && clientes[0].id) {",
+                  "    pm.test(\"El id del cliente es numérico\", function () {",
+                  "        pm.expect(clientes[0].id).to.be.a(\"number\").and.above(0);",
+                  "    });",
+                  "    pm.collectionVariables.set(\"clienteId\", clientes[0].id);",
+                  "    console.log(\"clienteId de demostración:\", clientes[0].id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET - Consultar resumen del cliente",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "description": "Consulta los datos del cliente, su cantidad de pedidos y total gastado. Requiere un clienteId existente.",
+            "url": {
+              "raw": "{{baseUrl}}/api/clientes/{{clienteId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "clientes",
+                "{{clienteId}}"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"El resumen contiene los datos de compra\", function () {",
+                  "    var respuesta = pm.response.json();",
+                  "    pm.expect(respuesta).to.have.property(\"cliente\");",
+                  "    pm.expect(respuesta).to.have.property(\"cantidadPedidos\");",
+                  "    pm.expect(respuesta).to.have.property(\"totalGastado\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Pedidos",
+      "item": [
+        {
+          "name": "GET - Listar pedidos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "description": "Lista los pedidos registrados.",
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"La respuesta es una lista JSON\", function () {",
+                  "    pm.expect(pm.response.json()).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET - Filtrar pedidos por estado",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "description": "Prueba el filtro por estado: PENDIENTE, EN_PROCESO, ENVIADO, ENTREGADO o CANCELADO.",
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos?estado={{estadoPedido}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos"
+              ],
+              "query": [
+                {
+                  "key": "estado",
+                  "value": "{{estadoPedido}}",
+                  "description": "Estado del pedido"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"La respuesta filtrada es una lista JSON\", function () {",
+                  "    pm.expect(pm.response.json()).to.be.an(\"array\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST - Validar pedido inválido (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Demuestra las validaciones del pedido, incluida la validación anidada de items. Espera HTTP 400 y un cuerpo con status y errores; el script también registra esos errores en la consola de Postman.",
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteId\": null,\n  \"modalidad\": null,\n  \"direccion\": \"\",\n  \"referencia\": \"\",\n  \"fecha\": \"2020-01-01\",\n  \"hora\": null,\n  \"metodoPago\": null,\n  \"items\": [\n    {\n      \"productoId\": null,\n      \"cantidad\": 0\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 400\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "",
+                  "var respuesta = pm.response.json();",
+                  "console.log(\"HTTP \" + pm.response.code + \" - errores de validación:\", respuesta.errores);",
+                  "pm.test(\"El cuerpo incluye status 400 y errores de campos anidados\", function () {",
+                  "    pm.expect(respuesta.status).to.eql(400);",
+                  "    pm.expect(respuesta.errores).to.be.an(\"object\");",
+                  "    [\"clienteId\", \"modalidad\", \"fecha\", \"hora\", \"metodoPago\", \"items[0].productoId\", \"items[0].cantidad\"].forEach(function (campo) {",
+                  "        pm.expect(respuesta.errores).to.have.property(campo);",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST - Crear pedido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Crea un pedido de demostración usando clienteId de GET - Listar clientes y productoId del producto creado. La fecha futura se genera al enviar. Esta operación persiste el pedido y descuenta una unidad del stock.",
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clienteId\": {{clienteId}},\n  \"modalidad\": \"RECOJO\",\n  \"direccion\": \"\",\n  \"referencia\": \"\",\n  \"fecha\": \"{{fechaPedido}}\",\n  \"hora\": \"12:00:00\",\n  \"metodoPago\": \"YAPE\",\n  \"items\": [\n    {\n      \"productoId\": {{productoId}},\n      \"cantidad\": 1\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var fechaFutura = new Date();",
+                  "fechaFutura.setDate(fechaFutura.getDate() + 30);",
+                  "pm.collectionVariables.set(\"fechaPedido\", fechaFutura.toISOString().slice(0, 10));"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "var respuesta = pm.response.json();",
+                  "pm.test(\"El pedido se creó y se guardó su id\", function () {",
+                  "    pm.expect(respuesta.id).to.be.a(\"number\").and.to.be.above(0);",
+                  "    pm.expect(respuesta.codigo).to.match(/^OP-\\d{4}-\\d+$/);",
+                  "    pm.collectionVariables.set(\"pedidoId\", respuesta.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET - Buscar pedido por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "description": "Consulta el pedido creado por POST - Crear pedido.",
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/{{pedidoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos",
+                "{{pedidoId}}"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"El id coincide con el pedido creado\", function () {",
+                  "    pm.expect(pm.response.json().id).to.eql(Number(pm.collectionVariables.get(\"pedidoId\")));",
+                  "    pm.expect(pm.response.json().codigo).to.match(/^OP-\\d{4}-\\d+$/);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "PATCH - Cambiar estado del pedido",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Cambia un pedido de PENDIENTE a EN_PROCESO. Ejecuta después de POST - Crear pedido.",
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/{{pedidoId}}/estado",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos",
+                "{{pedidoId}}",
+                "estado"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"EN_PROCESO\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"HTTP 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test(\"El pedido quedó EN_PROCESO\", function () {",
+                  "    pm.expect(pm.response.json().estado).to.eql(\"EN_PROCESO\");",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Limpieza (opcional)",
+      "item": [
+        {
+          "name": "DELETE - Eliminar producto de demostración",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "description": "Elimina solo el producto de demostración creado por esta colección. Si ya se usó en un pedido, la aplicación debe responder 409 Conflict y conservarlo. No uses esta solicitud con el id de un producto real.",
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/{{productoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "{{productoId}}"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"El producto se eliminó o está protegido por un pedido\", function () {",
+                  "    pm.expect([204, 409]).to.include(pm.response.code);",
+                  "    if (pm.response.code === 409) {",
+                  "        pm.expect(pm.response.json().status).to.eql(409);",
+                  "    }",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
