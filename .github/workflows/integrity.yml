@@ -9,6 +9,12 @@ on:
       - main
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Etiqueta ya validada que se desea reintentar
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -20,6 +26,8 @@ jobs:
     steps:
       - name: Descargar el código
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.release_tag || github.sha }}
 
       - name: Preparar Java 21
         uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165
@@ -56,13 +64,14 @@ jobs:
   validate-release:
     name: Validar versión y commit
     needs: verify
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
     runs-on: ubuntu-latest
     permissions:
       contents: read
     outputs:
       version: ${{ steps.version.outputs.version }}
       already_released: ${{ steps.version.outputs.already_released }}
+      commit_sha: ${{ steps.source.outputs.commit_sha }}
     steps:
       - name: Descargar el código y las etiquetas
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
@@ -70,15 +79,20 @@ jobs:
           fetch-depth: 0
 
       - name: Confirmar que el commit está en main
+        id: source
+        env:
+          RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || inputs.release_tag }}
         run: |
           git fetch --no-tags origin main
-          git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+          commit_sha="$(git rev-list -n 1 "refs/tags/$RELEASE_TAG")"
+          git merge-base --is-ancestor "$commit_sha" origin/main
+          echo "commit_sha=$commit_sha" >> "$GITHUB_OUTPUT"
 
       - name: Validar el siguiente número de versión
         id: version
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || inputs.release_tag }}
         run: |
           gh release list --limit 1000 --json tagName,isDraft,isPrerelease > /tmp/opalina-releases.json
           python3 - <<'PY'
@@ -132,14 +146,14 @@ jobs:
     if: needs.validate-release.outputs.already_released != 'true'
     runs-on: ubuntu-latest
     environment:
-      name: ${{ github.ref_type == 'tag' && 'railway' }}
+      name: railway
     permissions:
       contents: write
     steps:
       - name: Descargar el commit de la versión
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ needs.validate-release.outputs.commit_sha }}
 
       - name: Comprobar si la publicación ya fue completada
         id: release
@@ -165,6 +179,7 @@ jobs:
           RAILWAY_SERVICE_NAME: ${{ vars.RAILWAY_SERVICE_NAME }}
           RAILWAY_ENVIRONMENT_NAME: ${{ vars.RAILWAY_ENVIRONMENT_NAME }}
           RELEASE_TAG: ${{ needs.validate-release.outputs.version }}
+          RELEASE_COMMIT_SHA: ${{ needs.validate-release.outputs.commit_sha }}
         run: |
           set -euo pipefail
           : "${RAILWAY_TOKEN:?Configura el secreto RAILWAY_TOKEN en el entorno railway}"
@@ -172,50 +187,82 @@ jobs:
           : "${RAILWAY_SERVICE_NAME:?Configura RAILWAY_SERVICE_NAME en el entorno railway}"
           : "${RAILWAY_ENVIRONMENT_NAME:?Configura RAILWAY_ENVIRONMENT_NAME en el entorno railway}"
 
+          previous_deployments="$(railway deployment list --json --limit 1 \
+            --project "$RAILWAY_PROJECT_ID" \
+            --environment "$RAILWAY_ENVIRONMENT_NAME" \
+            --service "$RAILWAY_SERVICE_NAME")"
+          previous_deployment_id="$(printf '%s' "$previous_deployments" | python3 -c '
+          import json, sys
+          value = json.load(sys.stdin)
+          if isinstance(value, dict):
+              value = value.get("deployments", [])
+          print(value[0].get("id", "") if value else "")
+          ')"
+
           output="$(railway up --json \
             --project "$RAILWAY_PROJECT_ID" \
             --environment "$RAILWAY_ENVIRONMENT_NAME" \
             --service "$RAILWAY_SERVICE_NAME" \
-            --message "Release ${RELEASE_TAG} ${GITHUB_SHA}")"
+            --message "Release ${RELEASE_TAG} ${RELEASE_COMMIT_SHA}")"
           printf '%s\n' "$output"
 
-          deployment_id="$(printf '%s\n' "$output" | node -e '
-            const fs = require("fs");
-            let id;
-            for (const line of fs.readFileSync(0, "utf8").split(/\r?\n/)) {
-              try {
-                const entry = JSON.parse(line);
-                if (entry.deploymentId) id = entry.deploymentId;
-              } catch {}
-            }
-            if (!id) process.exit(1);
-            process.stdout.write(id);
+          up_status="$(printf '%s\n' "$output" | python3 -c '
+          import json, sys
+          statuses = []
+          for line in sys.stdin:
+              try:
+                  entry = json.loads(line)
+              except json.JSONDecodeError:
+                  continue
+              if isinstance(entry, dict) and entry.get("status", "").lower() in {"success", "failed", "failure"}:
+                  statuses.append(entry["status"].lower())
+          if not statuses:
+              raise SystemExit("railway up --json no devolvió un estado final")
+          print(statuses[-1])
           ')"
-          echo "Railway deployment ID: $deployment_id"
+          if [ "$up_status" != "success" ]; then
+            echo "Railway CLI terminó el despliegue con estado $up_status" >&2
+            exit 1
+          fi
 
+          deployment_id=""
+          state="MISSING"
           for attempt in $(seq 1 90); do
             deployments="$(railway deployment list --json --limit 30 \
               --project "$RAILWAY_PROJECT_ID" \
               --environment "$RAILWAY_ENVIRONMENT_NAME" \
               --service "$RAILWAY_SERVICE_NAME")"
-            state="$(printf '%s' "$deployments" | DEPLOYMENT_ID="$deployment_id" python3 -c '
+            deployment_data="$(printf '%s' "$deployments" | PREVIOUS_DEPLOYMENT_ID="$previous_deployment_id" DEPLOYMENT_ID="$deployment_id" python3 -c '
           import json, os, sys
           value = json.load(sys.stdin)
           if isinstance(value, dict):
               value = value.get("deployments", [])
-          target = next((item for item in value if item.get("id") == os.environ["DEPLOYMENT_ID"]), None)
-          print(target.get("status", "MISSING") if target else "MISSING")
+          deployment_id = os.environ["DEPLOYMENT_ID"]
+          previous_id = os.environ["PREVIOUS_DEPLOYMENT_ID"]
+          if deployment_id:
+              target = next((item for item in value if item.get("id") == deployment_id), None)
+          else:
+              target = next((item for item in value if item.get("id") and item.get("id") != previous_id), None)
+          if target:
+              print("{}\t{}".format(target.get("id", ""), str(target.get("status", "UNKNOWN")).upper()))
+          else:
+              print("\tMISSING")
           ')
+            deployment_id="${deployment_data%%$'\t'*}"
+            state="${deployment_data#*$'\t'}"
 
             case "$state" in
-              SUCCESS) break ;;
+              SUCCESS)
+                echo "Railway deployment ID: $deployment_id"
+                break
+                ;;
               FAILED|CRASHED|REMOVED|REMOVING)
                 echo "Railway terminó el despliegue $deployment_id con estado $state" >&2
                 exit 1
                 ;;
               MISSING)
-                echo "Railway no devolvió el despliegue $deployment_id" >&2
-                exit 1
+                echo "Esperando a que Railway registre el nuevo deployment ($attempt/90)"
+                sleep 10
                 ;;
               *) echo "Estado Railway: $state ($attempt/90)"; sleep 10 ;;
             esac
@@ -233,8 +280,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ needs.validate-release.outputs.version }}
+          RELEASE_COMMIT_SHA: ${{ needs.validate-release.outputs.commit_sha }}
         run: |
           gh release create "$RELEASE_TAG" \
             --verify-tag \
             --title "$RELEASE_TAG" \
-            --notes "Deployed commit ${GITHUB_SHA}. Railway deployment ${RAILWAY_DEPLOYMENT_ID}."
+            --notes "Deployed commit ${RELEASE_COMMIT_SHA}. Railway deployment ${RAILWAY_DEPLOYMENT_ID}."
