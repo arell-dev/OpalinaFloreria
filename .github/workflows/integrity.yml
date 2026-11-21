@@ -247,7 +247,7 @@ jobs:
               print("{}\t{}".format(target.get("id", ""), str(target.get("status", "UNKNOWN")).upper()))
           else:
               print("\tMISSING")
-          ')
+          ')"
             deployment_id="${deployment_data%%$'\t'*}"
             state="${deployment_data#*$'\t'}"
 
