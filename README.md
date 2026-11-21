@@ -14,7 +14,7 @@ Aplicación web para la gestión de una florería: catálogo de arreglos, cuenta
 
 ## Tecnologías
 
-Java 21 · Spring Boot 4.1.2 · Spring MVC · Thymeleaf · Spring Data JPA · Hibernate · MySQL 8.4 · Flyway · Bootstrap · PDFBox.
+Java 21 · Spring Boot 4.2.0 · Spring MVC · Thymeleaf · Spring Data JPA · Hibernate · MySQL 8.4 · Flyway · Bootstrap · PDFBox.
 
 ## Requisitos
 
