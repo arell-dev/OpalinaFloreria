@@ -1,0 +1,240 @@
+name: Integridad
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Integridad
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      - name: Preparar Java 21
+        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Ejecutar las pruebas y validaciones Maven
+        run: bash ./mvnw --batch-mode --no-transfer-progress verify
+
+      - name: Exigir que se ejecuten las pruebas MySQL
+        run: |
+          python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+
+          report = Path("target/surefire-reports/TEST-com.floral.opalina.OpalinaApplicationTests.xml")
+          security_report = Path("target/surefire-reports/TEST-com.floral.opalina.RailwaySecurityIntegrationTests.xml")
+          for path in (report, security_report):
+              if not path.is_file():
+                  raise SystemExit(f"Falta el informe de integración: {path}")
+
+              root = ET.parse(path).getroot()
+              if root.attrib.get("tests", "0") == "0" or root.attrib.get("skipped", "0") != "0":
+                  raise SystemExit(f"Las pruebas de integración MySQL no se ejecutaron: {path} {root.attrib}")
+
+              print(f"{path.name}: {root.attrib['tests']} pruebas ejecutadas")
+          PY
+
+      - name: Construir la imagen de producción
+        run: docker build --tag "opalina:${GITHUB_SHA}" .
+
+  validate-release:
+    name: Validar versión y commit
+    needs: verify
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      already_released: ${{ steps.version.outputs.already_released }}
+    steps:
+      - name: Descargar el código y las etiquetas
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 0
+
+      - name: Confirmar que el commit está en main
+        run: |
+          git fetch --no-tags origin main
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+
+      - name: Validar el siguiente número de versión
+        id: version
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          gh release list --limit 1000 --json tagName,isDraft,isPrerelease > /tmp/opalina-releases.json
+          python3 - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          version_pattern = re.compile(r"^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$")
+          tag = os.environ["RELEASE_TAG"]
+          match = version_pattern.fullmatch(tag)
+          if not match:
+              raise SystemExit(f"Etiqueta inválida: {tag}. Usa vX.Y.Z con enteros sin ceros iniciales.")
+
+          current = tuple(map(int, match.groups()))
+          releases = json.loads(Path("/tmp/opalina-releases.json").read_text())
+          published = []
+          for release in releases:
+              if release["isDraft"] or release["isPrerelease"]:
+                  continue
+              release_match = version_pattern.fullmatch(release["tagName"])
+              if release_match:
+                  published.append((tuple(map(int, release_match.groups())), release["tagName"]))
+
+          if any(release_tag == tag for _, release_tag in published):
+              print("Esta versión ya tiene una publicación exitosa. Se omite el redeploy.")
+              with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+                  output.write(f"version={tag}\nalready_released=true\n")
+              raise SystemExit(0)
+
+          if not published:
+              expected = {(0, 0, 1)}
+          else:
+              latest, latest_tag = max(published)
+              expected = {
+                  (latest[0], latest[1], latest[2] + 1),
+                  (latest[0], latest[1] + 1, 0),
+                  (latest[0] + 1, 0, 0),
+              }
+              if current not in expected:
+                  allowed = ", ".join("v" + ".".join(map(str, option)) for option in sorted(expected))
+                  raise SystemExit(f"{tag} no sigue a {latest_tag}. Versiones permitidas: {allowed}.")
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write(f"version={tag}\nalready_released=false\n")
+          PY
+
+  deploy-release:
+    name: Desplegar la versión aprobada
+    needs: validate-release
+    if: needs.validate-release.outputs.already_released != 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ github.ref_type == 'tag' && 'railway' }}
+    permissions:
+      contents: write
+    steps:
+      - name: Descargar el commit de la versión
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Comprobar si la publicación ya fue completada
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.validate-release.outputs.version }}
+        run: |
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Instalar la CLI de Railway
+        if: steps.release.outputs.exists != 'true'
+        run: npm install --global @railway/cli
+
+      - name: Desplegar y esperar el resultado de Railway
+        if: steps.release.outputs.exists != 'true'
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: ${{ vars.RAILWAY_PROJECT_ID }}
+          RAILWAY_SERVICE_NAME: ${{ vars.RAILWAY_SERVICE_NAME }}
+          RAILWAY_ENVIRONMENT_NAME: ${{ vars.RAILWAY_ENVIRONMENT_NAME }}
+          RELEASE_TAG: ${{ needs.validate-release.outputs.version }}
+        run: |
+          set -euo pipefail
+          : "${RAILWAY_TOKEN:?Configura el secreto RAILWAY_TOKEN en el entorno railway}"
+          : "${RAILWAY_PROJECT_ID:?Configura RAILWAY_PROJECT_ID en el entorno railway}"
+          : "${RAILWAY_SERVICE_NAME:?Configura RAILWAY_SERVICE_NAME en el entorno railway}"
+          : "${RAILWAY_ENVIRONMENT_NAME:?Configura RAILWAY_ENVIRONMENT_NAME en el entorno railway}"
+
+          output="$(railway up --json \
+            --project "$RAILWAY_PROJECT_ID" \
+            --environment "$RAILWAY_ENVIRONMENT_NAME" \
+            --service "$RAILWAY_SERVICE_NAME" \
+            --message "Release ${RELEASE_TAG} ${GITHUB_SHA}")"
+          printf '%s\n' "$output"
+
+          deployment_id="$(printf '%s\n' "$output" | node -e '
+            const fs = require("fs");
+            let id;
+            for (const line of fs.readFileSync(0, "utf8").split(/\r?\n/)) {
+              try {
+                const entry = JSON.parse(line);
+                if (entry.deploymentId) id = entry.deploymentId;
+              } catch {}
+            }
+            if (!id) process.exit(1);
+            process.stdout.write(id);
+          ')"
+          echo "Railway deployment ID: $deployment_id"
+
+          for attempt in $(seq 1 90); do
+            deployments="$(railway deployment list --json --limit 30 \
+              --project "$RAILWAY_PROJECT_ID" \
+              --environment "$RAILWAY_ENVIRONMENT_NAME" \
+              --service "$RAILWAY_SERVICE_NAME")"
+            state="$(printf '%s' "$deployments" | DEPLOYMENT_ID="$deployment_id" python3 -c '
+          import json, os, sys
+          value = json.load(sys.stdin)
+          if isinstance(value, dict):
+              value = value.get("deployments", [])
+          target = next((item for item in value if item.get("id") == os.environ["DEPLOYMENT_ID"]), None)
+          print(target.get("status", "MISSING") if target else "MISSING")
+          ')
+
+            case "$state" in
+              SUCCESS) break ;;
+              FAILED|CRASHED|REMOVED|REMOVING)
+                echo "Railway terminó el despliegue $deployment_id con estado $state" >&2
+                exit 1
+                ;;
+              MISSING)
+                echo "Railway no devolvió el despliegue $deployment_id" >&2
+                exit 1
+                ;;
+              *) echo "Estado Railway: $state ($attempt/90)"; sleep 10 ;;
+            esac
+          done
+
+          if [ "$state" != "SUCCESS" ]; then
+            echo "Railway no confirmó SUCCESS para $deployment_id" >&2
+            exit 1
+          fi
+
+          echo "RAILWAY_DEPLOYMENT_ID=$deployment_id" >> "$GITHUB_ENV"
+
+      - name: Registrar la versión desplegada
+        if: steps.release.outputs.exists != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ needs.validate-release.outputs.version }}
+        run: |
+          gh release create "$RELEASE_TAG" \
+            --verify-tag \
+            --title "$RELEASE_TAG" \
+            --notes "Deployed commit ${GITHUB_SHA}. Railway deployment ${RAILWAY_DEPLOYMENT_ID}."

@@ -204,7 +204,7 @@ public class InicializadorDatos implements CommandLineRunner {
                 LocalDateTime.now()));
 
         guardarCredencialSiNoExiste(maria, "Cliente2026!", Rol.CLIENTE);
-        guardarCredencialSiNoExiste(admin, "Admin2026!", Rol.ADMIN);
+        guardarCredencialSiNoExiste(admin, propiedades.getDemoData().getAdminPassword(), Rol.ADMIN);
 
         guardarPedidoSiNoExiste(pedido(
                 "OP-2026-0052",
