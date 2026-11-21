@@ -115,7 +115,7 @@ Los controladores MVC y REST comparten servicios; así las reglas principales se
 | `POST` | `/api/pedidos` | Registra un pedido; responde `201 Created`. |
 | `PATCH` | `/api/pedidos/{id}/estado` | Cambia el estado de un pedido. |
 
-La API REST aún no exige inicio de sesión. El pago del checkout es una simulación: no se conecta con Yape, Plin ni una pasarela bancaria.
+La API REST aún no exige inicio de sesión en el perfil local. El perfil `railway` la bloquea. El pago del checkout es una simulación: no se conecta con Yape, Plin ni una pasarela bancaria.
 
 ## Pruebas y documentación
 
@@ -128,3 +128,13 @@ Ejecuta las pruebas automatizadas con Docker disponible:
 - [Guía de base de datos y configuración local](docs/Guia-base-de-datos.md)
 - [Guía de ejecución, pruebas y API](docs/Guia-de-pruebas.md)
 - [Migraciones Flyway](src/main/resources/db/migration/)
+
+## Publicación en Railway
+
+Las publicaciones se construyen desde etiquetas SemVer (`vX.Y.Z`) mediante GitHub Actions. La etiqueta debe apuntar a un commit integrado en `main`, y las pruebas y la construcción de la imagen deben terminar correctamente antes de desplegar. Cada fusión a `main` ejecuta las verificaciones, pero no publica en Railway.
+
+Para habilitar la publicación, configura un entorno de GitHub Actions llamado `railway` que acepte etiquetas `v*`. Añade el secreto `RAILWAY_TOKEN` y las variables `RAILWAY_PROJECT_ID`, `RAILWAY_SERVICE_NAME` y `RAILWAY_ENVIRONMENT_NAME`. Configura el check obligatorio `Integridad` en la regla de protección de `main` y protege las etiquetas de versión frente a actualizaciones y eliminaciones. El workflow registra una GitHub Release cuando Railway informa que el despliegue de esa versión terminó correctamente.
+
+El servicio de aplicación usa el `Dockerfile` y el perfil `railway`. Configura `OPALINA_DB_URL` como `jdbc:mysql://${{MySQL.RAILWAY_PRIVATE_DOMAIN}}:3306/opalina`, junto con `OPALINA_DB_USERNAME`, `OPALINA_DB_PASSWORD`, `DEMO_ACCESS_USERNAME`, `DEMO_ACCESS_PASSWORD` y `OPALINA_DEMO_ADMIN_PASSWORD` como variables privadas del servicio. Configura `MYSQL_DATABASE`, `MYSQL_USER` y `MYSQL_PASSWORD` en el servicio MySQL y monta su volumen persistente en `/var/lib/mysql`. La aplicación expone `/actuator/health/readiness` para comprobar el inicio. El perfil de demostración solicita autenticación HTTP Basic, bloquea `/api/**` y las operaciones de escritura de productos.
+
+La primera publicación aceptada es `v0.0.1`. Una versión nueva debe incrementar exactamente una parte de la última versión desplegada correctamente. Si Railway falla, corrige el despliegue y reintenta la etiqueta fallida. Las GitHub Releases de este workflow registran las versiones cuyo despliegue ya terminó correctamente.
